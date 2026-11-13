@@ -1057,3 +1057,134 @@
 	}
 }
 
+
+
+/* ==========================================================================
+   WooCommerce Single Product, Cart, Checkout & My Account Minimal Styling
+   Preserves all WooCommerce fields, shipping, coupons & payment gateways.
+   ========================================================================== */
+
+.gk-single-product .woocommerce-product-gallery {
+	background: var(--gk-surface);
+	border: 1px solid var(--gk-border);
+	border-radius: var(--gk-radius);
+	overflow: hidden;
+}
+
+.gk-single-product .product_title {
+	margin: 0 0 10px;
+	font-size: clamp(1.5rem, 3vw, 2.125rem);
+	line-height: 1.2;
+}
+
+.gk-single-product .price {
+	font-size: 1.375rem;
+	font-weight: 700;
+	color: var(--gk-primary);
+	margin: 0 0 16px;
+}
+
+.gk-single-product form.cart {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 12px;
+	margin: 20px 0;
+}
+
+.gk-single-product .quantity input.qty,
+.woocommerce-cart-form .quantity input.qty {
+	width: 72px;
+	min-height: 44px;
+	text-align: center;
+	border: 1px solid var(--gk-border);
+	border-radius: var(--gk-radius-sm);
+	background: var(--gk-surface);
+	font-size: 1rem;
+}
+
+.gk-single-product .single_add_to_cart_button,
+.woocommerce #respond input#submit,
+.woocommerce a.button,
+.woocommerce button.button,
+.woocommerce input.button,
+.woocommerce #payment #place_order {
+	min-height: 44px;
+	padding: 10px 22px;
+	border-radius: var(--gk-radius-sm);
+	background: var(--gk-primary);
+	color: #fff;
+	border: 0;
+	font-weight: 600;
+	cursor: pointer;
+	transition: background var(--gk-transition);
+}
+
+.gk-single-product .single_add_to_cart_button:hover,
+.woocommerce #payment #place_order:hover {
+	background: var(--gk-primary-hover);
+}
+
+/* Checkout & Cart Clean Cards */
+.woocommerce-checkout .col2-set,
+.woocommerce-cart .cart-collaterals {
+	margin-top: 24px;
+}
+
+.woocommerce form .form-row input.input-text,
+.woocommerce form .form-row select,
+.woocommerce form .form-row textarea {
+	width: 100%;
+	min-height: 44px;
+	padding: 10px 12px;
+	border: 1px solid var(--gk-border);
+	border-radius: var(--gk-radius-sm);
+	background: var(--gk-surface);
+	color: var(--gk-text);
+}
+
+.woocommerce-checkout-review-order,
+.woocommerce-MyAccount-content {
+	background: var(--gk-surface);
+	border: 1px solid var(--gk-border);
+	border-radius: var(--gk-radius);
+	padding: 20px;
+}
+
+/* FAQ Accordion */
+.gk-faq-list {
+	display: grid;
+	gap: 12px;
+	max-width: 820px;
+}
+
+.gk-faq-item {
+	background: var(--gk-surface);
+	border: 1px solid var(--gk-border);
+	border-radius: var(--gk-radius);
+	padding: 16px 20px;
+}
+
+.gk-faq-item summary {
+	font-weight: 600;
+	cursor: pointer;
+	list-style: none;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.gk-faq-item summary::after {
+	content: "+";
+	font-size: 1.25rem;
+	color: var(--gk-primary);
+}
+
+.gk-faq-item[open] summary::after {
+	content: "−";
+}
+
+.gk-faq-item p {
+	margin: 12px 0 0;
+	color: var(--gk-text-muted);
+}

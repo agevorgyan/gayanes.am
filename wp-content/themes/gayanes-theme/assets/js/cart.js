@@ -307,6 +307,49 @@
 		}
 	});
 
+	document.addEventListener('submit', async (e) => {
+		const singleForm = e.target.closest('form.cart');
+		if (!singleForm) return;
+		const addBtn = singleForm.querySelector('.single_add_to_cart_button');
+		if (!addBtn || addBtn.classList.contains('disabled')) return;
+
+		e.preventDefault();
+		const formData = new FormData(singleForm);
+		const productId = formData.get('add-to-cart') || addBtn.value;
+		const variationId = formData.get('variation_id') || '0';
+		const quantity = formData.get('quantity') || '1';
+		if (!productId) {
+			singleForm.submit();
+			return;
+		}
+
+		const lockKey = `single:${productId}:${variationId}`;
+		if (pendingKeys.has(lockKey)) return;
+		pendingKeys.add(lockKey);
+		addBtn.disabled = true;
+
+		try {
+			const payload = {
+				product_id: productId,
+				variation_id: variationId,
+				quantity,
+			};
+			for (const [k, v] of formData.entries()) {
+				if (k.startsWith('attribute_')) {
+					payload[`variation[${k}]`] = v;
+				}
+			}
+			const data = await postAjax('gayanes_add_to_cart', payload);
+			applyCartState(data);
+			showToast(data.message || cfg.i18n.added);
+		} catch (err) {
+			showToast(err.message || cfg.i18n.errorGeneric);
+		} finally {
+			pendingKeys.delete(lockKey);
+			addBtn.disabled = false;
+		}
+	});
+
 	document.addEventListener('keydown', (e) => {
 		if (e.key === 'Escape') {
 			closeAllDrawers();
