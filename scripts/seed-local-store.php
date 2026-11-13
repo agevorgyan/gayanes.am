@@ -234,10 +234,11 @@ foreach ( $products as $p ) {
 	$prod->save();
 }
 
-// 5. Enable Cash on Delivery for local checkout verification.
+// 5. Enable Cash on Delivery & disable Coming Soon mode for local verification.
 $cod_settings = get_option( 'woocommerce_cod_settings', array() );
 $cod_settings['enabled'] = 'yes';
 update_option( 'woocommerce_cod_settings', $cod_settings );
+update_option( 'woocommerce_coming_soon', 'no' );
 
 echo "Local WordPress + WooCommerce store seeded successfully.\n";
 

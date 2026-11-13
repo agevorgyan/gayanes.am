@@ -53,8 +53,9 @@ class Performance {
 			return;
 		}
 
-		// Keep block styles only on single blog posts or pages using blocks.
-		if ( ! is_singular( 'post' ) ) {
+		// Keep block styles on blog posts, Cart, and Checkout (WooCommerce Blocks).
+		$needs_blocks = is_singular( 'post' ) || ( function_exists( 'is_cart' ) && is_cart() ) || ( function_exists( 'is_checkout' ) && is_checkout() );
+		if ( ! $needs_blocks ) {
 			wp_dequeue_style( 'wp-block-library' );
 			wp_dequeue_style( 'wp-block-library-theme' );
 			wp_dequeue_style( 'wc-blocks-style' );
