@@ -56,20 +56,126 @@ class Multilingual {
 	}
 
 	/**
-	 * Translate a UI string via Polylang / WPML / gettext.
+	 * Translate a UI string via Polylang / WPML / built-in HY-RU fallback.
 	 *
 	 * @param string $string Original English or source string.
 	 * @param string $domain Text domain.
 	 */
 	public static function t( string $string, string $domain = 'gayanes-theme' ): string {
 		if ( function_exists( 'pll__' ) ) {
-			return (string) pll__( $string );
+			$translated = (string) pll__( $string );
+			if ( $translated !== $string ) {
+				return $translated;
+			}
 		}
 		if ( has_filter( 'wpml_translate_single_string' ) ) {
-			return (string) apply_filters( 'wpml_translate_single_string', $string, $domain, $string );
+			$translated = (string) apply_filters( 'wpml_translate_single_string', $string, $domain, $string );
+			if ( $translated !== $string ) {
+				return $translated;
+			}
 		}
+
+		$lang = self::current_lang();
+		$map  = self::builtin_translations();
+		if ( isset( $map[ $lang ][ $string ] ) ) {
+			return $map[ $lang ][ $string ];
+		}
+
 		// phpcs:ignore WordPress.WP.I18n.NonSingularStringLiteralText,WordPress.WP.I18n.NonSingularStringLiteralDomain
 		return __( $string, $domain );
+	}
+
+	/**
+	 * Built-in UI string translations for HY (Armenian) and RU (Russian)
+	 * when Polylang string table has not yet been populated.
+	 *
+	 * @return array<string, array<string, string>>
+	 */
+	public static function builtin_translations(): array {
+		return array(
+			'hy' => array(
+				'Home'                                                   => 'Գլխավոր',
+				'Shop All'                                               => 'Բոլոր ապրանքները',
+				'Categories'                                             => 'Բաժիններ',
+				'Add to Cart'                                            => 'Ավելացնել զամբյուղ',
+				'Added to cart'                                          => 'Ավելացվել է զամբյուղում',
+				'Removed from cart'                                      => 'Հեռացվել է զամբյուղից',
+				'Out of Stock'                                           => 'Առկա չէ',
+				'In Stock'                                               => 'Առկա է',
+				'Select Options'                                         => 'Ընտրել տարբերակ',
+				'Sale'                                                   => 'Զեղչ',
+				'Your Cart'                                              => 'Զամբյուղ',
+				'View Cart'                                              => 'Դիտել զամբյուղը',
+				'Checkout'                                               => 'Ձևակերպել պատվերը',
+				'Your cart is empty'                                     => 'Ձեր զամբյուղը դատարկ է',
+				'Subtotal'                                               => 'Ենթագումար',
+				'Total'                                                  => 'Ընդամենը',
+				'Remove'                                                 => 'Հեռացնել',
+				'Decrease quantity'                                      => 'Նվազեցնել քանակը',
+				'Increase quantity'                                      => 'Ավելացնել քանակը',
+				'Search products...'                                     => 'Որոնել ապրանքներ...',
+				'Search'                                                 => 'Որոնել',
+				'Best Sellers'                                           => 'Ամենավաճառվածները',
+				'Featured Products'                                      => 'Առաջարկվող ապրանքներ',
+				'New Arrivals'                                           => 'Նորույթներ',
+				'About Us'                                               => 'Մեր մասին',
+				'Contact'                                                => 'Կապ',
+				'Delivery & Payment'                                     => 'Առաքում և վճարում',
+				'FAQ'                                                    => 'Հաճախ տրվող հարցեր',
+				'Blog & Recipes'                                         => 'Բլոգ և բաղադրատոմսեր',
+				'Privacy Policy'                                         => 'Գաղտնիության քաղաքականություն',
+				'Terms & Conditions'                                     => 'Պայմաններ և դրույթներ',
+				'Account'                                                => 'Հաշիվ',
+				'My Account'                                             => 'Իմ հաշիվը',
+				'View All'                                               => 'Տեսնել բոլորը',
+				'Learn More'                                             => 'Իմանալ ավելին',
+				'Customer Reviews'                                       => 'Հաճախորդների կարծիքները',
+				'Page Not Found'                                         => 'Էջը չի գտնվել',
+				'Go Home'                                                => 'Վերադառնալ գլխավոր էջ',
+				'Free delivery in Yerevan on orders over 15,000 AMD'     => 'Անվճար առաքում Երևանում 15,000 դրամից բարձր պատվերների դեպքում',
+			),
+			'ru' => array(
+				'Home'                                                   => 'Главная',
+				'Shop All'                                               => 'Все товары',
+				'Categories'                                             => 'Категории',
+				'Add to Cart'                                            => 'В корзину',
+				'Added to cart'                                          => 'Добавлено в корзину',
+				'Removed from cart'                                      => 'Удалено из корзины',
+				'Out of Stock'                                           => 'Нет в наличии',
+				'In Stock'                                               => 'В наличии',
+				'Select Options'                                         => 'Выбрать вариант',
+				'Sale'                                                   => 'Скидка',
+				'Your Cart'                                              => 'Корзина',
+				'View Cart'                                              => 'Открыть корзину',
+				'Checkout'                                               => 'Оформить заказ',
+				'Your cart is empty'                                     => 'Ваша корзина пуста',
+				'Subtotal'                                               => 'Подытог',
+				'Total'                                                  => 'Итого',
+				'Remove'                                                 => 'Удалить',
+				'Decrease quantity'                                      => 'Уменьшить количество',
+				'Increase quantity'                                      => 'Увеличить количество',
+				'Search products...'                                     => 'Поиск товаров...',
+				'Search'                                                 => 'Поиск',
+				'Best Sellers'                                           => 'Хиты продаж',
+				'Featured Products'                                      => 'Рекомендуемые товары',
+				'New Arrivals'                                           => 'Новинки',
+				'About Us'                                               => 'О нас',
+				'Contact'                                                => 'Контакты',
+				'Delivery & Payment'                                     => 'Доставка и оплата',
+				'FAQ'                                                    => 'Частые вопросы',
+				'Blog & Recipes'                                         => 'Блог и рецепты',
+				'Privacy Policy'                                         => 'Политика конфиденциальности',
+				'Terms & Conditions'                                     => 'Условия использования',
+				'Account'                                                => 'Аккаунт',
+				'My Account'                                             => 'Мой аккаунт',
+				'View All'                                               => 'Смотреть все',
+				'Learn More'                                             => 'Подробнее',
+				'Customer Reviews'                                       => 'Отзывы покупателей',
+				'Page Not Found'                                         => 'Страница не найдена',
+				'Go Home'                                                => 'На главную',
+				'Free delivery in Yerevan on orders over 15,000 AMD'     => 'Бесплатная доставка по Еревану при заказе от 15 000 AMD',
+			),
+		);
 	}
 
 	/**
