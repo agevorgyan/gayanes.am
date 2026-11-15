@@ -25,6 +25,7 @@ class GM_Router {
 		add_action( 'pre_get_posts', array( $this, 'filter_frontend_query' ) );
 		add_filter( 'woocommerce_product_data_store_cpt_get_products_query', array( $this, 'filter_wc_products_query' ), 10, 2 );
 		add_filter( 'get_terms_args', array( $this, 'filter_terms_args' ), 10, 2 );
+		add_filter( 'wp_get_nav_menu_items', array( $this, 'filter_nav_menu_items' ), 10, 3 );
 
 		// Prefix links on frontend.
 		add_filter( 'home_url', array( $this, 'filter_home_url' ), 10, 2 );
@@ -195,6 +196,52 @@ class GM_Router {
 		}
 
 		return $args;
+	}
+
+	/**
+	 * Filter navigation menu items on the frontend by the current language.
+	 *
+	 * @param array<int, object> $items Nav menu item objects.
+	 * @param object             $menu  Menu object.
+	 * @param array<string, mixed> $args Query arguments.
+	 * @return array<int, object>
+	 */
+	public function filter_nav_menu_items( array $items, $menu, array $args ): array {
+		if ( is_admin() || empty( $items ) ) {
+			return $items;
+		}
+
+		$current_lang = $this->languages->get_current_slug();
+		$filtered     = array();
+		$removed_ids  = array();
+
+		foreach ( $items as $item ) {
+			if ( ! is_object( $item ) ) {
+				continue;
+			}
+
+			$parent_id = isset( $item->menu_item_parent ) ? (int) $item->menu_item_parent : 0;
+			if ( $parent_id > 0 && isset( $removed_ids[ $parent_id ] ) ) {
+				$removed_ids[ (int) $item->ID ] = true;
+				continue;
+			}
+
+			$item_lang = '';
+			if ( 'post_type' === ( $item->type ?? '' ) && ! empty( $item->object_id ) ) {
+				$item_lang = $this->translations->get_object_language( (int) $item->object_id, 'post' );
+			} elseif ( 'taxonomy' === ( $item->type ?? '' ) && ! empty( $item->object_id ) ) {
+				$item_lang = $this->translations->get_object_language( (int) $item->object_id, 'term' );
+			}
+
+			if ( '' !== $item_lang && $item_lang !== $current_lang ) {
+				$removed_ids[ (int) $item->ID ] = true;
+				continue;
+			}
+
+			$filtered[] = $item;
+		}
+
+		return $filtered;
 	}
 
 	public function filter_home_url( string $url, string $path ): string {

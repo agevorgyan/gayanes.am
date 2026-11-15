@@ -68,22 +68,46 @@ $phone        = (string) get_theme_mod( 'gv2_phone', '+374 99 00 00 00' );
 		<div class="gv2-footer__cols">
 			<div class="gv2-footer__col">
 				<h3 class="gv2-footer__heading"><?php echo esc_html( gv2_t( 'Categories' ) ); ?></h3>
-				<ul class="gv2-footer__links">
-					<li><a href="<?php echo esc_url( $shop_url ); ?>"><?php echo esc_html( gv2_t( 'Shop All' ) ); ?></a></li>
-					<li><a href="<?php echo esc_url( home_url( '/about-us/' ) ); ?>"><?php echo esc_html( gv2_t( 'About Us' ) ); ?></a></li>
-					<li><a href="<?php echo esc_url( home_url( '/corporate-clients/' ) ); ?>"><?php echo esc_html( gv2_t( 'Corporate Clients' ) ); ?></a></li>
-					<li><a href="<?php echo esc_url( home_url( '/career/' ) ); ?>"><?php echo esc_html( gv2_t( 'Career' ) ); ?></a></li>
-					<li><a href="<?php echo esc_url( home_url( '/blog/' ) ); ?>"><?php echo esc_html( gv2_t( 'Blog & Recipes' ) ); ?></a></li>
-				</ul>
+				<?php
+				wp_nav_menu(
+					array(
+						'theme_location' => 'footer-categories',
+						'container'      => false,
+						'menu_class'     => 'gv2-footer__links',
+						'depth'          => 1,
+						'fallback_cb'    => static function () use ( $shop_url ): void {
+							echo '<ul class="gv2-footer__links">';
+							echo '<li><a href="' . esc_url( $shop_url ) . '">' . esc_html( gv2_t( 'Shop All' ) ) . '</a></li>';
+							echo '<li><a href="' . esc_url( home_url( '/about-us/' ) ) . '">' . esc_html( gv2_t( 'About Us' ) ) . '</a></li>';
+							echo '<li><a href="' . esc_url( home_url( '/corporate-clients/' ) ) . '">' . esc_html( gv2_t( 'Corporate Clients' ) ) . '</a></li>';
+							echo '<li><a href="' . esc_url( home_url( '/career/' ) ) . '">' . esc_html( gv2_t( 'Career' ) ) . '</a></li>';
+							echo '<li><a href="' . esc_url( home_url( '/blog/' ) ) . '">' . esc_html( gv2_t( 'Blog & Recipes' ) ) . '</a></li>';
+							echo '</ul>';
+						},
+					)
+				);
+				?>
 			</div>
 
 			<div class="gv2-footer__col">
 				<h3 class="gv2-footer__heading"><?php echo esc_html( gv2_t( 'Customer Care' ) ); ?></h3>
-				<ul class="gv2-footer__links">
-					<li><a href="<?php echo esc_url( home_url( '/delivery/' ) ); ?>"><?php echo esc_html( gv2_t( 'Delivery & Payment' ) ); ?></a></li>
-					<li><a href="<?php echo esc_url( home_url( '/faq/' ) ); ?>"><?php echo esc_html( gv2_t( 'FAQ' ) ); ?></a></li>
-					<li><a href="<?php echo esc_url( home_url( '/contact/' ) ); ?>"><?php echo esc_html( gv2_t( 'Contact' ) ); ?></a></li>
-				</ul>
+				<?php
+				wp_nav_menu(
+					array(
+						'theme_location' => 'footer-care',
+						'container'      => false,
+						'menu_class'     => 'gv2-footer__links',
+						'depth'          => 1,
+						'fallback_cb'    => static function (): void {
+							echo '<ul class="gv2-footer__links">';
+							echo '<li><a href="' . esc_url( home_url( '/delivery/' ) ) . '">' . esc_html( gv2_t( 'Delivery & Payment' ) ) . '</a></li>';
+							echo '<li><a href="' . esc_url( home_url( '/faq/' ) ) . '">' . esc_html( gv2_t( 'FAQ' ) ) . '</a></li>';
+							echo '<li><a href="' . esc_url( home_url( '/contact/' ) ) . '">' . esc_html( gv2_t( 'Contact' ) ) . '</a></li>';
+							echo '</ul>';
+						},
+					)
+				);
+				?>
 			</div>
 
 			<div class="gv2-footer__col gv2-footer__col--legal">
