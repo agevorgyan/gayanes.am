@@ -138,10 +138,6 @@ html, body {
 	overflow-x: clip;
 }
 
-body.gv2-body {
-	padding-bottom: calc(82px + env(safe-area-inset-bottom, 0px));
-}
-
 a {
 	color: var(--gv2-primary);
 	text-decoration: none;
@@ -1348,10 +1344,6 @@ img {
 
 /* Desktop Breakpoint (>= 900px) */
 @media (min-width: 900px) {
-	body.gv2-body {
-		padding-bottom: 0;
-	}
-
 	.gv2-tabbar,
 	.gv2-header__menu-btn,
 	.gv2-sheet--right .gv2-sheet__handle {
