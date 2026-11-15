@@ -8,7 +8,9 @@ deployment:
     - /bin/mkdir -p $DEPLOYPATH/wp-content/themes/gayanes-theme
     - /bin/mkdir -p $DEPLOYPATH/wp-content/plugins/gayanes-core
     - /bin/mkdir -p $DEPLOYPATH/wp-content/plugins/gemini-multilingual
+    - /bin/mkdir -p $DEPLOYPATH/wp-content/uploads
     - /usr/bin/rsync -a --delete --exclude '.DS_Store' wp-content/themes/GayanesV2/ $DEPLOYPATH/wp-content/themes/GayanesV2/
     - /usr/bin/rsync -a --delete --exclude '.DS_Store' wp-content/themes/gayanes-theme/ $DEPLOYPATH/wp-content/themes/gayanes-theme/
     - /usr/bin/rsync -a --delete --exclude '.DS_Store' wp-content/plugins/gayanes-core/ $DEPLOYPATH/wp-content/plugins/gayanes-core/
     - /usr/bin/rsync -a --delete --exclude '.DS_Store' wp-content/plugins/gemini-multilingual/ $DEPLOYPATH/wp-content/plugins/gemini-multilingual/
+    - /usr/bin/rsync -a --exclude '.DS_Store' --exclude 'wc-logs' wp-content/uploads/ $DEPLOYPATH/wp-content/uploads/
