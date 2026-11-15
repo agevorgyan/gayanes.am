@@ -1103,6 +1103,13 @@ img {
 	-webkit-backdrop-filter: blur(26px) saturate(190%);
 	border: 1px solid rgba(255, 255, 255, 0.85);
 	box-shadow: 0 14px 36px rgba(24, 30, 24, 0.16);
+	transition: transform 0.28s var(--gv2-spring), opacity 0.22s ease;
+}
+
+.gv2-tabbar.is-hidden {
+	transform: translateY(calc(100% + 28px + env(safe-area-inset-bottom, 0px)));
+	opacity: 0;
+	pointer-events: none;
 }
 
 .gv2-tabbar__item {

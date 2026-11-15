@@ -581,4 +581,38 @@
 			}
 		});
 	}
+
+	// Mobile Bottom Tab Bar: Hide on scroll down, show on scroll up
+	const tabbar = document.querySelector('.gv2-tabbar');
+	if (tabbar) {
+		let lastY = Math.max(0, window.scrollY || window.pageYOffset || 0);
+		let ticking = false;
+
+		const updateTabbarVisibility = () => {
+			const currentY = Math.max(0, window.scrollY || window.pageYOffset || 0);
+			const delta = currentY - lastY;
+			const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+			const atBottom = maxScroll > 0 && currentY >= maxScroll - 4;
+
+			if (currentY <= 20) {
+				tabbar.classList.remove('is-hidden');
+				lastY = currentY;
+			} else if (Math.abs(delta) >= 8) {
+				if (delta > 0 && currentY > 60) {
+					tabbar.classList.add('is-hidden');
+				} else if (delta < 0 && !atBottom) {
+					tabbar.classList.remove('is-hidden');
+				}
+				lastY = currentY;
+			}
+			ticking = false;
+		};
+
+		window.addEventListener('scroll', () => {
+			if (!ticking) {
+				ticking = true;
+				window.requestAnimationFrame(updateTabbarVisibility);
+			}
+		}, { passive: true });
+	}
 })();
