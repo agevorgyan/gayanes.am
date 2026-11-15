@@ -9,6 +9,14 @@ defined( 'ABSPATH' ) || exit;
 
 add_action( 'wp_ajax_gv2_submit_contact', 'gv2_handle_contact_submission' );
 add_action( 'wp_ajax_nopriv_gv2_submit_contact', 'gv2_handle_contact_submission' );
+add_shortcode( 'gv2_contact_nonce', 'gv2_render_contact_nonce_shortcode' );
+
+/**
+ * Render a fresh nonce hidden input for the editable Contact page form.
+ */
+function gv2_render_contact_nonce_shortcode(): string {
+	return '<input type="hidden" name="nonce" value="' . esc_attr( wp_create_nonce( 'gv2_contact_nonce' ) ) . '" />';
+}
 
 /**
  * Handle AJAX contact form submission with nonce and honeypot verification.
