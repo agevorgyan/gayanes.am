@@ -7,6 +7,8 @@
 
 defined( 'ABSPATH' ) || exit;
 
+$is_woo_page = function_exists( 'is_cart' ) && ( is_cart() || is_checkout() || is_account_page() );
+
 get_header();
 ?>
 <main id="primary" class="gv2-main gv2-container">
@@ -18,7 +20,7 @@ get_header();
 			<header class="gv2-page-head">
 				<h1><?php the_title(); ?></h1>
 			</header>
-			<div class="gv2-prose">
+			<div class="<?php echo $is_woo_page ? 'gv2-page-content' : 'gv2-prose'; ?>">
 				<?php the_content(); ?>
 			</div>
 		</article>
