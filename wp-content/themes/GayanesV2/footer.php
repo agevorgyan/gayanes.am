@@ -40,10 +40,10 @@ $phone        = (string) get_theme_mod( 'gv2_phone', '+374 99 00 00 00' );
 
 			<a class="gv2-footer__address" href="https://yandex.com/maps/-/CXSIyGZo" target="_blank" rel="noopener noreferrer">
 				<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-				<span>ք․ Երևան, 0054, Դավթաշեն 2թղմ 37</span>
+				<span><?php echo esc_html( gv2_t( 'Yerevan, 0054, Davtashen 2nd dist., 37' ) ); ?></span>
 			</a>
 
-			<div class="gv2-footer__socials" aria-label="Social Media & Messengers">
+			<div class="gv2-footer__socials" aria-label="<?php echo esc_attr( gv2_t( 'Social Media & Messengers' ) ); ?>">
 				<a class="gv2-social-btn" href="https://www.facebook.com/gayanes.kitchen" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
 					<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14.5 13.5h2.5l1-4h-3.5v-2c0-1.03.5-2 2-2h1.5V2.14C17.674 2.097 16.443 2 15.143 2 12.428 2 10.5 3.657 10.5 6.7V9.5H7.5v4h3V22h4v-8.5Z"/></svg>
 				</a>
@@ -71,8 +71,8 @@ $phone        = (string) get_theme_mod( 'gv2_phone', '+374 99 00 00 00' );
 				<ul class="gv2-footer__links">
 					<li><a href="<?php echo esc_url( $shop_url ); ?>"><?php echo esc_html( gv2_t( 'Shop All' ) ); ?></a></li>
 					<li><a href="<?php echo esc_url( home_url( '/about-us/' ) ); ?>"><?php echo esc_html( gv2_t( 'About Us' ) ); ?></a></li>
-					<li><a href="<?php echo esc_url( home_url( '/corporate-clients/' ) ); ?>">Կորպորատիվ հաճախորդներ</a></li>
-					<li><a href="<?php echo esc_url( home_url( '/career/' ) ); ?>">Կարիերա</a></li>
+					<li><a href="<?php echo esc_url( home_url( '/corporate-clients/' ) ); ?>"><?php echo esc_html( gv2_t( 'Corporate Clients' ) ); ?></a></li>
+					<li><a href="<?php echo esc_url( home_url( '/career/' ) ); ?>"><?php echo esc_html( gv2_t( 'Career' ) ); ?></a></li>
 					<li><a href="<?php echo esc_url( home_url( '/blog/' ) ); ?>"><?php echo esc_html( gv2_t( 'Blog & Recipes' ) ); ?></a></li>
 				</ul>
 			</div>
@@ -97,7 +97,7 @@ $phone        = (string) get_theme_mod( 'gv2_phone', '+374 99 00 00 00' );
 	</div>
 
 	<div class="gv2-container gv2-footer__bottom">
-		<p>&copy; <?php echo esc_html( gmdate( 'Y' ) ); ?> <?php bloginfo( 'name' ); ?> (gayanes.am). All rights reserved.</p>
+		<p>&copy; <?php echo esc_html( gmdate( 'Y' ) ); ?> <?php bloginfo( 'name' ); ?> (gayanes.am). <?php echo esc_html( gv2_t( 'All rights reserved.' ) ); ?></p>
 	</div>
 </footer>
 

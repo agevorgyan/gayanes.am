@@ -107,6 +107,36 @@ class GM_Router {
 		}
 
 		$current_lang = $this->languages->get_current_slug();
+
+		// If a page/post slug is shared across languages (e.g. /ru/about-us/, /en/about-us/),
+		// WordPress's get_page_by_path() picks the first matching ID regardless of language.
+		// Resolve it to the translated post ID for the active language before excluding other languages.
+		$pagename = (string) $query->get( 'pagename' );
+		if ( '' !== $pagename ) {
+			$found_id = (int) $query->get( 'page_id' );
+			if ( $found_id <= 0 && isset( $query->queried_object_id ) ) {
+				$found_id = (int) $query->queried_object_id;
+			}
+			if ( $found_id <= 0 ) {
+				$found_page = get_page_by_path( $pagename );
+				if ( $found_page instanceof WP_Post ) {
+					$found_id = (int) $found_page->ID;
+				}
+			}
+			if ( $found_id > 0 ) {
+				$found_lang = $this->translations->get_object_language( $found_id, 'post' );
+				if ( $found_lang && $found_lang !== $current_lang ) {
+					$tr_id = $this->translations->get_translation( $found_id, $current_lang, 'post' );
+					if ( $tr_id > 0 ) {
+						$query->set( 'pagename', '' );
+						$query->set( 'page_id', $tr_id );
+						$query->queried_object    = get_post( $tr_id );
+						$query->queried_object_id = $tr_id;
+					}
+				}
+			}
+		}
+
 		$exclude_ids  = $this->translations->get_object_ids_not_in_language( $current_lang, 'post' );
 
 		if ( ! empty( $exclude_ids ) ) {

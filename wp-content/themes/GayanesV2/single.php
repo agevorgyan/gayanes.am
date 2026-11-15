@@ -29,7 +29,7 @@ $blog_url = home_url( '/blog/' );
 		<!-- 1. Editorial Hero -->
 		<section class="gv2-article-hero">
 			<div class="gv2-container">
-				<nav class="gv2-about-breadcrumb" aria-label="Breadcrumb">
+				<nav class="gv2-about-breadcrumb" aria-label="<?php echo esc_attr( gv2_t( 'Breadcrumb' ) ); ?>">
 					<a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php echo esc_html( gv2_t( 'Home' ) ); ?></a>
 					<span aria-hidden="true">/</span>
 					<a href="<?php echo esc_url( $blog_url ); ?>"><?php echo esc_html( gv2_t( 'Blog & Recipes' ) ); ?></a>
@@ -42,7 +42,7 @@ $blog_url = home_url( '/blog/' );
 						<span class="gv2-article-cat"><?php echo esc_html( $cat_label ); ?></span>
 						<time datetime="<?php echo esc_attr( get_the_date( DATE_W3C ) ); ?>"><?php echo esc_html( get_the_date() ); ?></time>
 						<span aria-hidden="true">&bull;</span>
-						<span><?php echo esc_html( (string) $read_mins ); ?> րոպե ընթերցում</span>
+						<span><?php echo esc_html( sprintf( gv2_t( '%d min read' ), $read_mins ) ); ?></span>
 					</div>
 					<h1 class="gv2-article-hero__title"><?php the_title(); ?></h1>
 					<?php if ( has_excerpt() ) : ?>
@@ -81,12 +81,12 @@ $blog_url = home_url( '/blog/' );
 							&larr; <?php echo esc_html( gv2_t( 'Blog & Recipes' ) ); ?>
 						</a>
 						<button type="button" class="gv2-btn gv2-btn--primary" id="gv2-copy-article-link" data-url="<?php echo esc_url( get_permalink() ); ?>">
-							Կիսվել հղումով
+							<?php echo esc_html( gv2_t( 'Share link' ) ); ?>
 						</button>
 					</footer>
 				</article>
 
-				<aside class="gv2-article-aside" aria-label="Խոհանոցի առաջարկներ">
+				<aside class="gv2-article-aside" aria-label="<?php echo esc_attr( gv2_t( 'Kitchen Recommendations' ) ); ?>">
 					<!-- Kitchen Profile Card -->
 					<div class="gv2-article-kitchen gv2-glass-card">
 						<div class="gv2-article-kitchen__brand">
@@ -157,7 +157,7 @@ $blog_url = home_url( '/blog/' );
 			<section class="gv2-section gv2-blog-band" aria-labelledby="gv2-related-heading">
 				<div class="gv2-container">
 					<div class="gv2-section__head">
-						<h2 class="gv2-section__title" id="gv2-related-heading">Այլ հետաքրքիր հոդվածներ</h2>
+						<h2 class="gv2-section__title" id="gv2-related-heading"><?php echo esc_html( gv2_t( 'More Interesting Articles' ) ); ?></h2>
 						<a href="<?php echo esc_url( $blog_url ); ?>" class="gv2-link"><?php echo esc_html( gv2_t( 'View All' ) ); ?> &rarr;</a>
 					</div>
 					<div class="gv2-info-grid-2">

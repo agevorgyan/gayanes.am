@@ -25,7 +25,7 @@ $post_cats   = get_categories(
 	<!-- 1. Editorial Journal Hero + Category Pills -->
 	<section class="gv2-blog-archive-hero">
 		<div class="gv2-container">
-			<nav class="gv2-about-breadcrumb" aria-label="Breadcrumb">
+			<nav class="gv2-about-breadcrumb" aria-label="<?php echo esc_attr( gv2_t( 'Breadcrumb' ) ); ?>">
 				<a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php echo esc_html( gv2_t( 'Home' ) ); ?></a>
 				<span aria-hidden="true">/</span>
 				<?php if ( is_category() ) : ?>
@@ -43,7 +43,7 @@ $post_cats   = get_categories(
 					<?php echo is_home() ? esc_html( gv2_t( 'Blog & Recipes' ) ) : wp_kses_post( get_the_archive_title() ); ?>
 				</h1>
 				<p class="gv2-blog-archive-hero__lead">
-					Տնական բաղադրատոմսեր, պատրաստման գաղտնիքներ և առողջ սննդի խորհուրդներ «Գայանեի Խոհանոց»-ից։
+					<?php echo esc_html( gv2_t( 'Homemade recipes, cooking secrets, and healthy eating tips from Gayane’s Kitchen.' ) ); ?>
 				</p>
 
 				<?php if ( ! empty( $post_cats ) ) : ?>
@@ -96,7 +96,7 @@ $post_cats   = get_categories(
 							<div class="gv2-blog-meta">
 								<time datetime="<?php echo esc_attr( get_the_date( DATE_W3C ) ); ?>"><?php echo esc_html( get_the_date() ); ?></time>
 								<span aria-hidden="true">&bull;</span>
-								<span><?php echo esc_html( (string) $read_mins ); ?> րոպե ընթերցում</span>
+								<span><?php echo esc_html( sprintf( gv2_t( '%d min read' ), $read_mins ) ); ?></span>
 							</div>
 							<h2><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h2>
 							<p class="gv2-blog-spotlight__excerpt"><?php echo esc_html( wp_trim_words( get_the_excerpt(), 30, '...' ) ); ?></p>
@@ -125,7 +125,7 @@ $post_cats   = get_categories(
 							<div class="gv2-blog-meta">
 								<time datetime="<?php echo esc_attr( get_the_date( DATE_W3C ) ); ?>"><?php echo esc_html( get_the_date() ); ?></time>
 								<span aria-hidden="true">&bull;</span>
-								<span><?php echo esc_html( (string) $read_mins ); ?> րոպե</span>
+								<span><?php echo esc_html( sprintf( gv2_t( '%d min' ), $read_mins ) ); ?></span>
 							</div>
 							<h2><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h2>
 							<p class="gv2-blog-card__excerpt"><?php echo esc_html( wp_trim_words( get_the_excerpt(), 18, '...' ) ); ?></p>
