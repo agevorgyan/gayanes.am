@@ -316,9 +316,10 @@ img {
 	object-fit: contain;
 }
 
-.gv2-logo-img--footer {
-	height: 84px !important;
-	max-height: 84px !important;
+.gv2-logo-img--footer,
+.gv2-logo-img.gv2-logo-img--footer {
+	height: 168px !important;
+	max-height: 168px !important;
 	width: auto !important;
 }
 
@@ -2625,8 +2626,7 @@ form.woocommerce-checkout {
 
 	.single-product div.product div.summary {
 		padding: 28px 32px;
-		position: sticky;
-		top: 86px;
+		position: static;
 	}
 
 	.single-product div.product .woocommerce-tabs,
