@@ -1,0 +1,14 @@
+---
+deployment:
+  tasks:
+    # Verify in cPanel -> Domains that new.gayanes.am Document Root matches this path
+    # (on some cPanel setups it may be $HOME/public_html/new.gayanes.am)
+    - export DEPLOYPATH=$HOME/new.gayanes.am
+    - /bin/mkdir -p $DEPLOYPATH/wp-content/themes/GayanesV2
+    - /bin/mkdir -p $DEPLOYPATH/wp-content/themes/gayanes-theme
+    - /bin/mkdir -p $DEPLOYPATH/wp-content/plugins/gayanes-core
+    - /bin/mkdir -p $DEPLOYPATH/wp-content/plugins/gemini-multilingual
+    - /usr/bin/rsync -a --delete --exclude '.DS_Store' wp-content/themes/GayanesV2/ $DEPLOYPATH/wp-content/themes/GayanesV2/
+    - /usr/bin/rsync -a --delete --exclude '.DS_Store' wp-content/themes/gayanes-theme/ $DEPLOYPATH/wp-content/themes/gayanes-theme/
+    - /usr/bin/rsync -a --delete --exclude '.DS_Store' wp-content/plugins/gayanes-core/ $DEPLOYPATH/wp-content/plugins/gayanes-core/
+    - /usr/bin/rsync -a --delete --exclude '.DS_Store' wp-content/plugins/gemini-multilingual/ $DEPLOYPATH/wp-content/plugins/gemini-multilingual/

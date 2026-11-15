@@ -1,0 +1,48 @@
+# OS & Editor files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.vscode/
+.idea/
+
+# WordPress Core files & directories (not synced via Git)
+/wp-admin/
+/wp-includes/
+/index.php
+/license.txt
+/readme.html
+/wp-activate.php
+/wp-blog-header.php
+/wp-comments-post.php
+/wp-config-sample.php
+/wp-config.php
+/wp-cron.php
+/wp-links-opml.php
+/wp-load.php
+/wp-login.php
+/wp-mail.php
+/wp-settings.php
+/wp-signup.php
+/wp-trackback.php
+/xmlrpc.php
+.htaccess
+
+# WordPress wp-content unchanging / environment-specific directories
+/wp-content/index.php
+/wp-content/languages/
+/wp-content/upgrade/
+/wp-content/uploads/
+/wp-content/cache/
+/wp-content/wflogs/
+/wp-content/themes/index.php
+/wp-content/plugins/index.php
+
+# Third-party plugins (managed via WordPress Admin on cPanel)
+/wp-content/plugins/woocommerce/
+/wp-content/plugins/wordpress-seo/
+
+# Build artifacts & local logs
+/dist/
+*.log
+node_modules/
