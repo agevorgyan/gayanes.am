@@ -33,10 +33,7 @@ function gv2_enqueue_assets(): void {
 		true
 	);
 
-	$nonce = wp_create_nonce( 'gayanes_ajax_nonce' );
-	if ( class_exists( 'Gayanes_Core\Security' ) && method_exists( 'Gayanes_Core\Security', 'get_ajax_nonce' ) ) {
-		$nonce = Gayanes_Core\Security::get_ajax_nonce();
-	}
+	$nonce = wp_create_nonce( 'gayanes_cart_nonce' );
 
 	wp_localize_script(
 		'gv2-app',

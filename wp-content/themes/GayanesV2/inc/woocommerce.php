@@ -8,6 +8,29 @@
 
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * Format all WooCommerce prices as "500 ֏" (symbol on right with space, no trailing .00).
+ */
+add_filter(
+	'woocommerce_currency_symbol',
+	static function ( string $symbol, string $currency ): string {
+		return 'AMD' === $currency ? '֏' : $symbol;
+	},
+	20,
+	2
+);
+
+add_filter(
+	'woocommerce_price_format',
+	static function ( string $format, string $currency_pos ): string {
+		return '%2$s&nbsp;%1$s';
+	},
+	20,
+	2
+);
+
+add_filter( 'woocommerce_price_trim_zeros', '__return_true' );
+
 remove_action( 'woocommerce_before_main_content', 'woocommerce_output_content_wrapper', 10 );
 remove_action( 'woocommerce_after_main_content', 'woocommerce_output_content_wrapper_end', 10 );
 remove_action( 'woocommerce_before_main_content', 'woocommerce_breadcrumb', 20 );

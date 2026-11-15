@@ -142,9 +142,7 @@ $phone        = (string) get_theme_mod( 'gv2_phone', '+374 99 00 00 00' );
 
 	<div class="gv2-sheet__body" id="gv2-mini-cart-items">
 		<?php
-		if ( class_exists( 'Gayanes_Core\Ajax_Cart' ) && method_exists( 'Gayanes_Core\Ajax_Cart', 'render_mini_cart_items' ) ) {
-			Gayanes_Core\Ajax_Cart::render_mini_cart_items();
-		} elseif ( function_exists( 'WC' ) && WC()->cart && ! WC()->cart->is_empty() ) {
+		if ( function_exists( 'WC' ) && WC()->cart && ! WC()->cart->is_empty() ) {
 			echo '<ul class="gv2-mini-cart__list">';
 			foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
 				$_product = $cart_item['data'] ?? null;
