@@ -131,6 +131,10 @@ $phone        = (string) get_theme_mod( 'gv2_phone', '+374 99 00 00 00' );
 		<button type="button" class="gv2-glass-btn" data-gv2-drawer-close aria-label="<?php echo esc_attr( gv2_t( 'Close menu' ) ); ?>">&times;</button>
 	</div>
 	<div class="gv2-sheet__body gv2-mobile-nav__body">
+		<div class="gv2-mobile-nav__lang">
+			<?php gv2_render_language_switcher(); ?>
+		</div>
+
 		<?php
 		wp_nav_menu(
 			array(
@@ -158,10 +162,6 @@ $phone        = (string) get_theme_mod( 'gv2_phone', '+374 99 00 00 00' );
 			<a href="tel:<?php echo esc_attr( preg_replace( '/\s+/', '', $phone ) ); ?>" class="gv2-btn gv2-btn--primary gv2-btn--block">
 				<?php echo esc_html( $phone ); ?>
 			</a>
-		</div>
-
-		<div class="gv2-mobile-nav__lang">
-			<?php gv2_render_language_switcher(); ?>
 		</div>
 	</div>
 </aside>

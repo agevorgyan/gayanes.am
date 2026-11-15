@@ -3488,13 +3488,12 @@ form.woocommerce-checkout {
 .gv2-mobile-nav__quick {
 	display: grid;
 	gap: 10px;
+	padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 .gv2-mobile-nav__lang {
-	margin-top: auto;
 	display: flex;
-	justify-content: center;
-	padding-bottom: env(safe-area-inset-bottom, 0px);
+	justify-content: flex-start;
 }
 
 @media (min-width: 900px) {
