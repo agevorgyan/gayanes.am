@@ -25,6 +25,7 @@ require_once GAYANES_CORE_DIR . 'includes/class-multilingual.php';
 require_once GAYANES_CORE_DIR . 'includes/class-ajax-cart.php';
 require_once GAYANES_CORE_DIR . 'includes/class-seo-schema.php';
 require_once GAYANES_CORE_DIR . 'includes/class-performance.php';
+require_once GAYANES_CORE_DIR . 'includes/class-checkout-delivery.php';
 
 /**
  * Bootstrap Gayanes Core modules after plugins are loaded.
@@ -37,6 +38,7 @@ function gayanes_core_init(): void {
 
 	if ( class_exists( 'WooCommerce' ) ) {
 		Gayanes_Core\Ajax_Cart::init();
+		Gayanes_Core\Checkout_Delivery::init();
 	}
 }
 add_action( 'plugins_loaded', 'gayanes_core_init', 20 );

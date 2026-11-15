@@ -1542,3 +1542,222 @@ ul.woocommerce-order-overview li strong {
 	margin: 12px 0 0;
 	color: var(--gk-text-muted);
 }
+
+
+/* ==========================================================================
+   Modern Streamlined Checkout & Delivery Day/Time Pill Picker
+   ========================================================================== */
+
+form.woocommerce-checkout {
+	display: grid;
+	gap: 24px;
+	align-items: start;
+}
+
+@media (min-width: 960px) {
+	form.woocommerce-checkout {
+		grid-template-columns: 1.25fr 0.85fr;
+		gap: 32px;
+	}
+
+	form.woocommerce-checkout #order_review_heading,
+	form.woocommerce-checkout #order_review {
+		grid-column: 2;
+	}
+
+	form.woocommerce-checkout #customer_details {
+		grid-column: 1;
+		grid-row: 1 / span 3;
+	}
+}
+
+.woocommerce-checkout #customer_details {
+	background: var(--gk-surface);
+	border: 1px solid var(--gk-border);
+	border-radius: 16px;
+	padding: 24px;
+	box-shadow: var(--gk-shadow);
+}
+
+.woocommerce-checkout #customer_details .col-1,
+.woocommerce-checkout #customer_details .col-2 {
+	float: none;
+	width: 100%;
+	margin: 0;
+}
+
+.woocommerce-checkout #customer_details h3 {
+	margin: 0 0 18px;
+	font-size: 1.125rem;
+	color: var(--gk-text);
+}
+
+.woocommerce-checkout .form-row label {
+	display: block;
+	font-size: 0.8125rem;
+	font-weight: 600;
+	color: var(--gk-text);
+	margin-bottom: 6px;
+}
+
+.woocommerce-checkout .form-row input.input-text,
+.woocommerce-checkout .form-row textarea {
+	border: 1px solid var(--gk-border);
+	border-radius: 10px;
+	padding: 12px 14px;
+	background: var(--gk-bg);
+	font-size: 0.9375rem;
+	transition: border-color var(--gk-transition), background var(--gk-transition), box-shadow var(--gk-transition);
+}
+
+.woocommerce-checkout .form-row input.input-text:focus,
+.woocommerce-checkout .form-row textarea:focus {
+	outline: none;
+	background: var(--gk-surface);
+	border-color: var(--gk-primary);
+	box-shadow: 0 0 0 3px rgba(48, 75, 57, 0.12);
+}
+
+/* Delivery Day & Time Pill Selector */
+.gk-delivery-picker {
+	margin-top: 22px;
+	padding-top: 22px;
+	border-top: 1px solid var(--gk-border);
+	display: grid;
+	gap: 18px;
+}
+
+.gk-delivery-picker__label {
+	display: block;
+	font-size: 0.875rem;
+	font-weight: 700;
+	color: var(--gk-text);
+	margin-bottom: 10px;
+}
+
+.gk-pill-grid {
+	display: grid;
+	gap: 8px;
+}
+
+.gk-pill-grid--dates {
+	grid-template-columns: repeat(auto-fill, minmax(78px, 1fr));
+}
+
+.gk-pill-grid--times {
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.gk-pill-option {
+	position: relative;
+	cursor: pointer;
+}
+
+.gk-pill-option input {
+	position: absolute;
+	opacity: 0;
+	pointer-events: none;
+}
+
+.gk-pill-card {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 2px;
+	padding: 10px 8px;
+	border: 1.5px solid var(--gk-border);
+	border-radius: 10px;
+	background: var(--gk-bg);
+	color: var(--gk-text);
+	text-align: center;
+	transition: border-color var(--gk-transition), background var(--gk-transition), transform var(--gk-transition);
+}
+
+.gk-pill-card__top {
+	font-size: 0.75rem;
+	color: var(--gk-text-muted);
+}
+
+.gk-pill-card__main {
+	font-size: 0.875rem;
+	font-weight: 600;
+}
+
+.gk-pill-option input:checked + .gk-pill-card {
+	border-color: var(--gk-primary);
+	background: #EDF3EE;
+	color: var(--gk-primary);
+	box-shadow: 0 2px 8px rgba(48, 75, 57, 0.12);
+}
+
+.gk-pill-option input:checked + .gk-pill-card .gk-pill-card__top {
+	color: var(--gk-primary);
+}
+
+/* Order Review Card */
+.woocommerce-checkout #order_review {
+	background: var(--gk-surface);
+	border: 1px solid var(--gk-border);
+	border-radius: 16px;
+	padding: 24px;
+	box-shadow: var(--gk-shadow);
+}
+
+.woocommerce-checkout #order_review_heading {
+	margin: 0 0 12px;
+	font-size: 1.125rem;
+}
+
+.woocommerce-checkout-review-order-table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-bottom: 18px;
+}
+
+.woocommerce-checkout-review-order-table th,
+.woocommerce-checkout-review-order-table td {
+	padding: 10px 0;
+	border-bottom: 1px solid var(--gk-border);
+	text-align: left;
+	font-size: 0.9375rem;
+}
+
+.woocommerce-checkout-review-order-table td:last-child,
+.woocommerce-checkout-review-order-table th:last-child {
+	text-align: right;
+}
+
+.woocommerce-checkout #payment ul.payment_methods {
+	list-style: none;
+	margin: 0 0 18px;
+	padding: 0;
+	display: grid;
+	gap: 10px;
+}
+
+.woocommerce-checkout #payment ul.payment_methods li {
+	background: var(--gk-bg);
+	border: 1px solid var(--gk-border);
+	border-radius: 10px;
+	padding: 12px 14px;
+}
+
+.woocommerce-checkout #payment #place_order {
+	width: 100%;
+	min-height: 50px;
+	font-size: 1rem;
+	border-radius: 10px;
+}
+
+.gk-order-delivery-box {
+	background: #EDF3EE;
+	border: 1px solid #B7CEBD;
+	color: var(--gk-primary);
+	padding: 14px 18px;
+	border-radius: 12px;
+	margin-bottom: 24px;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
