@@ -171,6 +171,10 @@ class GM_Gemini_Client {
 			. "\nInput JSON:\n"
 			. wp_json_encode( $non_empty, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT );
 
+		if ( function_exists( 'set_time_limit' ) ) {
+			@set_time_limit( 120 );
+		}
+
 		$decoded = $this->call_interactions_api( $api_key, $model, $prompt, $schema );
 
 		// Fallback to classic generateContent if Interactions API rejects an older/custom model.
