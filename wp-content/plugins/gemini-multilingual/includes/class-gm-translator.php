@@ -17,7 +17,103 @@ class GM_Translator {
 	}
 
 	/**
+	 * Detects the dominant language of a text string using Unicode script analysis,
+	 * mapped to active site languages.
+	 */
+	public function detect_text_language( string $text ): ?string {
+		$clean = wp_strip_all_tags( strip_shortcodes( $text ) );
+		$clean = preg_replace( '#https?://\S+#i', '', (string) $clean );
+		$clean = trim( (string) $clean );
+		if ( '' === $clean ) {
+			return null;
+		}
+
+		$hy_count = preg_match_all( '/\p{Armenian}/u', $clean );
+		$ru_count = preg_match_all( '/\p{Cyrillic}/u', $clean );
+		$en_count = preg_match_all( '/[A-Za-z]/', $clean );
+		$total    = (int) $hy_count + (int) $ru_count + (int) $en_count;
+
+		if ( $total < 5 ) {
+			return null;
+		}
+
+		$script = null;
+		if ( $hy_count >= 5 && $hy_count >= $ru_count && ( $hy_count / $total ) >= 0.15 ) {
+			$script = 'hy';
+		} elseif ( $ru_count >= 5 && $ru_count > $hy_count && ( $ru_count / $total ) >= 0.15 ) {
+			$script = 'ru';
+		} elseif ( $en_count >= 5 && $en_count > $hy_count && $en_count > $ru_count ) {
+			$script = 'en';
+		}
+
+		if ( ! $script ) {
+			return null;
+		}
+
+		foreach ( $this->languages->get_languages( true ) as $lang ) {
+			$slug   = (string) ( $lang['slug'] ?? '' );
+			$locale = strtolower( (string) ( $lang['locale'] ?? '' ) );
+			if ( $slug === $script || str_starts_with( $locale, $script ) ) {
+				return $slug;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Detects the actual language of a post based on its title, content, and excerpt.
+	 *
+	 * @param int|WP_Post $post Post ID or object.
+	 */
+	public function detect_post_language( $post ): ?string {
+		$post = get_post( $post );
+		if ( ! $post ) {
+			return null;
+		}
+		$sample = trim( $post->post_title . "\n" . $post->post_content . "\n" . $post->post_excerpt );
+		return $this->detect_text_language( $sample );
+	}
+
+	/**
+	 * Reassigns a post's language safely (detaching from a group if another post in the group already has that language).
+	 *
+	 * @return string|WP_Error Updated language slug on success.
+	 */
+	public function fix_post_language( int $post_id, ?string $target_lang = null ) {
+		$post = get_post( $post_id );
+		if ( ! $post ) {
+			return new WP_Error( 'gm_invalid_post', __( 'Post not found.', 'gemini-multilingual' ) );
+		}
+
+		if ( null === $target_lang || '' === $target_lang ) {
+			$target_lang = $this->detect_post_language( $post );
+			if ( ! $target_lang ) {
+				return new WP_Error( 'gm_detect_failed', __( 'Could not reliably detect the language of this post.', 'gemini-multilingual' ) );
+			}
+		}
+
+		if ( ! $this->languages->get_language( $target_lang ) ) {
+			return new WP_Error( 'gm_invalid_lang', __( 'Target language does not exist.', 'gemini-multilingual' ) );
+		}
+
+		$translations = $this->translations->get_translations( $post_id, 'post' );
+		$conflict_id  = (int) ( $translations[ $target_lang ] ?? 0 );
+		if ( $conflict_id > 0 && $conflict_id !== $post_id ) {
+			// Detach into a fresh translation group to avoid two posts sharing the same language in one group.
+			$new_group = 'gm_' . wp_generate_uuid4();
+			$this->translations->set_object_language( $post_id, $target_lang, 'post', $new_group );
+		} else {
+			$this->translations->set_object_language( $post_id, $target_lang, 'post' );
+		}
+
+		return $target_lang;
+	}
+
+	/**
 	 * One-click AI translation for any post, page, product, or custom post type.
+	 * Also supports proofreading & completing untranslated fragments when source === target
+	 * or when a mislabeled post is already written in the target language.
 	 *
 	 * @return int|WP_Error Target post ID on success.
 	 */
@@ -38,12 +134,22 @@ class GM_Translator {
 			$this->translations->set_object_language( $source_post_id, $source_lang, 'post' );
 		}
 
-		if ( $source_lang === $target_lang ) {
-			return $source_post_id;
+		$existing_target_id = $this->translations->get_translation( $source_post_id, $target_lang, 'post' );
+
+		// If the post is mislabeled (e.g. marked English while actually written in Armenian)
+		// and no separate target translation exists yet, fix its language and proofread/complete it in place.
+		if ( $source_lang !== $target_lang && 0 === $existing_target_id ) {
+			$detected_lang = $this->detect_post_language( $source_post );
+			if ( $detected_lang === $target_lang ) {
+				$fixed = $this->fix_post_language( $source_post_id, $target_lang );
+				if ( ! is_wp_error( $fixed ) ) {
+					$source_lang = $target_lang;
+				}
+			}
 		}
 
-		$existing_target_id = $this->translations->get_translation( $source_post_id, $target_lang, 'post' );
-		if ( $existing_target_id > 0 && ! $overwrite && get_post( $existing_target_id ) ) {
+		$is_same_lang = ( $source_lang === $target_lang );
+		if ( ! $is_same_lang && $existing_target_id > 0 && ! $overwrite && get_post( $existing_target_id ) ) {
 			return $existing_target_id;
 		}
 
@@ -59,7 +165,7 @@ class GM_Translator {
 			'post_excerpt' => (string) $source_post->post_excerpt,
 		);
 
-		if ( ! empty( $settings['translate_slugs'] ) ) {
+		if ( ! $is_same_lang && ! empty( $settings['translate_slugs'] ) ) {
 			$fields['post_name'] = (string) $source_post->post_name;
 		}
 
@@ -91,6 +197,29 @@ class GM_Translator {
 
 		if ( is_wp_error( $translated ) ) {
 			return $translated;
+		}
+
+		if ( $is_same_lang ) {
+			$update_data = array(
+				'ID'           => $source_post_id,
+				'post_title'   => $translated['post_title'] ?? $source_post->post_title,
+				'post_content' => $translated['post_content'] ?? $source_post->post_content,
+				'post_excerpt' => $translated['post_excerpt'] ?? $source_post->post_excerpt,
+			);
+			$updated_id = wp_update_post( wp_slash( $update_data ), true );
+			if ( is_wp_error( $updated_id ) ) {
+				return $updated_id;
+			}
+
+			foreach ( $seo_keys as $meta_key ) {
+				if ( isset( $translated[ 'meta_' . $meta_key ] ) ) {
+					update_post_meta( $source_post_id, $meta_key, $translated[ 'meta_' . $meta_key ] );
+				}
+			}
+
+			do_action( 'gm_after_proofread_post', $source_post_id, $target_lang );
+
+			return $source_post_id;
 		}
 
 		$post_data = array(

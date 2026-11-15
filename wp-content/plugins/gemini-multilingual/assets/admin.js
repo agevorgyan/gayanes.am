@@ -60,6 +60,26 @@
     });
   });
 
+  // 1-Click Fix Mismatched Post Language.
+  $(document).on('click', '.gm-fix-post-lang', function () {
+    const $btn = $(this);
+    const postId = $btn.data('post-id');
+    const lang = $btn.data('lang');
+    const origText = $btn.text();
+
+    $btn.prop('disabled', true).text('...');
+    postAjax('gm_fix_post_language', { post_id: postId, lang: lang }).done(function (resp) {
+      if (resp.success) {
+        location.reload();
+      } else {
+        $btn.prop('disabled', false).text(origText);
+        alert(resp.data || 'Error');
+      }
+    }).fail(function () {
+      $btn.prop('disabled', false).text(origText);
+    });
+  });
+
   // 1-Click AI Translate Post / Page / Product.
   $(document).on('click', '.gm-one-click-translate', function () {
     const $btn = $(this);
@@ -77,6 +97,12 @@
       if (resp.success) {
         if ($btn.hasClass('gm-col-add')) {
           $btn.replaceWith('<a href="' + resp.data.edit_url + '" class="gm-col-flag gm-col-done">✓</a>');
+        } else if (resp.data.same_post) {
+          $btn.text('✓ Done');
+          if ($status.length) {
+            $status.html('<span style="color:#007017;">✓ Checked &amp; updated! Reloading...</span>');
+          }
+          setTimeout(function () { location.reload(); }, 700);
         } else {
           $btn.text('✓ Done');
           if ($status.length) {
@@ -99,7 +125,7 @@
   // 1-Click Translate to ALL Languages in Metabox.
   $(document).on('click', '.gm-translate-all-btn', async function () {
     const $btn = $(this);
-    const $buttons = $btn.closest('.gm-metabox-translations').find('.gm-one-click-translate');
+    const $buttons = $btn.closest('.gm-metabox-translations').find('.gm-one-click-translate:not([data-is-current="1"])');
     const $status = $btn.closest('.gm-metabox-translations').find('.gm-metabox-status');
 
     $btn.prop('disabled', true);

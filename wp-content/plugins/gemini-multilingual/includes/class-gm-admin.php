@@ -43,6 +43,7 @@ class GM_Admin {
 		add_action( 'wp_ajax_gm_test_connection', array( $this, 'ajax_test_connection' ) );
 		add_action( 'wp_ajax_gm_refresh_models', array( $this, 'ajax_refresh_models' ) );
 		add_action( 'wp_ajax_gm_translate_post', array( $this, 'ajax_translate_post' ) );
+		add_action( 'wp_ajax_gm_fix_post_language', array( $this, 'ajax_fix_post_language' ) );
 		add_action( 'wp_ajax_gm_translate_term', array( $this, 'ajax_translate_term' ) );
 		add_action( 'wp_ajax_gm_scan_package', array( $this, 'ajax_scan_package' ) );
 		add_action( 'wp_ajax_gm_save_string', array( $this, 'ajax_save_string' ) );
@@ -541,9 +542,11 @@ class GM_Admin {
 
 	public function render_post_metabox( WP_Post $post ): void {
 		wp_nonce_field( 'gm_post_lang_meta', 'gm_post_lang_nonce' );
-		$langs        = $this->languages->get_languages( true );
-		$current_lang = $this->translations->get_object_language( $post->ID, 'post' ) ?: $this->languages->get_default_slug();
-		$translations = $this->translations->get_translations( $post->ID, 'post' );
+		$langs         = $this->languages->get_languages( true );
+		$current_lang  = $this->translations->get_object_language( $post->ID, 'post' ) ?: $this->languages->get_default_slug();
+		$translations  = $this->translations->get_translations( $post->ID, 'post' );
+		$detected_lang = $this->translator->detect_post_language( $post );
+		$detected_obj  = $detected_lang ? $this->languages->get_language( $detected_lang ) : null;
 		?>
 		<p>
 			<label for="gm_post_lang"><strong><?php esc_html_e( 'Language:', 'gemini-multilingual' ); ?></strong></label><br />
@@ -556,16 +559,45 @@ class GM_Admin {
 			</select>
 		</p>
 
+		<?php if ( $detected_obj && $detected_lang !== $current_lang ) : ?>
+			<div class="notice notice-warning inline" style="margin:8px 0;padding:8px 10px;">
+				<p style="margin:0 0 6px;font-size:12px;">
+					<?php
+					printf(
+						/* translators: %s: detected language name */
+						esc_html__( 'Content appears to be written in %s.', 'gemini-multilingual' ),
+						'<strong>' . esc_html( $detected_obj['flag'] . ' ' . $detected_obj['name'] ) . '</strong>'
+					);
+					?>
+				</p>
+				<button type="button" class="button button-small gm-fix-post-lang" data-post-id="<?php echo (int) $post->ID; ?>" data-lang="<?php echo esc_attr( $detected_lang ); ?>" style="width:100%;">
+					<?php
+					printf(
+						/* translators: %s: detected language name */
+						esc_html__( 'Fix Language → %s', 'gemini-multilingual' ),
+						esc_html( $detected_obj['flag'] . ' ' . $detected_obj['name'] )
+					);
+					?>
+				</button>
+			</div>
+		<?php endif; ?>
+
 		<div class="gm-metabox-translations">
 			<strong><?php esc_html_e( 'Translations:', 'gemini-multilingual' ); ?></strong>
 			<ul>
 				<?php foreach ( $langs as $l ) : ?>
-					<?php
-					if ( $l['slug'] === $current_lang ) {
-						continue;
-					}
-					$tr_id = $translations[ $l['slug'] ] ?? 0;
-					?>
+					<?php if ( $l['slug'] === $current_lang ) : ?>
+						<li class="gm-tr-row">
+							<span><?php echo esc_html( $l['flag'] . ' ' . $l['name'] ); ?></span>
+							<span class="gm-tr-actions">
+								<button type="button" class="button button-small gm-one-click-translate" data-post-id="<?php echo (int) $post->ID; ?>" data-lang="<?php echo esc_attr( $l['slug'] ); ?>" data-is-current="1" title="<?php esc_attr_e( 'Check grammar and translate any untranslated parts into this language', 'gemini-multilingual' ); ?>">
+									✨ <?php esc_html_e( 'Proofread & Complete', 'gemini-multilingual' ); ?>
+								</button>
+							</span>
+						</li>
+						<?php continue; ?>
+					<?php endif; ?>
+					<?php $tr_id = $translations[ $l['slug'] ] ?? 0; ?>
 					<li class="gm-tr-row">
 						<span><?php echo esc_html( $l['flag'] . ' ' . $l['name'] ); ?></span>
 						<span class="gm-tr-actions">
@@ -624,14 +656,19 @@ class GM_Admin {
 		if ( 'gm_languages' !== $column ) {
 			return;
 		}
-		$langs        = $this->languages->get_languages( true );
-		$post_lang    = $this->translations->get_object_language( $post_id, 'post' ) ?: $this->languages->get_default_slug();
-		$translations = $this->translations->get_translations( $post_id, 'post' );
+		$langs         = $this->languages->get_languages( true );
+		$post_lang     = $this->translations->get_object_language( $post_id, 'post' ) ?: $this->languages->get_default_slug();
+		$translations  = $this->translations->get_translations( $post_id, 'post' );
+		$detected_lang = $this->translator->detect_post_language( $post_id );
 
 		echo '<div class="gm-col-langs">';
 		foreach ( $langs as $l ) {
 			if ( $l['slug'] === $post_lang ) {
-				echo '<span class="gm-col-flag gm-col-current" title="' . esc_attr( $l['name'] ) . '">' . esc_html( $l['flag'] ) . '</span>';
+				$mismatch_badge = ( $detected_lang && $detected_lang !== $post_lang ) ? ' ⚠️' : '';
+				$title          = $mismatch_badge
+					? sprintf( '%s (content looks like %s)', $l['name'], $detected_lang )
+					: $l['name'];
+				echo '<span class="gm-col-flag gm-col-current" title="' . esc_attr( $title ) . '">' . esc_html( $l['flag'] . $mismatch_badge ) . '</span>';
 			} elseif ( ! empty( $translations[ $l['slug'] ] ) ) {
 				$edit_url = get_edit_post_link( (int) $translations[ $l['slug'] ] );
 				echo '<a href="' . esc_url( $edit_url ) . '" class="gm-col-flag gm-col-done" title="' . esc_attr( 'Edit ' . $l['name'] ) . '">' . esc_html( $l['flag'] ) . '✓</a>';
@@ -713,9 +750,27 @@ class GM_Admin {
 		wp_send_json_success(
 			array(
 				'target_id' => $res,
+				'same_post' => ( (int) $res === $post_id ),
 				'edit_url'  => get_edit_post_link( $res, 'raw' ),
 			)
 		);
+	}
+
+	public function ajax_fix_post_language(): void {
+		check_ajax_referer( 'gm_admin_nonce', 'nonce' );
+		$post_id = (int) ( $_POST['post_id'] ?? 0 );
+		$lang    = sanitize_key( wp_unslash( $_POST['lang'] ?? '' ) );
+
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			wp_send_json_error( 'Unauthorized' );
+		}
+
+		$res = $this->translator->fix_post_language( $post_id, '' !== $lang ? $lang : null );
+		if ( is_wp_error( $res ) ) {
+			wp_send_json_error( $res->get_error_message() );
+		}
+
+		wp_send_json_success( array( 'lang' => $res ) );
 	}
 
 	public function ajax_translate_term(): void {

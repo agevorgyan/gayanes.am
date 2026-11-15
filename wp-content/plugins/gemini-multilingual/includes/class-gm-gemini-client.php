@@ -158,13 +158,23 @@ class GM_Gemini_Client {
 			'required'   => $required,
 		);
 
-		$context_note = ! empty( $context ) ? 'Context: ' . wp_json_encode( $context, JSON_UNESCAPED_UNICODE ) . "\n" : '';
-		$prompt       = "You are an expert WordPress and WooCommerce localization translator.\n"
-			. "Translate every string value in the JSON object below from {$source_lang} to {$target_lang}.\n"
+		$context_note   = ! empty( $context ) ? 'Context: ' . wp_json_encode( $context, JSON_UNESCAPED_UNICODE ) . "\n" : '';
+		$is_same_lang   = ( strtolower( trim( $source_lang ) ) === strtolower( trim( $target_lang ) ) );
+		$task_line      = $is_same_lang
+			? "Check every string value in the JSON object below and ensure it is 100% in natural, grammatically correct {$target_lang}.\n"
+			: "Translate every string value in the JSON object below to {$target_lang} (expected source language: {$source_lang}).\n";
+		$mixed_lang_rule = $is_same_lang
+			? "- If a text (or part of it) is ALREADY in {$target_lang}, keep its meaning and structure intact — only proofread and lightly fix grammar, spelling, punctuation, or awkward phrasing if needed (do not rewrite well-written {$target_lang} text unnecessarily).\n"
+			  . "- If any words, phrases, headings, or sections are NOT in {$target_lang} (e.g. untranslated text in another language), translate those untranslated parts into {$target_lang}.\n"
+			: "- Note: The input may be mislabeled or contain mixed languages (including parts already written in {$target_lang}). If a part is already in {$target_lang}, preserve it (proofreading grammar/spelling only if needed) and translate all remaining non-{$target_lang} parts into {$target_lang}.\n";
+
+		$prompt = "You are an expert WordPress and WooCommerce localization translator and editor.\n"
+			. $task_line
 			. "Rules:\n"
 			. "- Return ONLY valid JSON matching the requested schema with the exact same keys.\n"
 			. "- Preserve all HTML tags, attributes, URLs, WordPress Gutenberg block comments (<!-- wp:... -->), shortcodes ([...]), and printf placeholders (%s, %d, %1\$s, {{var}}, {name}).\n"
 			. "- Do not translate CSS classes, inline style attributes, or JSON keys.\n"
+			. $mixed_lang_rule
 			. "- Use natural, idiomatic, e-commerce-appropriate phrasing in {$target_lang}.\n"
 			. ( '' !== $rules ? "- Additional instructions: {$rules}\n" : '' )
 			. $context_note
