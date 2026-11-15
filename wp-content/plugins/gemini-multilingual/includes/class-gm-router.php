@@ -23,6 +23,7 @@ class GM_Router {
 
 		// Filter frontend queries by current language.
 		add_action( 'pre_get_posts', array( $this, 'filter_frontend_query' ) );
+		add_filter( 'woocommerce_product_data_store_cpt_get_products_query', array( $this, 'filter_wc_products_query' ), 10, 2 );
 		add_filter( 'get_terms_args', array( $this, 'filter_terms_args' ), 10, 2 );
 
 		// Prefix links on frontend.
@@ -94,7 +95,7 @@ class GM_Router {
 	}
 
 	public function filter_frontend_query( WP_Query $query ): void {
-		if ( is_admin() || ! $query->is_main_query() ) {
+		if ( is_admin() || $query->get( 'gm_skip_lang_filter' ) ) {
 			return;
 		}
 
@@ -102,7 +103,17 @@ class GM_Router {
 		$post_types = (array) ( $settings['post_types'] ?? array( 'post', 'page', 'product' ) );
 		$q_pt       = $query->get( 'post_type' );
 
-		if ( '' !== $q_pt && ! is_array( $q_pt ) && ! in_array( $q_pt, $post_types, true ) ) {
+		if ( '' === $q_pt ) {
+			if ( ! $query->is_main_query() ) {
+				$q_pt = 'post';
+			}
+		}
+
+		if ( is_array( $q_pt ) ) {
+			if ( empty( array_intersect( $q_pt, $post_types ) ) ) {
+				return;
+			}
+		} elseif ( '' !== $q_pt && ! in_array( $q_pt, $post_types, true ) ) {
 			return;
 		}
 
@@ -111,38 +122,56 @@ class GM_Router {
 		// If a page/post slug is shared across languages (e.g. /ru/about-us/, /en/about-us/),
 		// WordPress's get_page_by_path() picks the first matching ID regardless of language.
 		// Resolve it to the translated post ID for the active language before excluding other languages.
-		$pagename = (string) $query->get( 'pagename' );
-		if ( '' !== $pagename ) {
-			$found_id = (int) $query->get( 'page_id' );
-			if ( $found_id <= 0 && isset( $query->queried_object_id ) ) {
-				$found_id = (int) $query->queried_object_id;
-			}
-			if ( $found_id <= 0 ) {
-				$found_page = get_page_by_path( $pagename );
-				if ( $found_page instanceof WP_Post ) {
-					$found_id = (int) $found_page->ID;
+		if ( $query->is_main_query() ) {
+			$pagename = (string) $query->get( 'pagename' );
+			if ( '' !== $pagename ) {
+				$found_id = (int) $query->get( 'page_id' );
+				if ( $found_id <= 0 && isset( $query->queried_object_id ) ) {
+					$found_id = (int) $query->queried_object_id;
 				}
-			}
-			if ( $found_id > 0 ) {
-				$found_lang = $this->translations->get_object_language( $found_id, 'post' );
-				if ( $found_lang && $found_lang !== $current_lang ) {
-					$tr_id = $this->translations->get_translation( $found_id, $current_lang, 'post' );
-					if ( $tr_id > 0 ) {
-						$query->set( 'pagename', '' );
-						$query->set( 'page_id', $tr_id );
-						$query->queried_object    = get_post( $tr_id );
-						$query->queried_object_id = $tr_id;
+				if ( $found_id <= 0 ) {
+					$found_page = get_page_by_path( $pagename );
+					if ( $found_page instanceof WP_Post ) {
+						$found_id = (int) $found_page->ID;
+					}
+				}
+				if ( $found_id > 0 ) {
+					$found_lang = $this->translations->get_object_language( $found_id, 'post' );
+					if ( $found_lang && $found_lang !== $current_lang ) {
+						$tr_id = $this->translations->get_translation( $found_id, $current_lang, 'post' );
+						if ( $tr_id > 0 ) {
+							$query->set( 'pagename', '' );
+							$query->set( 'page_id', $tr_id );
+							$query->queried_object    = get_post( $tr_id );
+							$query->queried_object_id = $tr_id;
+						}
 					}
 				}
 			}
 		}
 
-		$exclude_ids  = $this->translations->get_object_ids_not_in_language( $current_lang, 'post' );
+		$exclude_ids = $this->translations->get_object_ids_not_in_language( $current_lang, 'post' );
 
 		if ( ! empty( $exclude_ids ) ) {
 			$existing_not_in = (array) $query->get( 'post__not_in', array() );
 			$query->set( 'post__not_in', array_unique( array_merge( $existing_not_in, $exclude_ids ) ) );
 		}
+	}
+
+	public function filter_wc_products_query( array $query, array $query_vars ): array {
+		if ( is_admin() ) {
+			return $query;
+		}
+
+		$current_lang = $this->languages->get_current_slug();
+		$exclude_ids  = $this->translations->get_object_ids_not_in_language( $current_lang, 'post' );
+
+		if ( ! empty( $exclude_ids ) ) {
+			$existing              = isset( $query['post__not_in'] ) ? (array) $query['post__not_in'] : array();
+			$query['post__not_in'] = array_unique( array_merge( $existing, $exclude_ids ) );
+		}
+
+		return $query;
 	}
 
 	public function filter_terms_args( array $args, array $taxonomies ): array {

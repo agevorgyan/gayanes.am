@@ -119,19 +119,41 @@ $shop_url = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 
 	<!-- 3. Product of the Day (Daily Deal Promo) -->
 	<?php if ( function_exists( 'wc_get_products' ) ) : ?>
 		<?php
-		$deal_id      = absint( get_theme_mod( 'gv2_daily_deal_product_id', 0 ) );
+		$deal_id = absint( get_theme_mod( 'gv2_daily_deal_product_id', 0 ) );
+		if ( $deal_id > 0 && function_exists( 'pll_get_post' ) ) {
+			$tr_deal_id = (int) pll_get_post( $deal_id );
+			if ( $tr_deal_id > 0 ) {
+				$deal_id = $tr_deal_id;
+			}
+		}
 		$deal_product = $deal_id > 0 ? wc_get_product( $deal_id ) : null;
 
 		if ( ! $deal_product instanceof WC_Product || 'publish' !== $deal_product->get_status() ) {
 			$sale_ids = function_exists( 'wc_get_product_ids_on_sale' ) ? wc_get_product_ids_on_sale() : array();
 			if ( ! empty( $sale_ids ) ) {
-				$deal_product = wc_get_product( (int) reset( $sale_ids ) );
+				$sale_id = (int) reset( $sale_ids );
+				if ( $sale_id > 0 && function_exists( 'pll_get_post' ) ) {
+					$tr_sale_id = (int) pll_get_post( $sale_id );
+					if ( $tr_sale_id > 0 ) {
+						$sale_id = $tr_sale_id;
+					}
+				}
+				$deal_product = wc_get_product( $sale_id );
 			}
 		}
 
 		if ( ! $deal_product instanceof WC_Product || 'publish' !== $deal_product->get_status() ) {
 			$fallback_list = wc_get_products( array( 'status' => 'publish', 'limit' => 1, 'orderby' => 'popularity', 'order' => 'DESC' ) );
 			$deal_product  = $fallback_list[0] ?? null;
+			if ( $deal_product instanceof WC_Product && function_exists( 'pll_get_post' ) ) {
+				$tr_fb_id = (int) pll_get_post( $deal_product->get_id() );
+				if ( $tr_fb_id > 0 && $tr_fb_id !== $deal_product->get_id() ) {
+					$tr_fb_prod = wc_get_product( $tr_fb_id );
+					if ( $tr_fb_prod instanceof WC_Product && 'publish' === $tr_fb_prod->get_status() ) {
+						$deal_product = $tr_fb_prod;
+					}
+				}
+			}
 		}
 
 		if ( $deal_product instanceof WC_Product ) :
