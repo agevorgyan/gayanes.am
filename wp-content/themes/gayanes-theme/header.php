@@ -45,8 +45,8 @@ $cart_count = ( function_exists( 'WC' ) && WC()->cart ) ? (int) WC()->cart->get_
 			<?php if ( has_custom_logo() ) : ?>
 				<?php the_custom_logo(); ?>
 			<?php else : ?>
-				<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="gk-brand-text">
-					<?php bloginfo( 'name' ); ?>
+				<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="custom-logo-link" rel="home">
+					<img src="<?php echo esc_url( GAYANES_THEME_URI . '/assets/images/logo.png' ); ?>" class="custom-logo" alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>" />
 				</a>
 			<?php endif; ?>
 		</div>

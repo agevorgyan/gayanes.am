@@ -113,6 +113,29 @@ body {
 	flex: 1;
 }
 
+.gk-header__brand .custom-logo-link,
+.gk-footer__logo .custom-logo-link {
+	display: inline-flex;
+	align-items: center;
+	text-decoration: none;
+}
+
+.gk-header__brand .custom-logo {
+	max-height: 40px;
+	width: auto;
+	object-fit: contain;
+}
+
+.gk-footer__logo {
+	margin-bottom: 12px;
+}
+
+.gk-footer__logo .custom-logo {
+	max-height: 48px;
+	width: auto;
+	object-fit: contain;
+}
+
 .gk-brand-text {
 	font-size: 1rem;
 	font-weight: 700;

@@ -18,7 +18,15 @@ $cart_count   = ( function_exists( 'WC' ) && WC()->cart ) ? (int) WC()->cart->ge
 <footer class="gk-footer">
 	<div class="gk-container gk-footer__grid">
 		<div class="gk-footer__col">
-			<h2 class="gk-footer__brand"><?php bloginfo( 'name' ); ?></h2>
+			<div class="gk-footer__logo">
+				<?php if ( has_custom_logo() ) : ?>
+					<?php the_custom_logo(); ?>
+				<?php else : ?>
+					<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="custom-logo-link" rel="home">
+						<img src="<?php echo esc_url( GAYANES_THEME_URI . '/assets/images/logo.png' ); ?>" class="custom-logo" alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>" />
+					</a>
+				<?php endif; ?>
+			</div>
 			<p class="gk-footer__desc">
 				<?php echo esc_html( gayanes_t( 'Fresh ingredients, traditional recipes, delivered to your door.' ) ); ?>
 			</p>
