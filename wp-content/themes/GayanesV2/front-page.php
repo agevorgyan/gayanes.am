@@ -116,7 +116,120 @@ $shop_url = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 
 		<?php endif; ?>
 	<?php endif; ?>
 
-	<!-- 3. Best Sellers (2:3 Portrait Cards) -->
+	<!-- 3. Product of the Day (Daily Deal Promo) -->
+	<?php if ( function_exists( 'wc_get_products' ) ) : ?>
+		<?php
+		$deal_id      = absint( get_theme_mod( 'gv2_daily_deal_product_id', 0 ) );
+		$deal_product = $deal_id > 0 ? wc_get_product( $deal_id ) : null;
+
+		if ( ! $deal_product instanceof WC_Product || 'publish' !== $deal_product->get_status() ) {
+			$sale_ids = function_exists( 'wc_get_product_ids_on_sale' ) ? wc_get_product_ids_on_sale() : array();
+			if ( ! empty( $sale_ids ) ) {
+				$deal_product = wc_get_product( (int) reset( $sale_ids ) );
+			}
+		}
+
+		if ( ! $deal_product instanceof WC_Product || 'publish' !== $deal_product->get_status() ) {
+			$fallback_list = wc_get_products( array( 'status' => 'publish', 'limit' => 1, 'orderby' => 'popularity', 'order' => 'DESC' ) );
+			$deal_product  = $fallback_list[0] ?? null;
+		}
+
+		if ( $deal_product instanceof WC_Product ) :
+			$deal_pid        = $deal_product->get_id();
+			$deal_img_id     = (int) $deal_product->get_image_id();
+			$deal_weight     = gv2_get_product_weight_label( $deal_product );
+			$deal_permalink  = $deal_product->get_permalink();
+			$deal_reg        = (float) $deal_product->get_regular_price();
+			$deal_sale       = (float) $deal_product->get_sale_price();
+			$deal_discount   = ( $deal_product->is_on_sale() && $deal_reg > 0 && $deal_sale > 0 && $deal_sale < $deal_reg )
+				? (int) round( ( ( $deal_reg - $deal_sale ) / $deal_reg ) * 100 )
+				: 0;
+			$deal_qty        = 0;
+			$deal_cart_key   = '';
+			if ( function_exists( 'WC' ) && WC()->cart && ! $deal_product->is_type( 'variable' ) ) {
+				foreach ( WC()->cart->get_cart() as $k => $item ) {
+					if ( (int) $item['product_id'] === $deal_pid && 0 === (int) $item['variation_id'] ) {
+						$deal_qty      = (int) $item['quantity'];
+						$deal_cart_key = (string) $k;
+						break;
+					}
+				}
+			}
+			?>
+			<section class="gv2-section gv2-container" aria-labelledby="gv2-deal-heading">
+				<div class="gv2-deal-card gv2-glass-card gv2-card" data-product-id="<?php echo esc_attr( (string) $deal_pid ); ?>">
+					<a href="<?php echo esc_url( $deal_permalink ); ?>" class="gv2-deal-card__media">
+						<?php
+						if ( $deal_img_id ) {
+							echo wp_get_attachment_image( $deal_img_id, 'gv2-product-portrait', false, array( 'class' => 'gv2-card__img', 'loading' => 'lazy', 'decoding' => 'async' ) );
+						} else {
+							echo '<img class="gv2-card__img" src="' . esc_url( wc_placeholder_img_src( 'gv2-product-portrait' ) ) . '" alt="' . esc_attr( $deal_product->get_name() ) . '" loading="lazy" />';
+						}
+						?>
+						<span class="gv2-deal-badge"><?php echo esc_html( gv2_t( 'Deal of the Day' ) ); ?></span>
+						<?php if ( $deal_discount > 0 ) : ?>
+							<span class="gv2-deal-discount">-<?php echo esc_html( (string) $deal_discount ); ?>%</span>
+						<?php endif; ?>
+					</a>
+
+					<div class="gv2-deal-card__body">
+						<div class="gv2-deal-card__top">
+							<span class="gv2-eyebrow"><?php echo esc_html( gv2_t( 'Deal of the Day' ) ); ?></span>
+							<div class="gv2-deal-timer" id="gv2-deal-timer" aria-label="<?php echo esc_attr( gv2_t( 'Ends in' ) ); ?>">
+								<span class="gv2-deal-timer__label"><?php echo esc_html( gv2_t( 'Ends in' ) ); ?></span>
+								<span class="gv2-deal-timer__pills">
+									<span data-gv2-cd="h">00</span>:<span data-gv2-cd="m">00</span>:<span data-gv2-cd="s">00</span>
+								</span>
+							</div>
+						</div>
+
+						<h2 class="gv2-deal-card__title" id="gv2-deal-heading">
+							<a href="<?php echo esc_url( $deal_permalink ); ?>"><?php echo esc_html( $deal_product->get_name() ); ?></a>
+						</h2>
+
+						<?php if ( '' !== $deal_weight ) : ?>
+							<span class="gv2-deal-weight"><?php echo esc_html( $deal_weight ); ?></span>
+						<?php endif; ?>
+
+						<?php if ( '' !== trim( (string) $deal_product->get_short_description() ) ) : ?>
+							<p class="gv2-deal-card__desc"><?php echo esc_html( wp_trim_words( wp_strip_all_tags( $deal_product->get_short_description() ), 22, '...' ) ); ?></p>
+						<?php endif; ?>
+
+						<div class="gv2-deal-card__price">
+							<?php echo wp_kses_post( $deal_product->get_price_html() ); ?>
+						</div>
+
+						<div class="gv2-deal-card__cta">
+							<?php if ( $deal_product->is_in_stock() && $deal_product->is_purchasable() && ! $deal_product->is_type( 'variable' ) ) : ?>
+								<button
+									type="button"
+									class="gv2-btn gv2-btn--primary gv2-btn--lg gv2-add-btn<?php echo $deal_qty > 0 ? ' is-hidden' : ''; ?>"
+									data-gv2-add="<?php echo esc_attr( (string) $deal_pid ); ?>"
+								>
+									<span aria-hidden="true">+</span> <?php echo esc_html( gv2_t( 'Add to Cart' ) ); ?>
+								</button>
+								<div
+									class="gv2-qty<?php echo $deal_qty <= 0 ? ' is-hidden' : ''; ?>"
+									data-gv2-qty-control
+									data-product-id="<?php echo esc_attr( (string) $deal_pid ); ?>"
+									data-cart-item-key="<?php echo esc_attr( $deal_cart_key ); ?>"
+								>
+									<button type="button" class="gv2-qty__btn" data-gv2-qty-step="-1" aria-label="<?php echo esc_attr( gv2_t( 'Decrease quantity' ) ); ?>">&minus;</button>
+									<span class="gv2-qty__val" data-gv2-qty-val><?php echo esc_html( (string) max( 0, $deal_qty ) ); ?></span>
+									<button type="button" class="gv2-qty__btn" data-gv2-qty-step="1" aria-label="<?php echo esc_attr( gv2_t( 'Increase quantity' ) ); ?>">+</button>
+								</div>
+							<?php endif; ?>
+							<a href="<?php echo esc_url( $deal_permalink ); ?>" class="gv2-btn gv2-btn--glass gv2-btn--lg">
+								<?php echo esc_html( gv2_t( 'View Dish' ) ); ?>
+							</a>
+						</div>
+					</div>
+				</div>
+			</section>
+		<?php endif; ?>
+	<?php endif; ?>
+
+	<!-- 4. Best Sellers (2:3 Portrait Cards) -->
 	<?php if ( function_exists( 'wc_get_products' ) ) : ?>
 		<?php
 		$best_sellers = wc_get_products(
@@ -200,26 +313,24 @@ $shop_url = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 
 		</div>
 	</section>
 
-	<!-- 6. Partners Section -->
+	<!-- 7. Partners Section (Logos Only) -->
 	<?php $partners = gv2_get_partners(); ?>
 	<section class="gv2-section gv2-container" aria-labelledby="gv2-partners-heading">
 		<div class="gv2-section__head">
-			<div>
-				<h2 class="gv2-section__title" id="gv2-partners-heading"><?php echo esc_html( gv2_t( 'Our Partners' ) ); ?></h2>
-				<p class="gv2-section__sub"><?php echo esc_html( gv2_t( 'Trusted by leading supermarkets, restaurants, and local producers across Armenia.' ) ); ?></p>
-			</div>
+			<h2 class="gv2-section__title" id="gv2-partners-heading"><?php echo esc_html( gv2_t( 'Our Partners' ) ); ?></h2>
 		</div>
-		<div class="gv2-partners-grid">
+		<div class="gv2-partners-logos">
 			<?php foreach ( $partners as $partner ) : ?>
 				<a
 					href="<?php echo esc_url( $partner['url'] ?: '#' ); ?>"
-					class="gv2-partner-card gv2-glass-card"
+					class="gv2-partner-logo"
+					aria-label="<?php echo esc_attr( $partner['name'] ); ?>"
 					<?php echo ( '#' !== ( $partner['url'] ?: '#' ) ) ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>
 				>
-					<span class="gv2-partner-card__badge" aria-hidden="true"><?php echo esc_html( mb_substr( $partner['name'], 0, 2 ) ); ?></span>
-					<span class="gv2-partner-card__name"><?php echo esc_html( $partner['name'] ); ?></span>
-					<?php if ( '' !== $partner['subtitle'] ) : ?>
-						<span class="gv2-partner-card__sub"><?php echo esc_html( $partner['subtitle'] ); ?></span>
+					<?php if ( ! empty( $partner['logo'] ) ) : ?>
+						<img src="<?php echo esc_url( $partner['logo'] ); ?>" alt="<?php echo esc_attr( $partner['name'] ); ?>" loading="lazy" />
+					<?php else : ?>
+						<span class="gv2-partner-logo__wordmark"><?php echo esc_html( $partner['name'] ); ?></span>
 					<?php endif; ?>
 				</a>
 			<?php endforeach; ?>
@@ -275,30 +386,10 @@ $shop_url = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 
 		<?php endif; ?>
 	</section>
 
-	<!-- 8. Customer Reviews & Newsletter -->
+	<!-- 9. Newsletter -->
 	<section class="gv2-section gv2-container">
-		<div class="gv2-section__head">
-			<h2 class="gv2-section__title"><?php echo esc_html( gv2_t( 'Customer Reviews' ) ); ?></h2>
-		</div>
-		<div class="gv2-reviews-grid">
-			<blockquote class="gv2-review gv2-glass-card">
-				<p>&ldquo;Տնական տոլման և խինկալին ուղղակի անհավանական համեղ են, ճիշտ տատիկի պատրաստածի նման։&rdquo;</p>
-				<footer>&mdash; Անի Մ.</footer>
-			</blockquote>
-			<blockquote class="gv2-review gv2-glass-card">
-				<p>&ldquo;Մաքուր բաղադրություն և արագ առաքում Երևանում։ Մեր ընտանիքի ամենասիրելի ընտրությունն է։&rdquo;</p>
-				<footer>&mdash; Արման Կ.</footer>
-			</blockquote>
-			<blockquote class="gv2-review gv2-glass-card">
-				<p>&ldquo;Հրաշալի պահքի և վեգան տարբերակներ ունեն։ Անպայման խորհուրդ եմ տալիս։&rdquo;</p>
-				<footer>&mdash; Լուսինե Ս.</footer>
-			</blockquote>
-		</div>
-	</section>
-
-	<section class="gv2-section gv2-container">
-		<div class="gv2-newsletter gv2-glass-card">
-			<div>
+		<div class="gv2-newsletter">
+			<div class="gv2-newsletter__copy">
 				<h2><?php echo esc_html( gv2_t( 'Seasonal Menu & Offers' ) ); ?></h2>
 				<p><?php echo esc_html( gv2_t( 'Receive updates on new homemade dishes and seasonal specials.' ) ); ?></p>
 			</div>

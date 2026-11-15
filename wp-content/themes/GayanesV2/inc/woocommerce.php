@@ -30,6 +30,32 @@ add_filter(
 );
 
 add_filter( 'woocommerce_price_trim_zeros', '__return_true' );
+add_filter( 'pre_option_woocommerce_currency_pos', static fn(): string => 'right_space' );
+add_filter( 'pre_option_woocommerce_price_num_decimals', static fn(): int => 0 );
+
+/**
+ * Server-side phone validation: Armenia (+374 + 8 digits) or valid international E.164.
+ */
+add_action(
+	'woocommerce_checkout_process',
+	static function (): void {
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing
+		$raw = isset( $_POST['billing_phone'] ) ? sanitize_text_field( (string) wp_unslash( $_POST['billing_phone'] ) ) : '';
+		$clean = preg_replace( '/[^\d+]/', '', $raw );
+
+		if ( '' === $clean ) {
+			return;
+		}
+
+		if ( str_starts_with( $clean, '+374' ) ) {
+			if ( ! preg_match( '/^\+374\d{8}$/', $clean ) ) {
+				wc_add_notice( gv2_t( 'Please enter a valid phone number (e.g. +374 99 12 34 56).' ), 'error' );
+			}
+		} elseif ( ! preg_match( '/^\+\d{8,15}$/', $clean ) ) {
+			wc_add_notice( gv2_t( 'Please enter a valid phone number (e.g. +374 99 12 34 56).' ), 'error' );
+		}
+	}
+);
 
 remove_action( 'woocommerce_before_main_content', 'woocommerce_output_content_wrapper', 10 );
 remove_action( 'woocommerce_after_main_content', 'woocommerce_output_content_wrapper_end', 10 );
@@ -271,3 +297,30 @@ function gv2_ajax_load_products(): void {
 add_action( 'wp_ajax_gv2_load_products', 'gv2_ajax_load_products' );
 add_action( 'wp_ajax_nopriv_gv2_load_products', 'gv2_ajax_load_products' );
 
+
+/**
+ * Render an iOS 27 Liquid Glass Profile Header Card at the top of /my-account/.
+ */
+add_action(
+	'woocommerce_before_account_navigation',
+	static function (): void {
+		if ( ! is_user_logged_in() ) {
+			return;
+		}
+		$user     = wp_get_current_user();
+		$name     = trim( $user->display_name ?: $user->user_login );
+		$initials = mb_strtoupper( mb_substr( $name, 0, 2 ) );
+		?>
+		<div class="gv2-account-hero gv2-glass-card">
+			<div class="gv2-account-hero__avatar" aria-hidden="true"><?php echo esc_html( $initials ); ?></div>
+			<div class="gv2-account-hero__info">
+				<h2 class="gv2-account-hero__name"><?php echo esc_html( $name ); ?></h2>
+				<p class="gv2-account-hero__email"><?php echo esc_html( $user->user_email ); ?></p>
+			</div>
+			<a href="<?php echo esc_url( wc_logout_url() ); ?>" class="gv2-btn gv2-btn--glass gv2-btn--sm gv2-account-hero__logout">
+				<?php echo esc_html( __( 'Log out', 'woocommerce' ) ); ?>
+			</a>
+		</div>
+		<?php
+	}
+);

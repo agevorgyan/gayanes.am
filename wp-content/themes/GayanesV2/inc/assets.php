@@ -56,6 +56,7 @@ function gv2_enqueue_assets(): void {
 				'decreaseQty'       => gv2_t( 'Decrease quantity' ),
 				'increaseQty'       => gv2_t( 'Increase quantity' ),
 				'removeItem'        => gv2_t( 'Remove item' ),
+				'phoneInvalid'      => gv2_t( 'Please enter a valid phone number (e.g. +374 99 12 34 56).' ),
 			),
 		)
 	);

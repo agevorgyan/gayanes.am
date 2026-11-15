@@ -152,6 +152,30 @@ function gv2_customize_register( WP_Customize_Manager $wp_customize ): void {
 			'description' => __( 'Leave empty to use default Armenian partner showcase.', 'gayanes-v2' ),
 		)
 	);
+
+	$deal_choices = array( 0 => __( 'Auto (First On-Sale or Featured Product)', 'gayanes-v2' ) );
+	if ( function_exists( 'wc_get_products' ) ) {
+		foreach ( wc_get_products( array( 'status' => 'publish', 'limit' => 50 ) ) as $p ) {
+			$deal_choices[ $p->get_id() ] = $p->get_name();
+		}
+	}
+
+	$wp_customize->add_setting(
+		'gv2_daily_deal_product_id',
+		array(
+			'default'           => 0,
+			'sanitize_callback' => 'absint',
+		)
+	);
+	$wp_customize->add_control(
+		'gv2_daily_deal_product_id',
+		array(
+			'label'   => __( 'Product of the Day (Homepage Promo)', 'gayanes-v2' ),
+			'section' => 'gv2_brand_section',
+			'type'    => 'select',
+			'choices' => $deal_choices,
+		)
+	);
 }
 add_action( 'customize_register', 'gv2_customize_register' );
 

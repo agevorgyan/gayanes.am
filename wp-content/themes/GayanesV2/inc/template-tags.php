@@ -43,10 +43,12 @@ function gv2_get_partners(): array {
 			foreach ( $lines as $line ) {
 				$parts = array_map( 'trim', explode( '|', $line ) );
 				if ( '' !== ( $parts[0] ?? '' ) ) {
+					$logo = ( isset( $parts[1] ) && str_starts_with( $parts[1], 'http' ) ) ? $parts[1] : '';
+					$url  = $parts[2] ?? ( '' === $logo ? '#' : ( $parts[1] ?? '#' ) );
 					$partners[] = array(
-						'name'     => $parts[0],
-						'subtitle' => $parts[1] ?? '',
-						'url'      => $parts[2] ?? '#',
+						'name' => $parts[0],
+						'logo' => $logo,
+						'url'  => $url ?: '#',
 					);
 				}
 			}
@@ -57,36 +59,12 @@ function gv2_get_partners(): array {
 	}
 
 	return array(
-		array(
-			'name'     => 'Yerevan City',
-			'subtitle' => 'Supermarket Chain',
-			'url'      => '#',
-		),
-		array(
-			'name'     => 'SAS Supermarket',
-			'subtitle' => 'Retail Partner',
-			'url'      => '#',
-		),
-		array(
-			'name'     => 'Parma',
-			'subtitle' => 'Gourmet Market',
-			'url'      => '#',
-		),
-		array(
-			'name'     => 'Ararat Farms',
-			'subtitle' => 'Fresh Local Dairy & Meat',
-			'url'      => '#',
-		),
-		array(
-			'name'     => 'Menu.am',
-			'subtitle' => 'Express Delivery',
-			'url'      => '#',
-		),
-		array(
-			'name'     => 'Glovo Armenia',
-			'subtitle' => 'Chilled Courier',
-			'url'      => '#',
-		),
+		array( 'name' => 'Yerevan City', 'logo' => '', 'url' => '#' ),
+		array( 'name' => 'SAS', 'logo' => '', 'url' => '#' ),
+		array( 'name' => 'Parma', 'logo' => '', 'url' => '#' ),
+		array( 'name' => 'Ararat Farms', 'logo' => '', 'url' => '#' ),
+		array( 'name' => 'Menu.am', 'logo' => '', 'url' => '#' ),
+		array( 'name' => 'Glovo', 'logo' => '', 'url' => '#' ),
 	);
 }
 

@@ -135,6 +135,14 @@
 		wrap.innerHTML = `<ul class="gv2-mini-cart__list">${html}</ul>`;
 	}
 
+	function bumpCartPill() {
+		document.querySelectorAll('.gv2-cart-pill').forEach((pill) => {
+			pill.classList.remove('is-bumping');
+			void pill.offsetWidth;
+			pill.classList.add('is-bumping');
+		});
+	}
+
 	function applyCartPayload(data) {
 		if (!data) return;
 
@@ -143,6 +151,7 @@
 				el.textContent = String(data.count);
 				el.setAttribute('data-count', String(data.count));
 			});
+			bumpCartPill();
 		}
 
 		const subtotalText = data.subtotal_html || data.subtotal || '';
@@ -325,5 +334,131 @@
 		);
 		observer.observe(sentinel);
 	}
-})();
 
+	// Checkout Country-Flag Phone Input & Strict Validation (Default: Armenia +374)
+	const phoneInput = document.getElementById('billing_phone');
+	if (phoneInput && !phoneInput.dataset.gv2Enhanced) {
+		phoneInput.dataset.gv2Enhanced = '1';
+
+		const countries = [
+			{ code: '+374', flag: '🇦🇲', label: '🇦🇲 +374', min: 8, max: 8, placeholder: '99 12 34 56' },
+			{ code: '+7', flag: '🇷🇺', label: '🇷🇺 +7', min: 10, max: 10, placeholder: '900 123 45 67' },
+			{ code: '+995', flag: '🇬🇪', label: '🇬🇪 +995', min: 9, max: 9, placeholder: '555 12 34 56' },
+			{ code: '+1', flag: '🇺🇸', label: '🇺🇸 +1', min: 10, max: 10, placeholder: '555 123 4567' },
+			{ code: '+33', flag: '🇫🇷', label: '🇫🇷 +33', min: 9, max: 9, placeholder: '6 12 34 56 78' },
+			{ code: '+49', flag: '🇩🇪', label: '🇩🇪 +49', min: 10, max: 11, placeholder: '151 23456789' }
+		];
+
+		const wrap = document.createElement('div');
+		wrap.className = 'gv2-phone-wrap';
+
+		const select = document.createElement('select');
+		select.className = 'gv2-phone-country';
+		select.setAttribute('aria-label', 'Country code');
+		countries.forEach((c) => {
+			const opt = document.createElement('option');
+			opt.value = c.code;
+			opt.textContent = c.label;
+			select.appendChild(opt);
+		});
+
+		const national = document.createElement('input');
+		national.type = 'tel';
+		national.inputMode = 'numeric';
+		national.autocomplete = 'tel-national';
+		national.className = 'gv2-phone-national';
+
+		const errEl = document.createElement('span');
+		errEl.className = 'gv2-phone-error';
+		errEl.hidden = true;
+
+		phoneInput.type = 'hidden';
+		phoneInput.parentNode.insertBefore(wrap, phoneInput);
+		wrap.appendChild(select);
+		wrap.appendChild(national);
+		wrap.parentNode.insertBefore(errEl, wrap.nextSibling);
+
+		const getCountry = () => countries.find((c) => c.code === select.value) || countries[0];
+
+		const formatArmenian = (digits) => {
+			const p = [];
+			if (digits.length > 0) p.push(digits.slice(0, 2));
+			if (digits.length > 2) p.push(digits.slice(2, 4));
+			if (digits.length > 4) p.push(digits.slice(4, 6));
+			if (digits.length > 6) p.push(digits.slice(6, 8));
+			return p.join(' ');
+		};
+
+		const syncPhone = (showError) => {
+			const c = getCountry();
+			national.placeholder = c.placeholder;
+			let digits = national.value.replace(/\D/g, '').slice(0, c.max);
+			national.value = c.code === '+374' ? formatArmenian(digits) : digits;
+			phoneInput.value = digits.length > 0 ? c.code + digits : '';
+
+			const isValid = digits.length >= c.min && digits.length <= c.max;
+			wrap.classList.toggle('is-valid', isValid);
+			wrap.classList.toggle('is-invalid', Boolean(showError && !isValid));
+
+			if (showError && !isValid) {
+				errEl.textContent = cfg.i18n.phoneInvalid || 'Please enter a valid phone number.';
+				errEl.hidden = false;
+			} else if (isValid) {
+				errEl.hidden = true;
+			}
+			return isValid;
+		};
+
+		// Hydrate from existing value if present
+		const initVal = (phoneInput.value || '').replace(/[^\d+]/g, '');
+		const matched = countries.find((c) => initVal.startsWith(c.code));
+		if (matched) {
+			select.value = matched.code;
+			national.value = initVal.slice(matched.code.length);
+		} else {
+			select.value = '+374';
+			if (initVal.startsWith('374')) {
+				national.value = initVal.slice(3);
+			}
+		}
+		syncPhone(false);
+
+		national.addEventListener('input', () => syncPhone(false));
+		national.addEventListener('blur', () => {
+			if (national.value.trim() !== '') syncPhone(true);
+		});
+		select.addEventListener('change', () => syncPhone(false));
+
+		const checkoutForm = phoneInput.closest('form.checkout');
+		if (checkoutForm) {
+			checkoutForm.addEventListener('submit', (e) => {
+				if (!syncPhone(true)) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					national.focus();
+				}
+			});
+		}
+	}
+
+	// Daily Deal Countdown Timer (counts down to midnight local time)
+	const dealTimer = document.getElementById('gv2-deal-timer');
+	if (dealTimer) {
+		const hEl = dealTimer.querySelector('[data-gv2-cd="h"]');
+		const mEl = dealTimer.querySelector('[data-gv2-cd="m"]');
+		const sEl = dealTimer.querySelector('[data-gv2-cd="s"]');
+		const pad = (n) => String(n).padStart(2, '0');
+
+		const tick = () => {
+			const now = new Date();
+			const end = new Date(now);
+			end.setHours(23, 59, 59, 999);
+			const diff = Math.max(0, Math.floor((end - now) / 1000));
+			if (hEl) hEl.textContent = pad(Math.floor(diff / 3600));
+			if (mEl) mEl.textContent = pad(Math.floor((diff % 3600) / 60));
+			if (sEl) sEl.textContent = pad(diff % 60);
+		};
+		tick();
+		setInterval(tick, 1000);
+	}
+})();
