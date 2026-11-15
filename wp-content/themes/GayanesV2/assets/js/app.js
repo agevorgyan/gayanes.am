@@ -461,4 +461,124 @@
 		tick();
 		setInterval(tick, 1000);
 	}
+
+	// FAQ Page: Live Search & Category Filter Pills
+	const faqList = document.getElementById('gv2-faq-list');
+	if (faqList) {
+		const faqSearch = document.getElementById('gv2-faq-search-input');
+		const faqEmpty = document.getElementById('gv2-faq-empty');
+		const catButtons = document.querySelectorAll('[data-faq-cat]');
+		const faqItems = faqList.querySelectorAll('.gv2-faq-item');
+		let activeCat = 'all';
+
+		const applyFaqFilters = () => {
+			const query = (faqSearch ? faqSearch.value : '').trim().toLowerCase();
+			let visibleCount = 0;
+
+			faqItems.forEach((item) => {
+				const itemCat = item.getAttribute('data-category') || '';
+				const blob = item.getAttribute('data-search') || '';
+				const matchCat = activeCat === 'all' || itemCat === activeCat;
+				const matchQuery = !query || blob.includes(query);
+				const show = matchCat && matchQuery;
+
+				item.hidden = !show;
+				if (show) {
+					visibleCount++;
+				}
+			});
+
+			if (faqEmpty) {
+				faqEmpty.hidden = visibleCount > 0;
+			}
+		};
+
+		catButtons.forEach((btn) => {
+			btn.addEventListener('click', () => {
+				activeCat = btn.getAttribute('data-faq-cat') || 'all';
+				catButtons.forEach((b) => {
+					const isActive = b === btn;
+					b.classList.toggle('is-active', isActive);
+					b.setAttribute('aria-selected', isActive ? 'true' : 'false');
+				});
+				applyFaqFilters();
+			});
+		});
+
+		if (faqSearch) {
+			faqSearch.addEventListener('input', applyFaqFilters);
+		}
+	}
+
+	// Single Article: Reading Progress Bar & Copy Link
+	const readBar = document.getElementById('gv2-read-progress');
+	if (readBar) {
+		const updateReadProgress = () => {
+			const doc = document.documentElement;
+			const scrollTop = window.scrollY || doc.scrollTop || 0;
+			const maxScroll = Math.max(1, doc.scrollHeight - window.innerHeight);
+			const pct = Math.min(100, Math.max(0, (scrollTop / maxScroll) * 100));
+			readBar.style.width = pct + '%';
+		};
+		window.addEventListener('scroll', updateReadProgress, { passive: true });
+		updateReadProgress();
+	}
+
+	const copyBtn = document.getElementById('gv2-copy-article-link');
+	if (copyBtn) {
+		copyBtn.addEventListener('click', async () => {
+			const url = copyBtn.getAttribute('data-url') || window.location.href;
+			try {
+				await navigator.clipboard.writeText(url);
+				showToast('Հղումը պատճենվեց');
+			} catch {
+				showToast(url);
+			}
+		});
+	}
+
+	// Contact Page: AJAX Feedback Form
+	const contactForm = document.getElementById('gv2-contact-form');
+	if (contactForm) {
+		const feedbackEl = document.getElementById('gv2-contact-feedback');
+		const submitBtn = contactForm.querySelector('.gv2-contact-submit');
+
+		contactForm.addEventListener('submit', async (e) => {
+			e.preventDefault();
+			if (submitBtn) submitBtn.disabled = true;
+			if (feedbackEl) {
+				feedbackEl.hidden = true;
+				feedbackEl.classList.remove('is-error', 'is-success');
+			}
+
+			try {
+				const formData = new FormData(contactForm);
+				formData.append('action', 'gv2_submit_contact');
+				const res = await fetch(cfg.ajaxUrl, {
+					method: 'POST',
+					credentials: 'same-origin',
+					body: formData
+				});
+				const json = await res.json();
+				const msg = (json && json.data && json.data.message) ? json.data.message : '';
+
+				if (feedbackEl && msg) {
+					feedbackEl.textContent = msg;
+					feedbackEl.classList.add(json.success ? 'is-success' : 'is-error');
+					feedbackEl.hidden = false;
+				}
+				if (json && json.success) {
+					contactForm.reset();
+				}
+			} catch {
+				if (feedbackEl) {
+					feedbackEl.textContent = 'Խնդրում ենք կրկին փորձել կամ զանգահարել +374 (55) 600655։';
+					feedbackEl.classList.add('is-error');
+					feedbackEl.hidden = false;
+				}
+			} finally {
+				if (submitBtn) submitBtn.disabled = false;
+			}
+		});
+	}
 })();

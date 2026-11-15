@@ -313,31 +313,38 @@ $shop_url = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 
 		</div>
 	</section>
 
-	<!-- 7. Partners Section (Logos Only) -->
+	<!-- 6. Partners Section (iOS 27 Liquid Glass Showcase Band) -->
 	<?php $partners = gv2_get_partners(); ?>
-	<section class="gv2-section gv2-container" aria-labelledby="gv2-partners-heading">
-		<div class="gv2-section__head">
-			<h2 class="gv2-section__title" id="gv2-partners-heading"><?php echo esc_html( gv2_t( 'Our Partners' ) ); ?></h2>
-		</div>
-		<div class="gv2-partners-logos">
-			<?php foreach ( $partners as $partner ) : ?>
-				<a
-					href="<?php echo esc_url( $partner['url'] ?: '#' ); ?>"
-					class="gv2-partner-logo"
-					aria-label="<?php echo esc_attr( $partner['name'] ); ?>"
-					<?php echo ( '#' !== ( $partner['url'] ?: '#' ) ) ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>
-				>
-					<?php if ( ! empty( $partner['logo'] ) ) : ?>
-						<img src="<?php echo esc_url( $partner['logo'] ); ?>" alt="<?php echo esc_attr( $partner['name'] ); ?>" loading="lazy" />
-					<?php else : ?>
-						<span class="gv2-partner-logo__wordmark"><?php echo esc_html( $partner['name'] ); ?></span>
-					<?php endif; ?>
-				</a>
-			<?php endforeach; ?>
+	<section class="gv2-section gv2-partners-band" aria-labelledby="gv2-partners-heading">
+		<div class="gv2-container">
+			<div class="gv2-partners-band__head">
+				<span class="gv2-eyebrow"><?php echo esc_html( gv2_t( 'Our Partners' ) ); ?></span>
+				<h2 class="gv2-section__title" id="gv2-partners-heading"><?php echo esc_html( gv2_t( 'Our Partners' ) ); ?></h2>
+			</div>
+			<div class="gv2-partners-logos">
+				<?php foreach ( $partners as $partner ) : ?>
+					<?php
+					$is_dark = ! empty( $partner['dark'] );
+					$url     = $partner['url'] ?: '#';
+					?>
+					<a
+						href="<?php echo esc_url( $url ); ?>"
+						class="gv2-partner-logo gv2-glass-card<?php echo $is_dark ? ' gv2-partner-logo--dark' : ''; ?>"
+						aria-label="<?php echo esc_attr( $partner['name'] ); ?>"
+						<?php echo ( '#' !== $url ) ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>
+					>
+						<?php if ( ! empty( $partner['logo'] ) ) : ?>
+							<img src="<?php echo esc_url( $partner['logo'] ); ?>" alt="<?php echo esc_attr( $partner['name'] ); ?>" loading="lazy" decoding="async" />
+						<?php else : ?>
+							<span class="gv2-partner-logo__wordmark"><?php echo esc_html( $partner['name'] ); ?></span>
+						<?php endif; ?>
+					</a>
+				<?php endforeach; ?>
+			</div>
 		</div>
 	</section>
 
-	<!-- 7. Blog & Recipes Section -->
+	<!-- 7. Blog & Recipes Section (Editorial Journal Band) -->
 	<?php
 	$posts_query = new WP_Query(
 		array(
@@ -347,44 +354,116 @@ $shop_url = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 
 		)
 	);
 	?>
-	<section class="gv2-section gv2-container" aria-labelledby="gv2-blog-heading">
-		<div class="gv2-section__head">
-			<h2 class="gv2-section__title" id="gv2-blog-heading"><?php echo esc_html( gv2_t( 'Blog & Recipes' ) ); ?></h2>
-			<a href="<?php echo esc_url( home_url( '/blog/' ) ); ?>" class="gv2-link"><?php echo esc_html( gv2_t( 'View All' ) ); ?> &rarr;</a>
-		</div>
-		<?php if ( $posts_query->have_posts() ) : ?>
-			<div class="gv2-blog-grid">
-				<?php
-				while ( $posts_query->have_posts() ) :
-					$posts_query->the_post();
-					?>
-					<article class="gv2-post-card gv2-glass-card">
-						<?php if ( has_post_thumbnail() ) : ?>
-							<a href="<?php the_permalink(); ?>" class="gv2-post-card__media">
-								<?php the_post_thumbnail( 'gv2-blog-card', array( 'loading' => 'lazy', 'decoding' => 'async' ) ); ?>
-							</a>
+	<section class="gv2-section gv2-blog-band" aria-labelledby="gv2-blog-heading">
+		<div class="gv2-container">
+			<div class="gv2-section__head gv2-blog-band__head">
+				<div>
+					<span class="gv2-eyebrow"><?php echo esc_html( gv2_t( 'Our Story' ) ); ?> &bull; <?php echo esc_html( gv2_t( 'Blog & Recipes' ) ); ?></span>
+					<h2 class="gv2-section__title" id="gv2-blog-heading"><?php echo esc_html( gv2_t( 'Blog & Recipes' ) ); ?></h2>
+				</div>
+				<a href="<?php echo esc_url( home_url( '/blog/' ) ); ?>" class="gv2-btn gv2-btn--glass"><?php echo esc_html( gv2_t( 'View All' ) ); ?> &rarr;</a>
+			</div>
+
+			<?php if ( $posts_query->have_posts() ) : ?>
+				<?php $blog_posts = $posts_query->posts; ?>
+				<div class="gv2-blog-bento">
+					<?php
+					foreach ( $blog_posts as $b_idx => $post_obj ) :
+						setup_postdata( $GLOBALS['post'] = $post_obj );
+						$cats      = get_the_category( $post_obj->ID );
+						$cat_label = ( ! empty( $cats ) && isset( $cats[0]->name ) ) ? $cats[0]->name : '';
+						if ( 0 === $b_idx ) :
+							?>
+							<article class="gv2-blog-featured gv2-glass-card">
+								<?php if ( has_post_thumbnail() ) : ?>
+									<a href="<?php the_permalink(); ?>" class="gv2-blog-featured__media">
+										<?php the_post_thumbnail( 'large', array( 'loading' => 'lazy', 'decoding' => 'async' ) ); ?>
+										<?php if ( '' !== $cat_label ) : ?>
+											<span class="gv2-blog-badge"><?php echo esc_html( $cat_label ); ?></span>
+										<?php endif; ?>
+									</a>
+								<?php endif; ?>
+								<div class="gv2-blog-featured__body">
+									<div class="gv2-blog-meta">
+										<time datetime="<?php echo esc_attr( get_the_date( DATE_W3C ) ); ?>"><?php echo esc_html( get_the_date() ); ?></time>
+									</div>
+									<h3><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
+									<p class="gv2-blog-featured__excerpt"><?php echo esc_html( wp_trim_words( get_the_excerpt(), 26, '...' ) ); ?></p>
+									<a href="<?php the_permalink(); ?>" class="gv2-btn gv2-btn--primary gv2-blog-featured__cta">
+										<?php echo esc_html( gv2_t( 'Read Recipe' ) ); ?> &rarr;
+									</a>
+								</div>
+							</article>
+							<div class="gv2-blog-stack">
+						<?php else : ?>
+							<article class="gv2-blog-mini gv2-glass-card">
+								<?php if ( has_post_thumbnail() ) : ?>
+									<a href="<?php the_permalink(); ?>" class="gv2-blog-mini__media">
+										<?php the_post_thumbnail( 'gv2-blog-card', array( 'loading' => 'lazy', 'decoding' => 'async' ) ); ?>
+									</a>
+								<?php endif; ?>
+								<div class="gv2-blog-mini__body">
+									<div class="gv2-blog-meta">
+										<?php if ( '' !== $cat_label ) : ?>
+											<span class="gv2-blog-mini__cat"><?php echo esc_html( $cat_label ); ?></span>
+										<?php endif; ?>
+										<time datetime="<?php echo esc_attr( get_the_date( DATE_W3C ) ); ?>"><?php echo esc_html( get_the_date() ); ?></time>
+									</div>
+									<h3><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
+									<p class="gv2-blog-mini__excerpt"><?php echo esc_html( wp_trim_words( get_the_excerpt(), 14, '...' ) ); ?></p>
+									<a href="<?php the_permalink(); ?>" class="gv2-link"><?php echo esc_html( gv2_t( 'Read Recipe' ) ); ?> &rarr;</a>
+								</div>
+							</article>
 						<?php endif; ?>
+					<?php endforeach; ?>
+					<?php if ( count( $blog_posts ) > 0 ) : ?>
+						</div>
+					<?php endif; ?>
+				</div>
+				<?php wp_reset_postdata(); ?>
+			<?php else : ?>
+				<div class="gv2-blog-grid">
+					<article class="gv2-post-card gv2-glass-card">
 						<div class="gv2-post-card__body">
-							<time datetime="<?php echo esc_attr( get_the_date( DATE_W3C ) ); ?>"><?php echo esc_html( get_the_date() ); ?></time>
-							<h3><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
-							<p class="gv2-post-card__excerpt"><?php echo esc_html( wp_trim_words( get_the_excerpt(), 16, '...' ) ); ?></p>
-							<a href="<?php the_permalink(); ?>" class="gv2-link"><?php echo esc_html( gv2_t( 'Read Recipe' ) ); ?> &rarr;</a>
+							<h3><?php echo esc_html( gv2_t( 'Authentic Armenian Dishes, Ready in Minutes' ) ); ?></h3>
+							<p class="gv2-post-card__excerpt"><?php echo esc_html( gv2_t( 'Gayane’s Kitchen brings homemade Armenian dolma, pelmeni, khinkali, blini, and seasonal delicacies straight from our kitchen to your family table.' ) ); ?></p>
 						</div>
 					</article>
-				<?php endwhile; ?>
-			</div>
-			<?php wp_reset_postdata(); ?>
-		<?php else : ?>
-			<div class="gv2-blog-grid">
-				<article class="gv2-post-card gv2-glass-card">
-					<div class="gv2-post-card__body">
-						<h3><?php echo esc_html( gv2_t( 'Authentic Armenian Dishes, Ready in Minutes' ) ); ?></h3>
-						<p class="gv2-post-card__excerpt"><?php echo esc_html( gv2_t( 'Gayane’s Kitchen brings homemade Armenian dolma, pelmeni, khinkali, blini, and seasonal delicacies straight from our kitchen to your family table.' ) ); ?></p>
-					</div>
-				</article>
-			</div>
-		<?php endif; ?>
+				</div>
+			<?php endif; ?>
+		</div>
 	</section>
+
+	<!-- 8.5. Featured FAQs (Quick Answers) -->
+	<?php if ( function_exists( 'gv2_get_faqs' ) ) : ?>
+		<?php $featured_faqs = gv2_get_faqs( true ); ?>
+		<?php if ( ! empty( $featured_faqs ) ) : ?>
+			<section class="gv2-section gv2-container" aria-labelledby="gv2-home-faq-heading">
+				<div class="gv2-section__head">
+					<div>
+						<span class="gv2-eyebrow"><?php echo esc_html( gv2_t( 'Questions & Answers' ) ); ?></span>
+						<h2 class="gv2-section__title" id="gv2-home-faq-heading"><?php echo esc_html( gv2_t( 'Frequently Asked Questions' ) ); ?></h2>
+					</div>
+					<a href="<?php echo esc_url( home_url( '/faq/' ) ); ?>" class="gv2-link"><?php echo esc_html( gv2_t( 'View All FAQs' ) ); ?> &rarr;</a>
+				</div>
+				<div class="gv2-faq-list gv2-faq-list--compact">
+					<?php foreach ( $featured_faqs as $idx => $faq ) : ?>
+						<details class="gv2-faq-item gv2-glass-card"<?php echo 0 === $idx ? ' open' : ''; ?>>
+							<summary class="gv2-faq-item__summary">
+								<h3 class="gv2-faq-item__q"><?php echo esc_html( $faq['question'] ); ?></h3>
+								<span class="gv2-faq-item__toggle" aria-hidden="true">
+									<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+								</span>
+							</summary>
+							<div class="gv2-faq-item__body">
+								<p><?php echo esc_html( $faq['answer'] ); ?></p>
+							</div>
+						</details>
+					<?php endforeach; ?>
+				</div>
+			</section>
+		<?php endif; ?>
+	<?php endif; ?>
 
 	<!-- 9. Newsletter -->
 	<section class="gv2-section gv2-container">

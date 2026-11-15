@@ -14,6 +14,7 @@ defined( 'ABSPATH' ) || exit;
 function gv2_seo_init(): void {
 	add_action( 'wp_head', 'gv2_output_seo_meta_tags', 4 );
 	add_action( 'wp_head', 'gv2_output_json_ld_graph', 24 );
+	add_action( 'wp_head', 'gv2_output_faq_json_ld', 25 );
 	add_filter( 'wp_get_attachment_image_attributes', 'gv2_ensure_image_alt', 10, 2 );
 }
 add_action( 'init', 'gv2_seo_init' );
@@ -229,6 +230,37 @@ function gv2_output_json_ld_graph(): void {
 			'@context' => 'https://schema.org',
 			'@graph'   => $graph,
 		),
+		JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
+	) . '</script>' . "\n";
+}
+
+/**
+ * Output Schema.org FAQPage JSON-LD on the FAQ page and Homepage (for SEO & AI search engines).
+ */
+function gv2_output_faq_json_ld(): void {
+	if ( is_admin() || is_feed() || ! function_exists( 'gv2_get_faqs' ) ) {
+		return;
+	}
+
+	$is_faq_page = is_page( 'faq' ) || is_page_template( 'page-faq.php' );
+	$is_home     = is_front_page();
+
+	if ( ! $is_faq_page && ! $is_home ) {
+		return;
+	}
+
+	$faqs = gv2_get_faqs( $is_home && ! $is_faq_page );
+	if ( empty( $faqs ) ) {
+		return;
+	}
+
+	$schema = array_merge(
+		array( '@context' => 'https://schema.org' ),
+		gv2_build_faq_schema( $faqs )
+	);
+
+	echo '<script type="application/ld+json">' . wp_json_encode(
+		$schema,
 		JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
 	) . '</script>' . "\n";
 }

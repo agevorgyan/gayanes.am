@@ -71,6 +71,8 @@ $phone        = (string) get_theme_mod( 'gv2_phone', '+374 99 00 00 00' );
 				<ul class="gv2-footer__links">
 					<li><a href="<?php echo esc_url( $shop_url ); ?>"><?php echo esc_html( gv2_t( 'Shop All' ) ); ?></a></li>
 					<li><a href="<?php echo esc_url( home_url( '/about-us/' ) ); ?>"><?php echo esc_html( gv2_t( 'About Us' ) ); ?></a></li>
+					<li><a href="<?php echo esc_url( home_url( '/corporate-clients/' ) ); ?>">Կորպորատիվ հաճախորդներ</a></li>
+					<li><a href="<?php echo esc_url( home_url( '/career/' ) ); ?>">Կարիերա</a></li>
 					<li><a href="<?php echo esc_url( home_url( '/blog/' ) ); ?>"><?php echo esc_html( gv2_t( 'Blog & Recipes' ) ); ?></a></li>
 				</ul>
 			</div>

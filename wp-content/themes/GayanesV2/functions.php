@@ -17,6 +17,8 @@ define( 'GV2_URI', get_template_directory_uri() );
 require_once GV2_DIR . '/inc/i18n.php';
 require_once GV2_DIR . '/inc/setup.php';
 require_once GV2_DIR . '/inc/assets.php';
+require_once GV2_DIR . '/inc/faq-data.php';
+require_once GV2_DIR . '/inc/contact-handler.php';
 require_once GV2_DIR . '/inc/seo.php';
 require_once GV2_DIR . '/inc/ai-translator.php';
 require_once GV2_DIR . '/inc/template-tags.php';
