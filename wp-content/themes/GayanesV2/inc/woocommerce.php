@@ -609,3 +609,8 @@ add_filter(
 	},
 	100
 );
+
+/**
+ * Remove the generic "Shipping options will be updated during checkout." estimate note on Cart.
+ */
+add_filter( 'woocommerce_shipping_estimate_html', '__return_empty_string' );

@@ -369,6 +369,9 @@ class Ajax_Cart {
 
 		$cart_totals_html = '';
 		if ( ! empty( $_POST['include_totals'] ) && function_exists( 'woocommerce_cart_totals' ) && WC()->cart && ! WC()->cart->is_empty() ) {
+			if ( function_exists( 'wc_maybe_define_constant' ) ) {
+				wc_maybe_define_constant( 'WOOCOMMERCE_CART', true );
+			}
 			ob_start();
 			woocommerce_cart_totals();
 			$cart_totals_html = (string) ob_get_clean();
