@@ -81,9 +81,6 @@ class Admin {
 			'sync_product_prices',
 			'create_missing_products',
 			'auto_sync_stops',
-			'enable_client_lookup',
-			'enable_certificate',
-			'require_login_lookup',
 			'debug_log',
 		);
 		foreach ( $checkboxes as $cb ) {
@@ -301,16 +298,8 @@ class Admin {
 					</tr>
 				</table>
 
-				<h2 class="title"><?php esc_html_e( '4. Client Lookup, Certificates & Security', 'gayanes-frontpad' ); ?></h2>
+				<h2 class="title"><?php esc_html_e( '4. Phone Formatting & Security', 'gayanes-frontpad' ); ?></h2>
 				<table class="form-table">
-					<tr>
-						<th><?php esc_html_e( 'Frontend Features', 'gayanes-frontpad' ); ?></th>
-						<td>
-							<label><input type="checkbox" name="<?php echo esc_attr( $opt ); ?>[enable_client_lookup]" value="1" <?php checked( $s['enable_client_lookup'], '1' ); ?> /> <?php esc_html_e( 'Enable Client Lookup (get_client) on Checkout & [frontpad_client_lookup]', 'gayanes-frontpad' ); ?></label><br>
-							<label><input type="checkbox" name="<?php echo esc_attr( $opt ); ?>[enable_certificate]" value="1" <?php checked( $s['enable_certificate'], '1' ); ?> /> <?php esc_html_e( 'Enable Certificate Check (get_certificate) on Checkout & [frontpad_certificate_check]', 'gayanes-frontpad' ); ?></label><br>
-							<label><input type="checkbox" name="<?php echo esc_attr( $opt ); ?>[require_login_lookup]" value="1" <?php checked( $s['require_login_lookup'], '1' ); ?> /> <?php esc_html_e( 'Require customer login for get_client lookup', 'gayanes-frontpad' ); ?></label>
-						</td>
-					</tr>
 					<tr>
 						<th><?php esc_html_e( 'Phone Prefix Normalization', 'gayanes-frontpad' ); ?></th>
 						<td><input type="text" class="small-text" name="<?php echo esc_attr( $opt ); ?>[phone_prefix]" value="<?php echo esc_attr( (string) $s['phone_prefix'] ); ?>" placeholder="+374" /></td>

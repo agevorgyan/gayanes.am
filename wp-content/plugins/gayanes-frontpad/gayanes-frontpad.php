@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Gayane's Frontpad Integration
  * Plugin URI:        https://gayanes.am/
- * Description:       Full WooCommerce & Frontpad POS integration: order submission (new_order), status webhooks, product catalog sync (get_products), stop-list sync (get_stops), client loyalty lookup (get_client), and certificate validation (get_certificate).
+ * Description:       Full WooCommerce & Frontpad POS integration: order submission (new_order), status webhooks, product catalog sync (get_products), and stop-list sync (get_stops).
  * Version:           1.0.0
  * Requires at least: 6.4
  * Requires PHP:      8.1
@@ -27,7 +27,6 @@ require_once GAYANES_FRONTPAD_DIR . 'includes/class-api-client.php';
 require_once GAYANES_FRONTPAD_DIR . 'includes/class-sync.php';
 require_once GAYANES_FRONTPAD_DIR . 'includes/class-orders.php';
 require_once GAYANES_FRONTPAD_DIR . 'includes/class-webhook.php';
-require_once GAYANES_FRONTPAD_DIR . 'includes/class-customer-tools.php';
 require_once GAYANES_FRONTPAD_DIR . 'includes/class-admin.php';
 
 /**
@@ -54,7 +53,6 @@ function gayanes_frontpad_init(): void {
 	if ( class_exists( 'WooCommerce' ) ) {
 		Gayanes_Frontpad\Sync::init();
 		Gayanes_Frontpad\Orders::init();
-		Gayanes_Frontpad\Customer_Tools::init();
 	}
 }
 add_action( 'plugins_loaded', 'gayanes_frontpad_init', 25 );

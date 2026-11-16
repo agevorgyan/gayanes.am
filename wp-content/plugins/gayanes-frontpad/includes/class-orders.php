@@ -118,25 +118,6 @@ class Orders {
 				$order->update_meta_data( '_' . $key, sanitize_text_field( (string) $data[ $key ] ) );
 			}
 		}
-
-		if ( function_exists( 'WC' ) && WC()->session ) {
-			$cert = WC()->session->get( 'frontpad_certificate' );
-			if ( is_array( $cert ) && ! empty( $cert['code'] ) ) {
-				$order->update_meta_data( '_frontpad_certificate', sanitize_text_field( (string) $cert['code'] ) );
-				WC()->session->set( 'frontpad_certificate', null );
-			}
-
-			$score = WC()->session->get( 'frontpad_use_score' );
-			if ( is_numeric( $score ) && (float) $score > 0 ) {
-				$order->update_meta_data( '_frontpad_score', (string) (float) $score );
-				WC()->session->set( 'frontpad_use_score', null );
-			}
-
-			$card = WC()->session->get( 'frontpad_client_card' );
-			if ( ! empty( $card ) ) {
-				$order->update_meta_data( '_frontpad_card', preg_replace( '/\D/', '', (string) $card ) );
-			}
-		}
 	}
 
 	/**
@@ -282,18 +263,6 @@ class Orders {
 			} else {
 				$payload['sale_amount'] = (string) round( $discount_total, 2 );
 			}
-		}
-
-		// Client card (positive integer up to 16 digits).
-		$card = preg_replace( '/\D/', '', (string) $order->get_meta( '_frontpad_card' ) );
-		if ( '' !== $card ) {
-			$payload['card'] = substr( $card, 0, 16 );
-		}
-
-		// Certificate.
-		$certificate = trim( (string) $order->get_meta( '_frontpad_certificate' ) );
-		if ( '' !== $certificate ) {
-			$payload['certificate'] = $certificate;
 		}
 
 		// Person count (max 2 chars).

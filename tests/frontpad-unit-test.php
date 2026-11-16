@@ -38,7 +38,6 @@ require_once $plugin_dir . 'class-api-client.php';
 require_once $plugin_dir . 'class-sync.php';
 require_once $plugin_dir . 'class-orders.php';
 require_once $plugin_dir . 'class-webhook.php';
-require_once $plugin_dir . 'class-customer-tools.php';
 
 // 1. Test build_post_body matching Frontpad PHP example (pizza + 2 modifiers + juice + tags + hook_status).
 $body = Gayanes_Frontpad\API_Client::build_post_body(
@@ -84,17 +83,7 @@ $norm = Gayanes_Frontpad\Sync::normalize_product_arrays(
 );
 assert( count( $norm ) === 2 && $norm[0]['sku'] === '001' && $norm[1]['sale'] === '0', 'normalize_product_arrays failed' );
 
-// 4. Test all 3 certificate response formats.
-$c1 = Gayanes_Frontpad\Customer_Tools::parse_certificate_response( 'CERT1', array( 'product_id' => '0001', 'name' => 'Филадельфия', 'price' => '250' ) );
-assert( $c1['type'] === 'product' && $c1['product_id'] === '0001' && $c1['price'] === 250.0, 'Product cert failed' );
-
-$c2 = Gayanes_Frontpad\Customer_Tools::parse_certificate_response( 'CERT2', array( 'sale' => '15' ) );
-assert( $c2['type'] === 'sale' && $c2['sale'] === 15.0, 'Sale % cert failed' );
-
-$c3 = Gayanes_Frontpad\Customer_Tools::parse_certificate_response( 'CERT3', array( 'amount' => '2000' ) );
-assert( $c3['type'] === 'amount' && $c3['amount'] === 2000.0, 'Amount cert failed' );
-
-// 5. Test webhook payload validation.
+// 4. Test webhook payload validation.
 $bad_wh = Gayanes_Frontpad\Webhook::process_payload( array( 'action' => 'unknown' ) );
 assert( $bad_wh instanceof WP_Error && $bad_wh->get_error_code() === 'invalid_payload', 'Webhook validation failed' );
 
