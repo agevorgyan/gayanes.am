@@ -9,6 +9,45 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
+ * Load bundled Armenian (hy) translation for WooCommerce when active.
+ */
+add_filter(
+	'load_textdomain_mofile',
+	static function ( string $mofile, string $domain ): string {
+		if ( 'woocommerce' !== $domain ) {
+			return $mofile;
+		}
+		if ( str_ends_with( $mofile, '-hy.mo' ) ) {
+			$bundled = GV2_DIR . '/languages/woocommerce-hy.mo';
+			if ( file_exists( $bundled ) ) {
+				return $bundled;
+			}
+		}
+		return $mofile;
+	},
+	10,
+	2
+);
+
+add_action(
+	'init',
+	static function (): void {
+		if ( is_admin() && ! wp_doing_ajax() ) {
+			return;
+		}
+		if ( 'hy' !== get_locale() ) {
+			return;
+		}
+		$bundled = GV2_DIR . '/languages/woocommerce-hy.mo';
+		if ( file_exists( $bundled ) ) {
+			unload_textdomain( 'woocommerce' );
+			load_textdomain( 'woocommerce', $bundled, 'hy' );
+		}
+	},
+	5
+);
+
+/**
  * Format all WooCommerce prices as "500 ֏" (symbol on right with space, no trailing .00).
  */
 add_filter(
