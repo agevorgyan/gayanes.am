@@ -367,14 +367,22 @@ class Ajax_Cart {
 
 		$count = function_exists( 'WC' ) && WC()->cart ? (int) WC()->cart->get_cart_contents_count() : 0;
 
+		$cart_totals_html = '';
+		if ( ! empty( $_POST['include_totals'] ) && function_exists( 'woocommerce_cart_totals' ) && WC()->cart && ! WC()->cart->is_empty() ) {
+			ob_start();
+			woocommerce_cart_totals();
+			$cart_totals_html = (string) ob_get_clean();
+		}
+
 		return array(
-			'count'        => $count,
-			'subtotal'     => function_exists( 'WC' ) && WC()->cart ? self::format_plain_price( WC()->cart->get_cart_subtotal() ) : '',
-			'total'        => function_exists( 'WC' ) && WC()->cart ? self::format_plain_price( WC()->cart->get_total() ) : '',
-			'items'        => $items,
-			'quantities'   => $quantities,
-			'cart_url'     => function_exists( 'wc_get_cart_url' ) ? wc_get_cart_url() : home_url( '/cart/' ),
-			'checkout_url' => function_exists( 'wc_get_checkout_url' ) ? wc_get_checkout_url() : home_url( '/checkout/' ),
+			'count'            => $count,
+			'subtotal'         => function_exists( 'WC' ) && WC()->cart ? self::format_plain_price( WC()->cart->get_cart_subtotal() ) : '',
+			'total'            => function_exists( 'WC' ) && WC()->cart ? self::format_plain_price( WC()->cart->get_total() ) : '',
+			'items'            => $items,
+			'quantities'       => $quantities,
+			'cart_totals_html' => $cart_totals_html,
+			'cart_url'         => function_exists( 'wc_get_cart_url' ) ? wc_get_cart_url() : home_url( '/cart/' ),
+			'checkout_url'     => function_exists( 'wc_get_checkout_url' ) ? wc_get_checkout_url() : home_url( '/checkout/' ),
 		);
 	}
 

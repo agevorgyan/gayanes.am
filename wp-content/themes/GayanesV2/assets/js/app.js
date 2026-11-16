@@ -48,7 +48,8 @@
 	}
 
 	async function postAjax(action, params) {
-		const body = new URLSearchParams({ action, nonce: cfg.nonce, ...params });
+		const extra = document.querySelector('.cart_totals') ? { include_totals: '1' } : {};
+		const body = new URLSearchParams({ action, nonce: cfg.nonce, ...extra, ...params });
 		const res = await fetch(cfg.ajaxUrl, {
 			method: 'POST',
 			credentials: 'same-origin',
@@ -63,7 +64,8 @@
 		const fillEl = document.getElementById('gv2-delivery-fill');
 		if (!textEl || !fillEl) return;
 
-		const threshold = typeof cfg.freeDeliveryThreshold === 'number' ? cfg.freeDeliveryThreshold : 15000;
+		const parsedThreshold = Number(cfg.freeDeliveryThreshold);
+		const threshold = Number.isFinite(parsedThreshold) ? parsedThreshold : 15000;
 		const pct = threshold > 0 ? Math.min(100, Math.round((subtotalNum / threshold) * 100)) : 100;
 		fillEl.style.width = pct + '%';
 
@@ -205,21 +207,29 @@
 			if (subEl) subEl.textContent = item.line_total || '';
 		});
 
-		const cartSubEl = document.querySelector('.cart_totals .cart-subtotal td');
-		const cartTotEl = document.querySelector('.cart_totals .order-total td');
-		if (cartSubEl && data.subtotal) cartSubEl.textContent = data.subtotal;
-		if (cartTotEl && data.total) {
-			const strong = cartTotEl.querySelector('strong');
-			if (strong) {
-				strong.textContent = data.total;
-			} else {
-				cartTotEl.textContent = data.total;
+		if (data.cart_totals_html) {
+			const curTotals = document.querySelector('.cart_totals');
+			if (curTotals) {
+				curTotals.outerHTML = data.cart_totals_html;
+			}
+		} else {
+			const cartSubEl = document.querySelector('.cart_totals .cart-subtotal td');
+			const cartTotEl = document.querySelector('.cart_totals .order-total td');
+			if (cartSubEl && data.subtotal) cartSubEl.textContent = data.subtotal;
+			if (cartTotEl && data.total) {
+				const strong = cartTotEl.querySelector('strong');
+				if (strong) {
+					strong.textContent = data.total;
+				} else {
+					cartTotEl.textContent = data.total;
+				}
 			}
 		}
 
 		if (data.subtotal) {
 			const subtotalNum = parseSubtotalNumber(data.subtotal);
-			const threshold = typeof cfg.freeDeliveryThreshold === 'number' ? cfg.freeDeliveryThreshold : 15000;
+			const parsedThreshold = Number(cfg.freeDeliveryThreshold);
+			const threshold = Number.isFinite(parsedThreshold) ? parsedThreshold : 15000;
 			const pct = threshold > 0 ? Math.min(100, Math.round((subtotalNum / threshold) * 100)) : 100;
 			const flowFill = document.querySelector('.gv2-flow-delivery__fill');
 			const flowPct = document.querySelector('.gv2-flow-delivery__pct');

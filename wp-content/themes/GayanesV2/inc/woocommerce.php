@@ -555,3 +555,57 @@ function gv2_get_free_delivery_banner_text(): string {
 		number_format( (int) round( $threshold ) )
 	);
 }
+
+/**
+ * Translate WooCommerce shipping method labels (Free shipping, Flat rate, Local pickup).
+ */
+add_filter(
+	'woocommerce_shipping_rate_label',
+	static function ( string $label ): string {
+		if ( is_admin() && ! wp_doing_ajax() ) {
+			return $label;
+		}
+		$normalized = strtolower( trim( $label ) );
+		if ( 'free shipping' === $normalized ) {
+			return gv2_t( 'Free shipping' );
+		}
+		if ( 'flat rate' === $normalized ) {
+			return gv2_t( 'Flat rate' );
+		}
+		if ( 'local pickup' === $normalized ) {
+			return gv2_t( 'Local pickup' );
+		}
+		return $label;
+	}
+);
+
+/**
+ * Automatically switch from paid flat rate to Free Shipping once the threshold is met.
+ *
+ * @param array<string, WC_Shipping_Rate> $rates Available shipping rates.
+ * @return array<string, WC_Shipping_Rate>
+ */
+add_filter(
+	'woocommerce_package_rates',
+	static function ( array $rates ): array {
+		$free = array();
+		foreach ( $rates as $rate_id => $rate ) {
+			if ( 'free_shipping' === $rate->method_id ) {
+				$free[ $rate_id ] = $rate;
+			}
+		}
+		if ( empty( $free ) ) {
+			return $rates;
+		}
+		// Keep free shipping and non-flat-rate methods (e.g. local_pickup), hiding redundant flat_rate.
+		$filtered = array();
+		foreach ( $rates as $rate_id => $rate ) {
+			if ( 'flat_rate' === $rate->method_id ) {
+				continue;
+			}
+			$filtered[ $rate_id ] = $rate;
+		}
+		return ! empty( $filtered ) ? $filtered : $free;
+	},
+	100
+);
