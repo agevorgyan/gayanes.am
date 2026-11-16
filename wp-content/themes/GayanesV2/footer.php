@@ -212,16 +212,26 @@ $phone        = (string) get_theme_mod( 'gv2_phone', '+374 99 00 00 00' );
 				if ( ! $_product || ! $_product->exists() || $cart_item['quantity'] <= 0 ) {
 					continue;
 				}
-				$product_id = (int) $cart_item['product_id'];
+				$product_id      = (int) $cart_item['product_id'];
+				$display_product = $_product;
+				if ( function_exists( 'pll_get_post' ) ) {
+					$tr_id = (int) pll_get_post( $product_id );
+					if ( $tr_id > 0 && $tr_id !== $product_id ) {
+						$tr_product = wc_get_product( $tr_id );
+						if ( $tr_product instanceof WC_Product ) {
+							$display_product = $tr_product;
+						}
+					}
+				}
 				?>
-				<li class="gv2-mini-item" data-cart-item-key="<?php echo esc_attr( $cart_item_key ); ?>" data-product-id="<?php echo esc_attr( (string) $product_id ); ?>">
+				<li class="gv2-mini-item" data-cart-item-key="<?php echo esc_attr( $cart_item_key ); ?>" data-product-id="<?php echo esc_attr( (string) $display_product->get_id() ); ?>">
 					<div class="gv2-mini-item__thumb">
-						<?php echo wp_kses_post( $_product->get_image( 'gv2-product-portrait' ) ); ?>
+						<?php echo wp_kses_post( $display_product->get_image( 'gv2-product-portrait' ) ); ?>
 					</div>
 					<div class="gv2-mini-item__info">
-						<a href="<?php echo esc_url( $_product->get_permalink() ); ?>" class="gv2-mini-item__name"><?php echo esc_html( $_product->get_name() ); ?></a>
+						<a href="<?php echo esc_url( $display_product->get_permalink() ); ?>" class="gv2-mini-item__name"><?php echo esc_html( $display_product->get_name() ); ?></a>
 						<div class="gv2-mini-item__price"><?php echo wp_kses_post( WC()->cart->get_product_subtotal( $_product, $cart_item['quantity'] ) ); ?></div>
-						<div class="gv2-qty gv2-qty--sm" data-gv2-qty-control data-product-id="<?php echo esc_attr( (string) $product_id ); ?>" data-cart-item-key="<?php echo esc_attr( $cart_item_key ); ?>">
+						<div class="gv2-qty gv2-qty--sm" data-gv2-qty-control data-product-id="<?php echo esc_attr( (string) $display_product->get_id() ); ?>" data-cart-item-key="<?php echo esc_attr( $cart_item_key ); ?>">
 							<button type="button" class="gv2-qty__btn" data-gv2-qty-step="-1" aria-label="<?php echo esc_attr( gv2_t( 'Decrease quantity' ) ); ?>">&minus;</button>
 							<span class="gv2-qty__val" data-gv2-qty-val><?php echo esc_html( (string) $cart_item['quantity'] ); ?></span>
 							<button type="button" class="gv2-qty__btn" data-gv2-qty-step="1" aria-label="<?php echo esc_attr( gv2_t( 'Increase quantity' ) ); ?>">+</button>

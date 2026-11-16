@@ -39,7 +39,7 @@ function gv2_enqueue_assets(): void {
 		'gv2-app',
 		'gv2Config',
 		array(
-			'ajaxUrl'               => admin_url( 'admin-ajax.php' ),
+			'ajaxUrl'               => add_query_arg( 'lang', gv2_current_lang(), admin_url( 'admin-ajax.php' ) ),
 			'nonce'                 => $nonce,
 			'lang'                  => gv2_current_lang(),
 			'freeDeliveryThreshold' => 15000,

@@ -156,7 +156,12 @@ function gv2_render_product_card( WC_Product $product ): void {
 	$cart_item_key = '';
 	if ( function_exists( 'WC' ) && WC()->cart && ! $is_variable ) {
 		foreach ( WC()->cart->get_cart() as $key => $item ) {
-			if ( (int) $item['product_id'] === $product_id && 0 === (int) $item['variation_id'] ) {
+			$item_pid = (int) $item['product_id'];
+			$matched  = ( $item_pid === $product_id );
+			if ( ! $matched && function_exists( 'pll_get_post' ) ) {
+				$matched = ( (int) pll_get_post( $item_pid ) === $product_id );
+			}
+			if ( $matched && 0 === (int) $item['variation_id'] ) {
 				$current_qty   = (int) $item['quantity'];
 				$cart_item_key = (string) $key;
 				break;
@@ -362,4 +367,57 @@ add_action(
 		</div>
 		<?php
 	}
+);
+
+/**
+ * Translate cart item names and permalinks into the active language on Cart & Checkout.
+ */
+add_filter(
+	'woocommerce_cart_item_name',
+	static function ( string $name, array $cart_item ): string {
+		if ( is_admin() && ! wp_doing_ajax() ) {
+			return $name;
+		}
+		if ( empty( $cart_item['product_id'] ) || ! function_exists( 'pll_get_post' ) ) {
+			return $name;
+		}
+		$pid   = (int) $cart_item['product_id'];
+		$tr_id = (int) pll_get_post( $pid );
+		if ( $tr_id <= 0 || $tr_id === $pid ) {
+			return $name;
+		}
+		$tr_product = wc_get_product( $tr_id );
+		if ( ! $tr_product instanceof WC_Product ) {
+			return $name;
+		}
+		if ( str_contains( $name, '<a ' ) ) {
+			return sprintf( '<a href="%s">%s</a>', esc_url( $tr_product->get_permalink() ), esc_html( $tr_product->get_name() ) );
+		}
+		return esc_html( $tr_product->get_name() );
+	},
+	10,
+	2
+);
+
+add_filter(
+	'woocommerce_cart_item_permalink',
+	static function ( string $permalink, array $cart_item ): string {
+		if ( is_admin() && ! wp_doing_ajax() ) {
+			return $permalink;
+		}
+		if ( empty( $cart_item['product_id'] ) || ! function_exists( 'pll_get_post' ) ) {
+			return $permalink;
+		}
+		$pid   = (int) $cart_item['product_id'];
+		$tr_id = (int) pll_get_post( $pid );
+		if ( $tr_id > 0 && $tr_id !== $pid ) {
+			$tr_permalink = get_permalink( $tr_id );
+			if ( $tr_permalink ) {
+				return $tr_permalink;
+			}
+		}
+		return $permalink;
+	},
+	10,
+	2
 );

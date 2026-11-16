@@ -288,6 +288,16 @@ class Ajax_Cart {
 	}
 
 	/**
+	 * Convert a WooCommerce HTML price string into clean plain text (decoding entities like &nbsp;).
+	 *
+	 * @param string $price_html Price HTML from wc_price() or cart subtotal.
+	 * @return string
+	 */
+	private static function format_plain_price( string $price_html ): string {
+		return html_entity_decode( wp_strip_all_tags( $price_html ), ENT_QUOTES, 'UTF-8' );
+	}
+
+	/**
 	 * Build structured cart payload for frontend hydration of cards & mini-cart.
 	 *
 	 * @return array<string, mixed>
@@ -317,21 +327,40 @@ class Ajax_Cart {
 					);
 				}
 
-				$thumb_id  = $product->get_image_id();
+				$display_product = $product;
+				$display_id      = $product_id;
+				if ( function_exists( 'pll_get_post' ) ) {
+					$tr_id = (int) pll_get_post( $product_id );
+					if ( $tr_id > 0 && $tr_id !== $product_id ) {
+						$tr_product = wc_get_product( $tr_id );
+						if ( $tr_product instanceof \WC_Product ) {
+							$display_product = $tr_product;
+							$display_id      = $tr_id;
+							if ( ! isset( $quantities[ (string) $tr_id ] ) ) {
+								$quantities[ (string) $tr_id ] = array(
+									'qty'           => $qty,
+									'cart_item_key' => (string) $key,
+								);
+							}
+						}
+					}
+				}
+
+				$thumb_id  = $display_product->get_image_id() ?: $product->get_image_id();
 				$thumb_url = $thumb_id ? wp_get_attachment_image_url( $thumb_id, 'woocommerce_thumbnail' ) : wc_placeholder_img_src( 'woocommerce_thumbnail' );
 
 				$items[] = array(
 					'key'          => (string) $key,
-					'product_id'   => $product_id,
+					'product_id'   => $display_id,
 					'variation_id' => $variation_id,
-					'name'         => $product->get_name(),
-					'permalink'    => $product->get_permalink(),
+					'name'         => $display_product->get_name(),
+					'permalink'    => $display_product->get_permalink(),
 					'thumbnail'    => $thumb_url,
-					'unit_price'   => wp_strip_all_tags( wc_price( wc_get_price_to_display( $product ) ) ),
-					'line_total'   => wp_strip_all_tags( WC()->cart->get_product_subtotal( $product, $qty ) ),
+					'unit_price'   => self::format_plain_price( wc_price( wc_get_price_to_display( $product ) ) ),
+					'line_total'   => self::format_plain_price( WC()->cart->get_product_subtotal( $product, $qty ) ),
 					'quantity'     => $qty,
 					'max_qty'      => $product->get_max_purchase_quantity(),
-					'weight'       => $product->get_weight() ? $product->get_weight() . ' ' . get_option( 'woocommerce_weight_unit' ) : '',
+					'weight'       => $display_product->get_weight() ? $display_product->get_weight() . ' ' . get_option( 'woocommerce_weight_unit' ) : '',
 				);
 			}
 		}
@@ -340,8 +369,8 @@ class Ajax_Cart {
 
 		return array(
 			'count'        => $count,
-			'subtotal'     => function_exists( 'WC' ) && WC()->cart ? wp_strip_all_tags( WC()->cart->get_cart_subtotal() ) : '',
-			'total'        => function_exists( 'WC' ) && WC()->cart ? wp_strip_all_tags( WC()->cart->get_total() ) : '',
+			'subtotal'     => function_exists( 'WC' ) && WC()->cart ? self::format_plain_price( WC()->cart->get_cart_subtotal() ) : '',
+			'total'        => function_exists( 'WC' ) && WC()->cart ? self::format_plain_price( WC()->cart->get_total() ) : '',
 			'items'        => $items,
 			'quantities'   => $quantities,
 			'cart_url'     => function_exists( 'wc_get_cart_url' ) ? wc_get_cart_url() : home_url( '/cart/' ),
