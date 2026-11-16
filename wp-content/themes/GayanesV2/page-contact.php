@@ -105,7 +105,7 @@ get_header();
 					<span class="gv2-info-card__badge"><?php echo esc_html( gv2_t( 'Working Hours' ) ); ?></span>
 					<h3><?php echo esc_html( gv2_t( 'Daily: 09:00 – 21:00' ) ); ?></h3>
 					<p><?php echo esc_html( gv2_t( 'Yerevan, 0054, Davtashen 2nd dist., 37' ) ); ?></p>
-					<p><?php echo esc_html( gv2_t( 'Free delivery in Yerevan on orders over 15,000 AMD' ) ); ?></p>
+					<p><?php echo esc_html( function_exists( 'gv2_get_free_delivery_banner_text' ) ? gv2_get_free_delivery_banner_text() : gv2_t( 'Free delivery in Yerevan on orders over 15,000 AMD' ) ); ?></p>
 					<div class="gv2-contact-aside__map">
 						<a href="https://yandex.com/maps/-/CXSIyGZo" target="_blank" rel="noopener noreferrer" class="gv2-btn gv2-btn--glass">
 							<?php echo esc_html( gv2_t( 'Open on Map' ) ); ?> &rarr;

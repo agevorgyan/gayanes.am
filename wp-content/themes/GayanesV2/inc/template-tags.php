@@ -80,10 +80,10 @@ function gv2_get_partners(): array {
 function gv2_render_commerce_flow_header( string $stage ): void {
 	$cart_url     = function_exists( 'wc_get_cart_url' ) ? wc_get_cart_url() : home_url( '/cart/' );
 	$checkout_url = function_exists( 'wc_get_checkout_url' ) ? wc_get_checkout_url() : home_url( '/checkout/' );
-	$threshold    = 15000;
+	$threshold    = function_exists( 'gv2_get_free_shipping_threshold' ) ? gv2_get_free_shipping_threshold() : 15000.0;
 	$subtotal     = ( function_exists( 'WC' ) && WC()->cart ) ? (float) WC()->cart->get_subtotal() : 0.0;
-	$pct          = (int) min( 100, round( ( $subtotal / $threshold ) * 100 ) );
-	$remaining    = max( 0, $threshold - (int) round( $subtotal ) );
+	$pct          = $threshold > 0 ? (int) min( 100, round( ( $subtotal / $threshold ) * 100 ) ) : 100;
+	$remaining    = max( 0, (int) round( $threshold - $subtotal ) );
 	$is_complete  = ( 'complete' === $stage );
 	$is_checkout  = ( 'checkout' === $stage );
 	?>
@@ -167,7 +167,7 @@ function gv2_render_commerce_trust_bar(): void {
 			<span class="gv2-flow-trust__icon" aria-hidden="true">
 				<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5h-7V8Z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
 			</span>
-			<span><?php echo esc_html( gv2_t( 'Free delivery in Yerevan on orders over 15,000 AMD' ) ); ?></span>
+			<span><?php echo esc_html( function_exists( 'gv2_get_free_delivery_banner_text' ) ? gv2_get_free_delivery_banner_text() : gv2_t( 'Free delivery in Yerevan on orders over 15,000 AMD' ) ); ?></span>
 		</div>
 		<div class="gv2-flow-trust__item gv2-glass-card">
 			<span class="gv2-flow-trust__icon" aria-hidden="true">

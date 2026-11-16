@@ -487,7 +487,7 @@ add_filter(
 			return $text;
 		}
 		$default = 'Your personal data will be used to process your order, support your experience throughout this website, and for other purposes described in our [privacy_policy].';
-		if ( 'checkout' === $type && trim( $text ) === $default ) {
+	if ( 'checkout' === $type && trim( $text ) === $default ) {
 			return gv2_t( $default );
 		}
 		return $text;
@@ -495,3 +495,63 @@ add_filter(
 	10,
 	2
 );
+
+/**
+ * Read the active Free Shipping minimum order threshold from WooCommerce Shipping Zones.
+ *
+ * @return float Minimum amount in AMD (0 if free shipping has no minimum; 15000 fallback if none configured).
+ */
+function gv2_get_free_shipping_threshold(): float {
+	static $cached = null;
+	if ( null !== $cached ) {
+		return $cached;
+	}
+
+	$cached = 15000.0;
+	if ( ! class_exists( 'WC_Shipping_Zones' ) ) {
+		return $cached;
+	}
+
+	$zones   = WC_Shipping_Zones::get_zones();
+	$zones[] = array(
+		'shipping_methods' => WC_Shipping_Zones::get_zone( 0 )->get_shipping_methods(),
+	);
+
+	foreach ( $zones as $zone ) {
+		if ( empty( $zone['shipping_methods'] ) || ! is_array( $zone['shipping_methods'] ) ) {
+			continue;
+		}
+		foreach ( $zone['shipping_methods'] as $method ) {
+			if ( ! is_object( $method ) || 'free_shipping' !== ( $method->id ?? '' ) ) {
+				continue;
+			}
+			if ( 'yes' !== ( $method->enabled ?? 'no' ) ) {
+				continue;
+			}
+			$requires = (string) $method->get_option( 'requires', '' );
+			if ( '' === $requires || 'coupon' === $requires ) {
+				$cached = 0.0;
+				return $cached;
+			}
+			$min    = (float) $method->get_option( 'min_amount', 0 );
+			$cached = max( 0.0, $min );
+			return $cached;
+		}
+	}
+
+	return $cached;
+}
+
+/**
+ * Build localized free-delivery banner/trust text synced with WooCommerce Shipping settings.
+ */
+function gv2_get_free_delivery_banner_text(): string {
+	$threshold = gv2_get_free_shipping_threshold();
+	if ( $threshold <= 0 ) {
+		return gv2_t( 'Free delivery in Yerevan' );
+	}
+	return sprintf(
+		gv2_t( 'Free delivery in Yerevan on orders over %s AMD' ),
+		number_format( (int) round( $threshold ) )
+	);
+}

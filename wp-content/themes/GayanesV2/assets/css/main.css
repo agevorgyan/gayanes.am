@@ -2111,7 +2111,7 @@ form.woocommerce-checkout {
 	border-top: 1px solid var(--gv2-border);
 }
 
-.woocommerce-checkout h3,
+.woocommerce-checkout .woocommerce h3,
 .woocommerce-checkout #order_review_heading {
 	font-family: var(--gv2-font-serif);
 	font-size: 24px;
@@ -3679,12 +3679,13 @@ form.woocommerce-checkout {
 	gap: 10px 20px;
 }
 
-.gv2-footer__heading {
+.gv2-footer .gv2-footer__heading {
+	font-family: var(--gv2-font-sans);
 	font-size: 12px;
 	font-weight: 700;
 	text-transform: uppercase;
 	letter-spacing: 0.08em;
-	color: rgba(255, 255, 255, 0.62);
+	color: rgba(255, 255, 255, 0.72);
 	margin: 0 0 10px;
 }
 

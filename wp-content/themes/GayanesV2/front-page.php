@@ -329,7 +329,7 @@ $shop_url = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 
 				</div>
 				<div class="gv2-pillar gv2-glass-card">
 					<h3><?php echo esc_html( gv2_t( 'Same-Day Yerevan Delivery' ) ); ?></h3>
-					<p><?php echo esc_html( gv2_t( 'Free delivery in Yerevan on orders over 15,000 AMD' ) ); ?></p>
+					<p><?php echo esc_html( function_exists( 'gv2_get_free_delivery_banner_text' ) ? gv2_get_free_delivery_banner_text() : gv2_t( 'Free delivery in Yerevan on orders over 15,000 AMD' ) ); ?></p>
 				</div>
 			</div>
 		</div>

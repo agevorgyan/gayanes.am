@@ -63,11 +63,11 @@
 		const fillEl = document.getElementById('gv2-delivery-fill');
 		if (!textEl || !fillEl) return;
 
-		const threshold = Number(cfg.freeDeliveryThreshold) || 15000;
-		const pct = Math.min(100, Math.round((subtotalNum / threshold) * 100));
+		const threshold = typeof cfg.freeDeliveryThreshold === 'number' ? cfg.freeDeliveryThreshold : 15000;
+		const pct = threshold > 0 ? Math.min(100, Math.round((subtotalNum / threshold) * 100)) : 100;
 		fillEl.style.width = pct + '%';
 
-		if (subtotalNum >= threshold) {
+		if (threshold <= 0 || subtotalNum >= threshold) {
 			textEl.textContent = cfg.i18n.freeUnlocked || 'Free delivery unlocked!';
 		} else {
 			const diff = Math.max(0, threshold - subtotalNum).toLocaleString();
@@ -219,15 +219,15 @@
 
 		if (data.subtotal) {
 			const subtotalNum = parseSubtotalNumber(data.subtotal);
-			const threshold = Number(cfg.freeDeliveryThreshold) || 15000;
-			const pct = Math.min(100, Math.round((subtotalNum / threshold) * 100));
+			const threshold = typeof cfg.freeDeliveryThreshold === 'number' ? cfg.freeDeliveryThreshold : 15000;
+			const pct = threshold > 0 ? Math.min(100, Math.round((subtotalNum / threshold) * 100)) : 100;
 			const flowFill = document.querySelector('.gv2-flow-delivery__fill');
 			const flowPct = document.querySelector('.gv2-flow-delivery__pct');
 			const flowText = document.querySelector('.gv2-flow-delivery__text');
 			if (flowFill) flowFill.style.width = pct + '%';
 			if (flowPct) flowPct.textContent = pct + '%';
 			if (flowText) {
-				if (subtotalNum >= threshold) {
+				if (threshold <= 0 || subtotalNum >= threshold) {
 					flowText.textContent = cfg.i18n.freeUnlocked || 'Free delivery unlocked!';
 				} else {
 					const diff = Math.max(0, threshold - subtotalNum).toLocaleString();

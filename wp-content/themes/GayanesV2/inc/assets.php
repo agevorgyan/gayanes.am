@@ -42,7 +42,7 @@ function gv2_enqueue_assets(): void {
 			'ajaxUrl'               => add_query_arg( 'lang', gv2_current_lang(), admin_url( 'admin-ajax.php' ) ),
 			'nonce'                 => $nonce,
 			'lang'                  => gv2_current_lang(),
-			'freeDeliveryThreshold' => 15000,
+			'freeDeliveryThreshold' => function_exists( 'gv2_get_free_shipping_threshold' ) ? gv2_get_free_shipping_threshold() : 15000,
 			'currencySymbol'        => '֏',
 			'i18n'                  => array(
 				'add'               => gv2_t( 'Add' ),
