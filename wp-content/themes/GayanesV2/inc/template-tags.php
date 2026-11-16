@@ -101,7 +101,7 @@ function gv2_render_commerce_flow_header( string $stage ): void {
 		<div class="gv2-flow-head">
 			<h1 class="gv2-flow-head__title"><?php the_title(); ?></h1>
 
-			<ol class="gv2-flow-steps" aria-label="Order progress">
+			<ol class="gv2-flow-steps" aria-label="<?php echo esc_attr( gv2_t( 'Order progress' ) ); ?>">
 				<li class="gv2-flow-step <?php echo 'cart' === $stage ? 'is-active' : 'is-done'; ?>">
 					<a href="<?php echo esc_url( $cart_url ); ?>" class="gv2-flow-step__link">
 						<span class="gv2-flow-step__num">01</span>
@@ -117,7 +117,7 @@ function gv2_render_commerce_flow_header( string $stage ): void {
 				<li class="gv2-flow-step <?php echo $is_complete ? 'is-active is-done' : ''; ?>">
 					<span class="gv2-flow-step__link">
 						<span class="gv2-flow-step__num">03</span>
-						<span class="gv2-flow-step__label">Հաստատում</span>
+						<span class="gv2-flow-step__label"><?php echo esc_html( gv2_t( 'Confirmation' ) ); ?></span>
 					</span>
 				</li>
 			</ol>
@@ -128,9 +128,16 @@ function gv2_render_commerce_flow_header( string $stage ): void {
 				<div class="gv2-flow-delivery__row">
 					<span class="gv2-flow-delivery__text">
 						<?php if ( $remaining <= 0 ) : ?>
-							Անվճար առաքումը Երևանում ակտիվացված է
+							<?php echo esc_html( gv2_t( 'Free delivery in Yerevan is unlocked' ) ); ?>
 						<?php else : ?>
-							Ավելացրեք ևս <strong><?php echo esc_html( number_format( $remaining ) ); ?> ֏</strong>՝ Երևանում անվճար առաքման համար
+							<?php
+							echo wp_kses_post(
+								sprintf(
+									esc_html( gv2_t( 'Add %s more for free delivery in Yerevan' ) ),
+									'<strong>' . esc_html( number_format( $remaining ) ) . ' ֏</strong>'
+								)
+							);
+							?>
 						<?php endif; ?>
 					</span>
 					<span class="gv2-flow-delivery__pct"><?php echo esc_html( (string) $pct ); ?>%</span>
@@ -149,7 +156,7 @@ function gv2_render_commerce_flow_header( string $stage ): void {
  */
 function gv2_render_commerce_trust_bar(): void {
 	?>
-	<section class="gv2-flow-trust" aria-label="Գայանեի Խոհանոցի երաշխիքները">
+	<section class="gv2-flow-trust" aria-label="<?php echo esc_attr( gv2_t( "Gayane's Kitchen guarantees" ) ); ?>">
 		<div class="gv2-flow-trust__item gv2-glass-card">
 			<span class="gv2-flow-trust__icon" aria-hidden="true">
 				<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg>
@@ -166,7 +173,7 @@ function gv2_render_commerce_trust_bar(): void {
 			<span class="gv2-flow-trust__icon" aria-hidden="true">
 				<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
 			</span>
-			<span>Կանխիկ, ArCa, Idram, Telcell</span>
+			<span><?php echo esc_html( gv2_t( 'Cash, ArCa, Idram, Telcell' ) ); ?></span>
 		</div>
 	</section>
 	<?php

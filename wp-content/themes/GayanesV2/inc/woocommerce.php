@@ -9,7 +9,7 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Load bundled Armenian (hy) translation for WooCommerce when active.
+ * Load bundled Armenian (hy) and Russian (ru_RU) translations for WooCommerce when active.
  */
 add_filter(
 	'load_textdomain_mofile',
@@ -17,10 +17,12 @@ add_filter(
 		if ( 'woocommerce' !== $domain ) {
 			return $mofile;
 		}
-		if ( str_ends_with( $mofile, '-hy.mo' ) ) {
-			$bundled = GV2_DIR . '/languages/woocommerce-hy.mo';
-			if ( file_exists( $bundled ) ) {
-				return $bundled;
+		foreach ( array( 'hy', 'ru_RU' ) as $locale ) {
+			if ( str_ends_with( $mofile, "-{$locale}.mo" ) ) {
+				$bundled = GV2_DIR . "/languages/woocommerce-{$locale}.mo";
+				if ( file_exists( $bundled ) ) {
+					return $bundled;
+				}
 			}
 		}
 		return $mofile;
@@ -35,13 +37,15 @@ add_action(
 		if ( is_admin() && ! wp_doing_ajax() ) {
 			return;
 		}
-		if ( 'hy' !== get_locale() ) {
+		$locale = get_locale();
+		if ( ! in_array( $locale, array( 'hy', 'ru_RU' ), true ) ) {
 			return;
 		}
-		$bundled = GV2_DIR . '/languages/woocommerce-hy.mo';
-		if ( file_exists( $bundled ) ) {
+		$bundled = GV2_DIR . "/languages/woocommerce-{$locale}.mo";
+		$target  = file_exists( $bundled ) ? $bundled : WP_LANG_DIR . "/plugins/woocommerce-{$locale}.mo";
+		if ( file_exists( $target ) ) {
 			unload_textdomain( 'woocommerce' );
-			load_textdomain( 'woocommerce', $bundled, 'hy' );
+			load_textdomain( 'woocommerce', $target, $locale );
 		}
 	},
 	5
@@ -417,6 +421,76 @@ add_filter(
 			}
 		}
 		return $permalink;
+	},
+	10,
+	2
+);
+
+/**
+ * Translate shared WooCommerce system page titles (Shop, Cart, Checkout, My Account).
+ */
+function gv2_translate_wc_system_page_title( string $title, int $post_id = 0 ): string {
+	if ( is_admin() && ! wp_doing_ajax() ) {
+		return $title;
+	}
+	if ( $post_id <= 0 ) {
+		return $title;
+	}
+	$map = array(
+		(int) wc_get_page_id( 'shop' )      => 'Shop',
+		(int) wc_get_page_id( 'cart' )      => 'Cart',
+		(int) wc_get_page_id( 'checkout' )  => 'Checkout',
+		(int) wc_get_page_id( 'myaccount' ) => 'My Account',
+	);
+	if ( isset( $map[ $post_id ] ) ) {
+		return gv2_t( $map[ $post_id ] );
+	}
+	return $title;
+}
+
+add_filter(
+	'the_title',
+	static function ( string $title, int $post_id = 0 ): string {
+		return gv2_translate_wc_system_page_title( $title, $post_id );
+	},
+	10,
+	2
+);
+
+add_filter(
+	'single_post_title',
+	static function ( string $title, $post ): string {
+		$pid = is_object( $post ) ? (int) $post->ID : 0;
+		return gv2_translate_wc_system_page_title( $title, $pid );
+	},
+	10,
+	2
+);
+
+add_filter(
+	'woocommerce_page_title',
+	static function ( string $title ): string {
+		if ( function_exists( 'is_shop' ) && is_shop() ) {
+			return gv2_t( 'Shop' );
+		}
+		return $title;
+	}
+);
+
+/**
+ * Translate WooCommerce checkout/registration privacy policy text option.
+ */
+add_filter(
+	'woocommerce_get_privacy_policy_text',
+	static function ( string $text, string $type ): string {
+		if ( is_admin() && ! wp_doing_ajax() ) {
+			return $text;
+		}
+		$default = 'Your personal data will be used to process your order, support your experience throughout this website, and for other purposes described in our [privacy_policy].';
+		if ( 'checkout' === $type && trim( $text ) === $default ) {
+			return gv2_t( $default );
+		}
+		return $text;
 	},
 	10,
 	2

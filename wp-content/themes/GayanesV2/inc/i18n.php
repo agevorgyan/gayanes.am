@@ -715,6 +715,34 @@ function gv2_translations_map(): array {
 			'hy' => 'Խոհանոց',
 			'ru' => 'Кухня',
 		),
+		'Confirmation' => array(
+			'hy' => 'Հաստատում',
+			'ru' => 'Подтверждение',
+		),
+		'Order progress' => array(
+			'hy' => 'Պատվերի ընթացքը',
+			'ru' => 'Прогресс заказа',
+		),
+		'Free delivery in Yerevan is unlocked' => array(
+			'hy' => 'Անվճար առաքումը Երևանում ակտիվացված է',
+			'ru' => 'Бесплатная доставка по Еревану активирована',
+		),
+		'Add %s more for free delivery in Yerevan' => array(
+			'hy' => 'Ավելացրեք ևս %s՝ Երևանում անվճար առաքման համար',
+			'ru' => 'Добавьте ещё %s для бесплатной доставки по Еревану',
+		),
+		'Cash, ArCa, Idram, Telcell' => array(
+			'hy' => 'Կանխիկ, ArCa, Idram, Telcell',
+			'ru' => 'Наличные, ArCa, Idram, Telcell',
+		),
+		"Gayane's Kitchen guarantees" => array(
+			'hy' => 'Գայանեի Խոհանոցի երաշխիքները',
+			'ru' => "Гарантии Gayane's Kitchen",
+		),
+		'Your personal data will be used to process your order, support your experience throughout this website, and for other purposes described in our [privacy_policy].' => array(
+			'hy' => 'Ձեր անձնական տվյալները կօգտագործվեն Ձեր պատվերը մշակելու, այս կայքում Ձեր սպասարկումը բարելավելու և մեր [privacy_policy] փաստաթղթում նշված այլ նպատակներով։',
+			'ru' => 'Ваши персональные данные будут использоваться для обработки вашего заказа, улучшения работы с сайтом и в других целях, описанных в нашей [privacy_policy].',
+		),
 	);
 }
 
