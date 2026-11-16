@@ -172,6 +172,74 @@
 				syncProductCards(pid, entry ? entry.qty : 0, entry ? entry.cart_item_key : '');
 			});
 		}
+
+		syncCartPage(data);
+	}
+
+	function syncCartPage(data) {
+		const cartList = document.querySelector('.gv2-cart-list');
+		if (!cartList) return;
+
+		if (typeof data.count !== 'undefined' && Number(data.count) === 0) {
+			window.location.reload();
+			return;
+		}
+
+		const itemMap = new Map();
+		if (Array.isArray(data.items)) {
+			data.items.forEach((it) => itemMap.set(String(it.key), it));
+		}
+
+		cartList.querySelectorAll('.gv2-cart-row[data-cart-item-key]').forEach((row) => {
+			const key = row.getAttribute('data-cart-item-key');
+			const item = itemMap.get(String(key));
+			if (!item) {
+				row.remove();
+				return;
+			}
+			const qtyVal = row.querySelector('[data-gv2-qty-val]');
+			const qtyInput = row.querySelector('[data-gv2-qty-input]');
+			const subEl = row.querySelector('[data-gv2-cart-row-subtotal]');
+			if (qtyVal) qtyVal.textContent = String(item.quantity);
+			if (qtyInput) qtyInput.value = String(item.quantity);
+			if (subEl) subEl.textContent = item.line_total || '';
+		});
+
+		const cartSubEl = document.querySelector('.cart_totals .cart-subtotal td');
+		const cartTotEl = document.querySelector('.cart_totals .order-total td');
+		if (cartSubEl && data.subtotal) cartSubEl.textContent = data.subtotal;
+		if (cartTotEl && data.total) {
+			const strong = cartTotEl.querySelector('strong');
+			if (strong) {
+				strong.textContent = data.total;
+			} else {
+				cartTotEl.textContent = data.total;
+			}
+		}
+
+		if (data.subtotal) {
+			const subtotalNum = parseSubtotalNumber(data.subtotal);
+			const threshold = Number(cfg.freeDeliveryThreshold) || 15000;
+			const pct = Math.min(100, Math.round((subtotalNum / threshold) * 100));
+			const flowFill = document.querySelector('.gv2-flow-delivery__fill');
+			const flowPct = document.querySelector('.gv2-flow-delivery__pct');
+			const flowText = document.querySelector('.gv2-flow-delivery__text');
+			if (flowFill) flowFill.style.width = pct + '%';
+			if (flowPct) flowPct.textContent = pct + '%';
+			if (flowText) {
+				if (subtotalNum >= threshold) {
+					flowText.textContent = cfg.i18n.freeUnlocked || 'Free delivery unlocked!';
+				} else {
+					const diff = Math.max(0, threshold - subtotalNum).toLocaleString();
+					const tpl = cfg.i18n.addMoreForFree || 'Add %s more for free delivery';
+					flowText.textContent = tpl.replace('%s', diff + ' ' + (cfg.currencySymbol || '֏'));
+				}
+			}
+		}
+
+		if (document.querySelector('.cart_totals .cart-discount') && window.jQuery) {
+			window.jQuery(document.body).trigger('wc_update_cart');
+		}
 	}
 
 	// Delegated click handler for Sheets, Search, Add-to-Cart, and +/- Steppers.

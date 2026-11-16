@@ -134,6 +134,9 @@ $shop_url   = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink
 					aria-label="<?php echo esc_attr( gv2_t( 'Search products...' ) ); ?>"
 				/>
 				<input type="hidden" name="post_type" value="product" />
+				<?php if ( 'en' !== gv2_current_lang() ) : ?>
+					<input type="hidden" name="lang" value="<?php echo esc_attr( gv2_current_lang() ); ?>" />
+				<?php endif; ?>
 				<button type="submit" class="gv2-btn gv2-btn--primary gv2-btn--sm">
 					<?php echo esc_html( gv2_t( 'Search' ) ); ?>
 				</button>

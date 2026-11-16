@@ -61,6 +61,16 @@ $paged           = max( 1, (int) get_query_var( 'paged' ) );
 	</div>
 
 	<form class="gv2-sort-form" method="get">
+		<?php if ( 'en' !== gv2_current_lang() ) : ?>
+			<input type="hidden" name="lang" value="<?php echo esc_attr( gv2_current_lang() ); ?>" />
+		<?php endif; ?>
+		<?php
+		$gv2_search = get_search_query();
+		if ( '' !== $gv2_search ) :
+			?>
+			<input type="hidden" name="s" value="<?php echo esc_attr( $gv2_search ); ?>" />
+			<input type="hidden" name="post_type" value="product" />
+		<?php endif; ?>
 		<label class="gv2-sr-only" for="gv2-orderby"><?php echo esc_html( gv2_t( 'Sort by' ) ); ?></label>
 		<select id="gv2-orderby" name="orderby" class="gv2-select" onchange="this.form.submit()">
 			<option value="menu_order" <?php selected( $current_orderby, 'menu_order' ); ?>><?php echo esc_html( gv2_t( 'Default' ) ); ?></option>
