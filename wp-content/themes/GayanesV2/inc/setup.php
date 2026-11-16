@@ -179,3 +179,44 @@ function gv2_customize_register( WP_Customize_Manager $wp_customize ): void {
 }
 add_action( 'customize_register', 'gv2_customize_register' );
 
+/**
+ * Replace the default WordPress logo on wp-login.php with the site logo.
+ */
+function gv2_login_logo_styles(): void {
+	$logo_url = esc_url( GV2_URI . '/assets/images/logo-dark.png' );
+	$css      = sprintf(
+		'#login h1 a, .login h1 a {
+			background-image: url("%s");
+			background-size: contain;
+			background-position: center center;
+			background-repeat: no-repeat;
+			width: 220px;
+			height: 98px;
+		}',
+		$logo_url
+	);
+
+	wp_add_inline_style( 'login', $css );
+}
+add_action( 'login_enqueue_scripts', 'gv2_login_logo_styles' );
+
+/**
+ * Point the wp-login.php logo link to the site homepage.
+ *
+ * @return string
+ */
+function gv2_login_logo_url(): string {
+	return home_url( '/' );
+}
+add_filter( 'login_headerurl', 'gv2_login_logo_url' );
+
+/**
+ * Set the wp-login.php logo accessible title to the site name.
+ *
+ * @return string
+ */
+function gv2_login_logo_text(): string {
+	return get_bloginfo( 'name' );
+}
+add_filter( 'login_headertext', 'gv2_login_logo_text' );
+
