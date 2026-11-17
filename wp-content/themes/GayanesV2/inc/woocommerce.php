@@ -173,7 +173,14 @@ function gv2_render_product_card( WC_Product $product ): void {
 		}
 	}
 
-	$image_id = $product->get_image_id();
+	$image_id      = $product->get_image_id();
+	$display_title = $product->get_name();
+	if ( '' !== $weight_label ) {
+		$cleaned = preg_replace( '/\s*\(?\d+(?:[.,]\d+)?\s*(?:գ|կգ|г|кг|g|kg)\)?\s*$/ui', '', $display_title );
+		if ( is_string( $cleaned ) && '' !== trim( $cleaned ) ) {
+			$display_title = trim( $cleaned );
+		}
+	}
 	?>
 	<article
 		class="gv2-card<?php echo ! $in_stock ? ' is-out-of-stock' : ''; ?>"
@@ -209,7 +216,7 @@ function gv2_render_product_card( WC_Product $product ): void {
 		<div class="gv2-card__body">
 			<h3 class="gv2-card__title">
 				<a href="<?php echo esc_url( $permalink ); ?>">
-					<?php echo esc_html( $product->get_name() ); ?>
+					<?php echo esc_html( $display_title ); ?>
 				</a>
 			</h3>
 

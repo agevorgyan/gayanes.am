@@ -1450,8 +1450,21 @@ img {
 
 	.gv2-shop-toolbar {
 		flex-direction: row;
-		align-items: center;
+		align-items: flex-start;
 		justify-content: space-between;
+		gap: 16px;
+	}
+
+	.gv2-filter-pills {
+		flex: 1 1 auto;
+		min-width: 0;
+		flex-wrap: wrap;
+		overflow-x: visible;
+		padding-bottom: 0;
+	}
+
+	.gv2-sort-form {
+		flex: 0 0 auto;
 	}
 
 	.gv2-footer__grid {
