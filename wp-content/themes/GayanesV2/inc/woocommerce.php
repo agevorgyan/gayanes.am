@@ -437,10 +437,12 @@ function gv2_translate_wc_system_page_title( string $title, int $post_id = 0 ): 
 		return $title;
 	}
 	$map = array(
-		(int) wc_get_page_id( 'shop' )      => 'Shop',
-		(int) wc_get_page_id( 'cart' )      => 'Cart',
-		(int) wc_get_page_id( 'checkout' )  => 'Checkout',
-		(int) wc_get_page_id( 'myaccount' ) => 'My Account',
+		(int) wc_get_page_id( 'shop' )                  => 'Shop',
+		(int) wc_get_page_id( 'cart' )                  => 'Cart',
+		(int) wc_get_page_id( 'checkout' )              => 'Checkout',
+		(int) wc_get_page_id( 'myaccount' )             => 'My Account',
+		(int) wc_get_page_id( 'terms' )                 => 'Terms & Conditions',
+		(int) get_option( 'wp_page_for_privacy_policy' ) => 'Privacy Policy',
 	);
 	if ( isset( $map[ $post_id ] ) ) {
 		return gv2_t( $map[ $post_id ] );
@@ -486,9 +488,12 @@ add_filter(
 		if ( is_admin() && ! wp_doing_ajax() ) {
 			return $text;
 		}
-		$default = 'Your personal data will be used to process your order, support your experience throughout this website, and for other purposes described in our [privacy_policy].';
-	if ( 'checkout' === $type && trim( $text ) === $default ) {
-			return gv2_t( $default );
+		$defaults = array(
+			'checkout'     => 'Your personal data will be used to process your order, support your experience throughout this website, and for other purposes described in our [privacy_policy].',
+			'registration' => 'Your personal data will be used to support your experience throughout this website, to manage access to your account, and for other purposes described in our [privacy_policy].',
+		);
+		if ( isset( $defaults[ $type ] ) && trim( $text ) === $defaults[ $type ] ) {
+			return gv2_t( $defaults[ $type ] );
 		}
 		return $text;
 	},
