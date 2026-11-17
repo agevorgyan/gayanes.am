@@ -31,6 +31,21 @@ add_filter(
 	2
 );
 
+add_filter(
+	'override_load_textdomain',
+	static function ( bool $override, string $domain ): bool {
+		if ( 'woocommerce' === $domain && ! ( is_admin() && ! wp_doing_ajax() ) ) {
+			$locale = get_locale();
+			if ( str_starts_with( $locale, 'en' ) ) {
+				return true;
+			}
+		}
+		return $override;
+	},
+	10,
+	2
+);
+
 add_action(
 	'init',
 	static function (): void {
@@ -38,6 +53,10 @@ add_action(
 			return;
 		}
 		$locale = get_locale();
+		if ( str_starts_with( $locale, 'en' ) ) {
+			unload_textdomain( 'woocommerce' );
+			return;
+		}
 		if ( ! in_array( $locale, array( 'hy', 'ru_RU' ), true ) ) {
 			return;
 		}
@@ -48,7 +67,7 @@ add_action(
 			load_textdomain( 'woocommerce', $target, $locale );
 		}
 	},
-	5
+	20
 );
 
 /**
