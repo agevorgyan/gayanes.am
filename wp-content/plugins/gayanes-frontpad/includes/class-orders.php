@@ -42,82 +42,9 @@ class Orders {
 			add_action( 'woocommerce_order_status_' . $trigger, array( __CLASS__, 'handle_order_trigger' ), 20, 1 );
 		}
 
-		// Optional structured address & person fields on checkout.
-		add_filter( 'woocommerce_checkout_fields', array( __CLASS__, 'add_checkout_fields' ), 60 );
-		add_action( 'woocommerce_checkout_create_order', array( __CLASS__, 'save_checkout_fields' ), 20, 2 );
-
 		// HPOS-compatible Order Edit metabox & manual send action.
 		add_action( 'add_meta_boxes', array( __CLASS__, 'register_order_metabox' ) );
 		add_action( 'wp_ajax_frontpad_send_order', array( __CLASS__, 'ajax_send_order' ) );
-	}
-
-	/**
-	 * Add optional Frontpad-specific checkout fields (entrance, floor, apartment, persons)
-	 * when enabled in settings.
-	 *
-	 * @param array<string, array<string, mixed>> $fields Checkout fields.
-	 * @return array<string, array<string, mixed>>
-	 */
-	public static function add_checkout_fields( array $fields ): array {
-		$settings = API_Client::get_settings();
-
-		if ( '1' === (string) ( $settings['enable_checkout_address'] ?? '1' ) ) {
-			$fields['billing']['frontpad_pod'] = array(
-				'label'       => self::t( 'Entrance' ),
-				'placeholder' => '1',
-				'required'    => false,
-				'priority'    => 42,
-				'maxlength'   => 2,
-				'class'       => array( 'form-row-first' ),
-			);
-			$fields['billing']['frontpad_et'] = array(
-				'label'       => self::t( 'Floor' ),
-				'placeholder' => '2',
-				'required'    => false,
-				'priority'    => 44,
-				'maxlength'   => 2,
-				'class'       => array( 'form-row-last' ),
-			);
-			$fields['billing']['frontpad_apart'] = array(
-				'label'       => self::t( 'Apartment / Office' ),
-				'placeholder' => '15',
-				'required'    => false,
-				'priority'    => 46,
-				'maxlength'   => 50,
-				'class'       => array( 'form-row-wide' ),
-			);
-		}
-
-		if ( '1' === (string) ( $settings['enable_person_field'] ?? '1' ) ) {
-			$fields['order']['frontpad_person'] = array(
-				'type'        => 'number',
-				'label'       => self::t( 'Number of Persons' ),
-				'placeholder' => '1',
-				'required'    => false,
-				'priority'    => 110,
-				'custom_attributes' => array(
-					'min' => '1',
-					'max' => '99',
-				),
-				'class'       => array( 'form-row-wide' ),
-			);
-		}
-
-		return $fields;
-	}
-
-	/**
-	 * Save Frontpad checkout fields + session certificate/loyalty score onto the WC order.
-	 *
-	 * @param \WC_Order            $order Order object.
-	 * @param array<string, mixed> $data Posted checkout data.
-	 */
-	public static function save_checkout_fields( \WC_Order $order, array $data ): void {
-		foreach ( array( 'frontpad_pod', 'frontpad_et', 'frontpad_apart', 'frontpad_person' ) as $key ) {
-			if ( isset( $data[ $key ] ) && '' !== trim( (string) $data[ $key ] ) ) {
-				$order->update_meta_data( '_' . $key, sanitize_text_field( (string) $data[ $key ] ) );
-			}
-		}
 	}
 
 	/**
@@ -218,10 +145,6 @@ class Orders {
 		$raw_apart  = trim( (string) $order->get_billing_address_2() );
 		$parsed     = self::parse_address( $raw_street, $raw_apart );
 
-		$pod   = trim( (string) $order->get_meta( '_frontpad_pod' ) );
-		$et    = trim( (string) $order->get_meta( '_frontpad_et' ) );
-		$apart = trim( (string) $order->get_meta( '_frontpad_apart' ) );
-
 		$full_name = trim( $order->get_billing_first_name() . ' ' . $order->get_billing_last_name() );
 		$phone     = self::normalize_phone( (string) $order->get_billing_phone(), (string) ( $settings['phone_prefix'] ?? '' ) );
 		$mail      = trim( (string) $order->get_billing_email() );
@@ -232,9 +155,9 @@ class Orders {
 			'product_kol' => $product_kol,
 			'street'      => mb_substr( $parsed['street'], 0, 50 ),
 			'home'        => mb_substr( $parsed['home'], 0, 50 ),
-			'pod'         => mb_substr( '' !== $pod ? $pod : $parsed['pod'], 0, 2 ),
-			'et'          => mb_substr( '' !== $et ? $et : $parsed['et'], 0, 2 ),
-			'apart'       => mb_substr( '' !== $apart ? $apart : $parsed['apart'], 0, 50 ),
+			'pod'         => mb_substr( $parsed['pod'], 0, 2 ),
+			'et'          => mb_substr( $parsed['et'], 0, 2 ),
+			'apart'       => mb_substr( $parsed['apart'], 0, 50 ),
 			'phone'       => mb_substr( $phone, 0, 50 ),
 			'mail'        => mb_substr( $mail, 0, 50 ),
 			'descr'       => mb_substr( $descr, 0, 100 ),
@@ -263,12 +186,6 @@ class Orders {
 			} else {
 				$payload['sale_amount'] = (string) round( $discount_total, 2 );
 			}
-		}
-
-		// Person count (max 2 chars).
-		$person = preg_replace( '/\D/', '', (string) $order->get_meta( '_frontpad_person' ) );
-		if ( '' !== $person ) {
-			$payload['person'] = substr( $person, 0, 2 );
 		}
 
 		// Payment method mapping (`pay`).
@@ -451,7 +368,7 @@ class Orders {
 		}
 
 		try {
-			$tz     = new \DateTimeZone( wp_timezone_string() ?: 'Asia/Yerevan' );
+			$tz     = new \DateTimeZone( 'Asia/Yerevan' );
 			$target = new \DateTimeImmutable( $date . ' ' . $time, $tz );
 			$now    = new \DateTimeImmutable( 'now', $tz );
 			$max    = $now->modify( '+30 days' );
@@ -477,7 +394,7 @@ class Orders {
 		}
 		$d_date = trim( (string) $order->get_meta( '_gayanes_delivery_date' ) );
 		$d_time = trim( (string) $order->get_meta( '_gayanes_delivery_time' ) );
-		if ( '' !== $d_date || '' !== $d_time ) {
+		if ( ( '' !== $d_date && ! str_contains( $note, $d_date ) ) || ( '' !== $d_time && ! str_contains( $note, $d_time ) ) ) {
 			$parts[] = trim( $d_date . ' ' . $d_time );
 		}
 		return implode( ' | ', $parts );

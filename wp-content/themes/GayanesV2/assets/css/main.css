@@ -2252,6 +2252,98 @@ form.woocommerce-checkout {
 	margin: 0 !important;
 }
 
+.woocommerce-checkout #payment .woocommerce-privacy-policy-text {
+	font-size: 12.5px;
+	line-height: 1.55;
+	color: var(--gv2-muted);
+	margin-bottom: 14px;
+}
+
+.woocommerce-checkout #payment .woocommerce-privacy-policy-text p {
+	margin: 0;
+}
+
+.woocommerce-checkout #payment .woocommerce-terms-and-conditions-wrapper {
+	margin-bottom: 16px;
+}
+
+.woocommerce-checkout #payment .woocommerce-terms-and-conditions-wrapper .form-row {
+	margin: 0 !important;
+	padding: 0 !important;
+}
+
+.woocommerce-checkout #payment .woocommerce-terms-and-conditions-wrapper label.woocommerce-form__label-for-checkbox {
+	display: flex !important;
+	align-items: flex-start;
+	gap: 12px;
+	margin: 0 !important;
+	padding: 14px 16px;
+	border-radius: 16px;
+	background: rgba(255, 255, 255, 0.78);
+	backdrop-filter: blur(14px) saturate(160%);
+	-webkit-backdrop-filter: blur(14px) saturate(160%);
+	border: 1px solid rgba(36, 41, 35, 0.12);
+	box-shadow: 0 4px 14px rgba(36, 41, 35, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.85);
+	font-size: 13.5px;
+	font-weight: 500;
+	line-height: 1.5;
+	color: var(--gv2-text);
+	cursor: pointer;
+	transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+	-webkit-tap-highlight-color: transparent;
+}
+
+.woocommerce-checkout #payment .woocommerce-terms-and-conditions-wrapper label.woocommerce-form__label-for-checkbox:hover {
+	background: #FFFFFF;
+	border-color: rgba(48, 75, 57, 0.30);
+}
+
+.woocommerce-checkout #payment .woocommerce-terms-and-conditions-wrapper label.woocommerce-form__label-for-checkbox:has(input:checked) {
+	background: rgba(48, 75, 57, 0.06);
+	border-color: rgba(48, 75, 57, 0.42);
+	box-shadow: 0 6px 16px rgba(48, 75, 57, 0.10);
+}
+
+.woocommerce-checkout #payment .woocommerce-terms-and-conditions-wrapper input[type="checkbox"] {
+	flex: 0 0 20px;
+	width: 20px;
+	height: 20px;
+	margin: 1px 0 0 !important;
+	accent-color: var(--gv2-primary);
+	border-radius: 6px;
+	cursor: pointer;
+}
+
+.woocommerce-checkout #payment .woocommerce-terms-and-conditions-wrapper .woocommerce-terms-and-conditions-checkbox-text {
+	flex: 1 1 auto;
+}
+
+.woocommerce-checkout #payment .woocommerce-terms-and-conditions-wrapper a.woocommerce-terms-and-conditions-link {
+	color: var(--gv2-primary);
+	font-weight: 600;
+	text-decoration: underline;
+	text-underline-offset: 3px;
+}
+
+.woocommerce-checkout #payment .woocommerce-terms-and-conditions-wrapper abbr.required {
+	color: var(--gv2-terracotta);
+	text-decoration: none;
+	font-weight: 700;
+	margin-left: 2px;
+}
+
+.woocommerce-checkout #payment .woocommerce-terms-and-conditions {
+	margin-bottom: 12px;
+	padding: 14px 16px;
+	border-radius: 14px;
+	background: rgba(255, 255, 255, 0.85);
+	border: 1px solid rgba(36, 41, 35, 0.10);
+	max-height: 200px;
+	overflow-y: auto;
+	font-size: 13px;
+	line-height: 1.55;
+}
+
 .woocommerce-checkout #payment #place_order {
 	width: 100%;
 	min-height: 50px;
@@ -2395,6 +2487,7 @@ form.woocommerce-checkout {
 	transform: scale(0.96);
 }
 
+.gk-pill-option.is-selected .gk-pill-card,
 .gk-pill-option input[type="radio"]:checked + .gk-pill-card {
 	background: var(--gv2-primary);
 	border-color: var(--gv2-primary);
@@ -2402,10 +2495,12 @@ form.woocommerce-checkout {
 	transform: translateY(-2px);
 }
 
+.gk-pill-option.is-selected .gk-pill-card .gk-pill-card__top,
 .gk-pill-option input[type="radio"]:checked + .gk-pill-card .gk-pill-card__top {
 	color: rgba(255, 255, 255, 0.82);
 }
 
+.gk-pill-option.is-selected .gk-pill-card .gk-pill-card__main,
 .gk-pill-option input[type="radio"]:checked + .gk-pill-card .gk-pill-card__main {
 	color: #FFFFFF;
 }

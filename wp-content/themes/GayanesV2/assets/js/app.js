@@ -693,4 +693,34 @@
 			}
 		}, { passive: true });
 	}
+
+	// Checkout Delivery Day & Time Picker: reliable selection & visual state sync
+	const deliveryPicker = document.getElementById('gk-delivery-picker');
+	if (deliveryPicker) {
+		const syncDeliveryPills = () => {
+			deliveryPicker.querySelectorAll('.gk-pill-option').forEach((label) => {
+				const radio = label.querySelector('input[type="radio"]');
+				label.classList.toggle('is-selected', Boolean(radio && radio.checked));
+			});
+		};
+
+		syncDeliveryPills();
+
+		deliveryPicker.addEventListener('change', (e) => {
+			if (e.target && e.target.matches('input[type="radio"]')) {
+				syncDeliveryPills();
+			}
+		});
+
+		deliveryPicker.addEventListener('click', (e) => {
+			const option = e.target && e.target.closest('.gk-pill-option');
+			if (!option) return;
+			const radio = option.querySelector('input[type="radio"]');
+			if (radio && !radio.checked) {
+				radio.checked = true;
+				radio.dispatchEvent(new Event('change', { bubbles: true }));
+			}
+			syncDeliveryPills();
+		});
+	}
 })();

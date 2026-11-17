@@ -294,6 +294,15 @@ class Checkout_Delivery {
 		if ( '' !== $time ) {
 			$order->update_meta_data( '_gayanes_delivery_time', $time );
 		}
+		if ( '' !== $date || '' !== $time ) {
+			$schedule_text = Multilingual::t( 'Scheduled Delivery' ) . ': ' . trim( "{$date} · {$time}", ' ·' );
+			$existing_note = trim( (string) $order->get_customer_note() );
+			if ( '' === $existing_note ) {
+				$order->set_customer_note( $schedule_text );
+			} elseif ( ! str_contains( $existing_note, $schedule_text ) ) {
+				$order->set_customer_note( $existing_note . "\n" . $schedule_text );
+			}
+		}
 		if ( '' === $order->get_billing_country() ) {
 			$order->set_billing_country( 'AM' );
 		}

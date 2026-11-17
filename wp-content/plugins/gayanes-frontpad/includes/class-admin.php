@@ -74,8 +74,6 @@ class Admin {
 		$checkboxes = array(
 			'enabled',
 			'send_product_price',
-			'enable_checkout_address',
-			'enable_person_field',
 			'auto_sync_products',
 			'sync_product_names',
 			'sync_product_prices',
@@ -261,9 +259,7 @@ class Admin {
 					<tr>
 						<th><?php esc_html_e( 'Order Options', 'gayanes-frontpad' ); ?></th>
 						<td>
-							<label><input type="checkbox" name="<?php echo esc_attr( $opt ); ?>[send_product_price]" value="1" <?php checked( $s['send_product_price'], '1' ); ?> /> <?php esc_html_e( 'Send product_price[] (only if price override is enabled in Frontpad)', 'gayanes-frontpad' ); ?></label><br>
-							<label><input type="checkbox" name="<?php echo esc_attr( $opt ); ?>[enable_checkout_address]" value="1" <?php checked( $s['enable_checkout_address'], '1' ); ?> /> <?php esc_html_e( 'Show Entrance / Floor / Apartment fields on Checkout', 'gayanes-frontpad' ); ?></label><br>
-							<label><input type="checkbox" name="<?php echo esc_attr( $opt ); ?>[enable_person_field]" value="1" <?php checked( $s['enable_person_field'], '1' ); ?> /> <?php esc_html_e( 'Show Number of Persons field on Checkout', 'gayanes-frontpad' ); ?></label>
+							<label><input type="checkbox" name="<?php echo esc_attr( $opt ); ?>[send_product_price]" value="1" <?php checked( $s['send_product_price'], '1' ); ?> /> <?php esc_html_e( 'Send product_price[] (only if price override is enabled in Frontpad)', 'gayanes-frontpad' ); ?></label>
 						</td>
 					</tr>
 				</table>

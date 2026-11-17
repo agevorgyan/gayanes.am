@@ -55,8 +55,6 @@ class API_Client {
 			'default_tags'            => '',
 			'hook_statuses'           => '',
 			'send_product_price'      => '0',
-			'enable_checkout_address' => '1',
-			'enable_person_field'     => '1',
 			'payment_map'             => array(),
 			'status_map'              => array(),
 			'auto_sync_products'      => '0',
