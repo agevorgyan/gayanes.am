@@ -361,6 +361,24 @@
 			} catch (_) {
 				showToast(cfg.i18n.errorCart || 'Could not update cart');
 			}
+			return;
+		}
+
+		const singleQtyBtn = e.target.closest('[data-gv2-single-qty]');
+		if (singleQtyBtn) {
+			const wrap = singleQtyBtn.closest('.quantity');
+			const input = wrap ? wrap.querySelector('input.qty') : null;
+			if (!input) return;
+			const dir = parseInt(singleQtyBtn.getAttribute('data-gv2-single-qty') || '0', 10);
+			const min = Math.max(1, parseInt(input.getAttribute('min') || '1', 10) || 1);
+			const step = Math.max(1, parseInt(input.getAttribute('step') || '1', 10) || 1);
+			const maxAttr = parseInt(input.getAttribute('max') || '', 10);
+			const current = parseInt(input.value || String(min), 10) || min;
+			let next = current + (dir * step);
+			if (next < min) next = min;
+			if (Number.isFinite(maxAttr) && maxAttr > 0 && next > maxAttr) next = maxAttr;
+			input.value = String(next);
+			input.dispatchEvent(new Event('change', { bubbles: true }));
 		}
 	});
 

@@ -635,6 +635,37 @@ add_filter(
 );
 
 /**
+ * Use concise "Add" label on single product Add to Cart button.
+ */
+add_filter(
+	'woocommerce_product_single_add_to_cart_text',
+	static function (): string {
+		return gv2_t( 'Add' );
+	}
+);
+
+/**
+ * Render - / + stepper buttons around single product quantity input.
+ */
+add_action(
+	'woocommerce_before_quantity_input_field',
+	static function (): void {
+		if ( function_exists( 'is_product' ) && is_product() ) {
+			echo '<button type="button" class="gv2-single-qty-btn" data-gv2-single-qty="-1" aria-label="' . esc_attr( gv2_t( 'Decrease quantity' ) ) . '">&minus;</button>';
+		}
+	}
+);
+
+add_action(
+	'woocommerce_after_quantity_input_field',
+	static function (): void {
+		if ( function_exists( 'is_product' ) && is_product() ) {
+			echo '<button type="button" class="gv2-single-qty-btn" data-gv2-single-qty="1" aria-label="' . esc_attr( gv2_t( 'Increase quantity' ) ) . '">+</button>';
+		}
+	}
+);
+
+/**
  * Remove the generic "Shipping options will be updated during checkout." estimate note on Cart.
  */
 add_filter( 'woocommerce_shipping_estimate_html', '__return_empty_string' );

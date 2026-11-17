@@ -60,9 +60,6 @@ final class Gayanes_Qty_Rules {
 		add_filter( 'woocommerce_loop_add_to_cart_args', array( __CLASS__, 'filter_loop_add_to_cart_args' ), 20, 2 );
 		add_filter( 'woocommerce_add_to_cart_validation', array( __CLASS__, 'validate_add_to_cart' ), 20, 4 );
 		add_filter( 'woocommerce_update_cart_validation', array( __CLASS__, 'validate_update_cart' ), 20, 4 );
-
-		// Single product page notice badge.
-		add_action( 'woocommerce_before_add_to_cart_button', array( __CLASS__, 'render_single_product_hint' ) );
 	}
 
 	/**
@@ -388,29 +385,6 @@ final class Gayanes_Qty_Rules {
 		}
 
 		return true;
-	}
-
-	/**
-	 * Render subtle quantity rule hint on single product page if min > 1 or step > 1.
-	 */
-	public static function render_single_product_hint(): void {
-		global $product;
-		if ( ! $product instanceof \WC_Product ) {
-			return;
-		}
-		$rules = self::get_rules( $product->get_id() );
-		if ( $rules['min'] <= 1 && $rules['step'] <= 1 ) {
-			return;
-		}
-
-		$parts = array();
-		if ( $rules['min'] > 1 ) {
-			$parts[] = sprintf( self::t( 'Min. order: %d' ), $rules['min'] );
-		}
-		if ( $rules['step'] > 1 ) {
-			$parts[] = sprintf( self::t( 'Step: +%d' ), $rules['step'] );
-		}
-		echo '<p class="gv2-qty-rule-hint">' . esc_html( implode( ' · ', $parts ) ) . '</p>';
 	}
 
 	/**
