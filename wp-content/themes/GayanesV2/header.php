@@ -49,6 +49,10 @@ $shop_url   = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink
 		</div>
 
 		<nav class="gv2-nav" aria-label="<?php echo esc_attr( gv2_t( 'Primary Navigation' ) ); ?>">
+			<a href="<?php echo esc_url( $shop_url ); ?>" class="gv2-nav__shop-pill<?php echo ( function_exists( 'is_shop' ) && ( is_shop() || is_product_category() ) ) ? ' is-active' : ''; ?>">
+				<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg>
+				<span><?php echo esc_html( gv2_t( 'Catalog' ) ); ?></span>
+			</a>
 			<?php
 			wp_nav_menu(
 				array(

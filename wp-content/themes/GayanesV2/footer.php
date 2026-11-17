@@ -155,6 +155,14 @@ $phone        = (string) get_theme_mod( 'gv2_phone', '+374 99 00 00 00' );
 			<?php gv2_render_language_switcher(); ?>
 		</div>
 
+		<a href="<?php echo esc_url( $shop_url ); ?>" class="gv2-mobile-nav__shop-cta<?php echo ( function_exists( 'is_shop' ) && ( is_shop() || is_product_category() ) ) ? ' is-active' : ''; ?>">
+			<span class="gv2-mobile-nav__shop-cta-left">
+				<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg>
+				<span><?php echo esc_html( gv2_t( 'Catalog' ) ); ?></span>
+			</span>
+			<span class="gv2-mobile-nav__shop-cta-arrow" aria-hidden="true">&rsaquo;</span>
+		</a>
+
 		<?php
 		wp_nav_menu(
 			array(

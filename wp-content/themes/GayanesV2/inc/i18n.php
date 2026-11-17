@@ -79,6 +79,10 @@ function gv2_translations_map(): array {
 			'hy' => 'Մենյու',
 			'ru' => 'Меню',
 		),
+		'Catalog' => array(
+			'hy' => 'Տեսականի',
+			'ru' => 'Ассортимент',
+		),
 		'Shop All' => array(
 			'hy' => 'Ամբողջ մենյուն',
 			'ru' => 'Всё меню',
