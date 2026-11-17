@@ -209,6 +209,17 @@ $phone        = (string) get_theme_mod( 'gv2_phone', '+374 99 00 00 00' );
 					continue;
 				}
 				$product_id      = (int) $cart_item['product_id'];
+				$variation_id    = (int) ( $cart_item['variation_id'] ?? 0 );
+				$qty_rules       = apply_filters(
+					'gayanes_product_qty_rules',
+					array(
+						'min'  => 1,
+						'step' => 1,
+					),
+					$variation_id > 0 ? $variation_id : $product_id
+				);
+				$item_min_qty    = max( 1, (int) ( $qty_rules['min'] ?? 1 ) );
+				$item_step_qty   = max( 1, (int) ( $qty_rules['step'] ?? 1 ) );
 				$display_product = $_product;
 				if ( function_exists( 'pll_get_post' ) ) {
 					$tr_id = (int) pll_get_post( $product_id );
@@ -227,7 +238,7 @@ $phone        = (string) get_theme_mod( 'gv2_phone', '+374 99 00 00 00' );
 					<div class="gv2-mini-item__info">
 						<a href="<?php echo esc_url( $display_product->get_permalink() ); ?>" class="gv2-mini-item__name"><?php echo esc_html( $display_product->get_name() ); ?></a>
 						<div class="gv2-mini-item__price"><?php echo wp_kses_post( WC()->cart->get_product_subtotal( $_product, $cart_item['quantity'] ) ); ?></div>
-						<div class="gv2-qty gv2-qty--sm" data-gv2-qty-control data-product-id="<?php echo esc_attr( (string) $display_product->get_id() ); ?>" data-cart-item-key="<?php echo esc_attr( $cart_item_key ); ?>">
+						<div class="gv2-qty gv2-qty--sm" data-gv2-qty-control data-product-id="<?php echo esc_attr( (string) $display_product->get_id() ); ?>" data-cart-item-key="<?php echo esc_attr( $cart_item_key ); ?>" data-min-qty="<?php echo esc_attr( (string) $item_min_qty ); ?>" data-step-qty="<?php echo esc_attr( (string) $item_step_qty ); ?>">
 							<button type="button" class="gv2-qty__btn" data-gv2-qty-step="-1" aria-label="<?php echo esc_attr( gv2_t( 'Decrease quantity' ) ); ?>">&minus;</button>
 							<span class="gv2-qty__val" data-gv2-qty-val><?php echo esc_html( (string) $cart_item['quantity'] ); ?></span>
 							<button type="button" class="gv2-qty__btn" data-gv2-qty-step="1" aria-label="<?php echo esc_attr( gv2_t( 'Increase quantity' ) ); ?>">+</button>

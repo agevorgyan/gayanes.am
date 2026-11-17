@@ -223,10 +223,23 @@ $shop_url = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 
 
 						<div class="gv2-deal-card__cta">
 							<?php if ( $deal_product->is_in_stock() && $deal_product->is_purchasable() && ! $deal_product->is_type( 'variable' ) ) : ?>
+								<?php
+								$deal_qty_rules = apply_filters(
+									'gayanes_product_qty_rules',
+									array(
+										'min'  => 1,
+										'step' => 1,
+									),
+									$deal_pid
+								);
+								$deal_min_qty   = max( 1, (int) ( $deal_qty_rules['min'] ?? 1 ) );
+								$deal_step_qty  = max( 1, (int) ( $deal_qty_rules['step'] ?? 1 ) );
+								?>
 								<button
 									type="button"
 									class="gv2-btn gv2-btn--primary gv2-btn--lg gv2-add-btn<?php echo $deal_qty > 0 ? ' is-hidden' : ''; ?>"
 									data-gv2-add="<?php echo esc_attr( (string) $deal_pid ); ?>"
+									data-min-qty="<?php echo esc_attr( (string) $deal_min_qty ); ?>"
 								>
 									<span aria-hidden="true">+</span> <?php echo esc_html( gv2_t( 'Add to Cart' ) ); ?>
 								</button>
@@ -235,6 +248,8 @@ $shop_url = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 
 									data-gv2-qty-control
 									data-product-id="<?php echo esc_attr( (string) $deal_pid ); ?>"
 									data-cart-item-key="<?php echo esc_attr( $deal_cart_key ); ?>"
+									data-min-qty="<?php echo esc_attr( (string) $deal_min_qty ); ?>"
+									data-step-qty="<?php echo esc_attr( (string) $deal_step_qty ); ?>"
 								>
 									<button type="button" class="gv2-qty__btn" data-gv2-qty-step="-1" aria-label="<?php echo esc_attr( gv2_t( 'Decrease quantity' ) ); ?>">&minus;</button>
 									<span class="gv2-qty__val" data-gv2-qty-val><?php echo esc_html( (string) max( 0, $deal_qty ) ); ?></span>

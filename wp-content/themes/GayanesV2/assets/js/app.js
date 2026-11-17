@@ -338,6 +338,8 @@
 					syncProductCards(productId, nextQty, res.data?.cart_item_key || cartKey);
 					applyCartPayload(res.data);
 					showToast(cfg.i18n.updatedQty || 'Updated quantity');
+				} else {
+					showToast(res?.data?.message || cfg.i18n.errorCart || 'Could not update cart');
 				}
 			} catch (_) {
 				showToast(cfg.i18n.errorCart || 'Could not update cart');
