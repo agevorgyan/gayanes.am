@@ -4404,9 +4404,27 @@ form.woocommerce-checkout {
 .gv2-auth-logo {
 	display: block;
 	margin: 0 auto 12px;
-	height: 46px;
-	width: auto;
+	width: 112px !important;
+	max-width: 112px !important;
+	height: auto !important;
 	object-fit: contain;
+}
+
+.woocommerce-account .gv2-page-head h1 {
+	font-size: clamp(22px, 2.2vw, 26px);
+	margin-bottom: 10px;
+}
+
+.woocommerce-account:not(.logged-in) .gv2-page-head {
+	text-align: center;
+	margin-bottom: 8px;
+}
+
+.woocommerce-account:not(.logged-in) .gv2-page-head h1 {
+	font-size: 20px;
+	font-weight: 600;
+	color: var(--gv2-muted);
+	letter-spacing: 0.01em;
 }
 
 .gv2-auth-card .gv2-auth-title {
@@ -4508,11 +4526,23 @@ form.woocommerce-checkout {
 	position: relative;
 	display: flex;
 	align-items: center;
+	width: 100%;
+}
+
+.gv2-input-icon-wrap .password-input {
+	flex: 1 1 auto;
+	width: 100%;
+	display: block;
+}
+
+.gv2-auth-form .show-password-input {
+	display: none !important;
 }
 
 .gv2-input-icon {
 	position: absolute;
 	left: 15px;
+	z-index: 2;
 	color: var(--gv2-muted);
 	pointer-events: none;
 	transition: color 0.2s ease;
