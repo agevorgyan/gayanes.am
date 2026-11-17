@@ -723,4 +723,64 @@
 			syncDeliveryPills();
 		});
 	}
+
+	// iOS 27 Auth Card: Segmented Control + Password Visibility Toggle
+	const authCard = document.querySelector('.gv2-auth-card');
+	if (authCard) {
+		const tabs = authCard.querySelectorAll('[data-auth-tab]');
+		const panels = {
+			login: document.getElementById('gv2-panel-login'),
+			register: document.getElementById('gv2-panel-register')
+		};
+
+		const setAuthTab = (target) => {
+			if (!panels[target]) return;
+			authCard.setAttribute('data-auth-active', target);
+			tabs.forEach((btn) => {
+				const active = btn.getAttribute('data-auth-tab') === target;
+				btn.classList.toggle('is-active', active);
+				btn.setAttribute('aria-selected', active ? 'true' : 'false');
+			});
+			Object.keys(panels).forEach((key) => {
+				const panel = panels[key];
+				if (!panel) return;
+				const active = key === target;
+				panel.classList.toggle('is-active', active);
+				panel.hidden = !active;
+			});
+		};
+
+		const initial = authCard.getAttribute('data-auth-initial') || 'login';
+		setAuthTab(window.location.hash === '#register' && panels.register ? 'register' : initial);
+
+		tabs.forEach((btn) => {
+			btn.addEventListener('click', () => {
+				setAuthTab(btn.getAttribute('data-auth-tab'));
+			});
+		});
+
+		authCard.querySelectorAll('[data-auth-switch]').forEach((btn) => {
+			btn.addEventListener('click', () => {
+				setAuthTab(btn.getAttribute('data-auth-switch'));
+			});
+		});
+
+		authCard.querySelectorAll('[data-pw-toggle]').forEach((toggle) => {
+			toggle.addEventListener('click', () => {
+				const inputId = toggle.getAttribute('data-pw-toggle');
+				const input = inputId ? document.getElementById(inputId) : null;
+				if (!input) return;
+				const isHidden = input.type === 'password';
+				input.type = isHidden ? 'text' : 'password';
+				const eye = toggle.querySelector('.gv2-pw-eye');
+				const eyeOff = toggle.querySelector('.gv2-pw-eye-off');
+				if (eye) eye.hidden = isHidden;
+				if (eyeOff) eyeOff.hidden = !isHidden;
+				toggle.setAttribute(
+					'aria-label',
+					isHidden ? (toggle.getAttribute('data-hide-label') || 'Hide password') : (toggle.getAttribute('data-show-label') || 'Show password')
+				);
+			});
+		});
+	}
 })();

@@ -4369,6 +4369,323 @@ form.woocommerce-checkout {
 	margin: 0 0 14px;
 }
 
+/* ==========================================================================
+   iOS 27 Liquid Glass Authentication Experience (.gv2-auth-shell)
+   ========================================================================== */
+
+.gv2-auth-shell {
+	display: flex;
+	justify-content: center;
+	padding: 8px 0 28px;
+}
+
+.gv2-auth-card {
+	width: 100%;
+	max-width: 440px;
+	background: linear-gradient(165deg, rgba(255, 255, 255, 0.90) 0%, rgba(255, 255, 255, 0.76) 100%);
+	backdrop-filter: blur(28px) saturate(190%);
+	-webkit-backdrop-filter: blur(28px) saturate(190%);
+	border: 1px solid rgba(255, 255, 255, 0.92);
+	border-radius: 30px;
+	padding: 28px 24px 22px;
+	box-shadow:
+		0 22px 54px rgba(24, 30, 24, 0.12),
+		0 4px 12px rgba(24, 30, 24, 0.05),
+		inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+
+.gv2-auth-header {
+	text-align: center;
+	margin-bottom: 20px;
+}
+
+.gv2-auth-logo {
+	display: block;
+	margin: 0 auto 12px;
+	height: 46px;
+	width: auto;
+	object-fit: contain;
+}
+
+.gv2-auth-card .gv2-auth-title {
+	font-family: var(--gv2-font-serif) !important;
+	font-size: clamp(26px, 4vw, 31px) !important;
+	font-weight: 700;
+	line-height: 1.15;
+	margin: 0 0 6px !important;
+	color: var(--gv2-text);
+}
+
+.gv2-auth-subtitle {
+	margin: 0;
+	font-size: 13.5px;
+	line-height: 1.45;
+	color: var(--gv2-muted);
+}
+
+/* iOS 27 Segmented Control */
+.gv2-auth-tabs {
+	position: relative;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	padding: 4px;
+	margin: 0 0 22px;
+	border-radius: var(--gv2-radius-pill);
+	background: rgba(36, 41, 35, 0.06);
+	border: 1px solid rgba(36, 41, 35, 0.06);
+	box-shadow: inset 0 1px 3px rgba(24, 30, 24, 0.06);
+}
+
+.gv2-auth-tabs__thumb {
+	position: absolute;
+	top: 4px;
+	left: 4px;
+	width: calc(50% - 4px);
+	height: calc(100% - 8px);
+	border-radius: var(--gv2-radius-pill);
+	background: #FFFFFF;
+	box-shadow: 0 4px 14px rgba(24, 30, 24, 0.10), 0 1px 2px rgba(24, 30, 24, 0.06);
+	transition: transform 0.36s cubic-bezier(0.22, 1, 0.36, 1);
+	pointer-events: none;
+}
+
+.gv2-auth-card[data-auth-active="register"] .gv2-auth-tabs__thumb {
+	transform: translateX(100%);
+}
+
+.gv2-auth-tab {
+	position: relative;
+	z-index: 1;
+	height: 40px;
+	border: none;
+	background: transparent;
+	font-family: var(--gv2-font-sans);
+	font-size: 13.5px;
+	font-weight: 600;
+	color: var(--gv2-muted);
+	border-radius: var(--gv2-radius-pill);
+	cursor: pointer;
+	transition: color 0.22s ease;
+	-webkit-tap-highlight-color: transparent;
+}
+
+.gv2-auth-tab.is-active {
+	color: var(--gv2-text);
+	font-weight: 700;
+}
+
+/* Panels */
+.gv2-auth-panel {
+	animation: gv2AuthFadeIn 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes gv2AuthFadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(6px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.gv2-auth-form .gv2-auth-field {
+	margin-bottom: 14px !important;
+}
+
+.gv2-auth-form .gv2-auth-field label {
+	display: block;
+	font-size: 12.5px;
+	font-weight: 600;
+	color: var(--gv2-text);
+	margin: 0 0 6px;
+}
+
+.gv2-input-icon-wrap {
+	position: relative;
+	display: flex;
+	align-items: center;
+}
+
+.gv2-input-icon {
+	position: absolute;
+	left: 15px;
+	color: var(--gv2-muted);
+	pointer-events: none;
+	transition: color 0.2s ease;
+}
+
+.gv2-input-icon-wrap:focus-within .gv2-input-icon {
+	color: var(--gv2-primary);
+}
+
+.woocommerce-account .gv2-auth-form .gv2-input-icon-wrap input.input-text {
+	width: 100% !important;
+	min-height: 50px !important;
+	padding: 12px 16px 12px 44px !important;
+	border-radius: 16px !important;
+	border: 1px solid rgba(36, 41, 35, 0.12) !important;
+	background: rgba(255, 255, 255, 0.92) !important;
+	font-size: 15px !important;
+	color: var(--gv2-text) !important;
+	box-shadow: inset 0 1px 2px rgba(24, 30, 24, 0.03);
+	transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.woocommerce-account .gv2-auth-form .gv2-input-icon-wrap--pw input.input-text {
+	padding-right: 46px !important;
+}
+
+.woocommerce-account .gv2-auth-form .gv2-input-icon-wrap input.input-text:focus {
+	outline: none !important;
+	background: #FFFFFF !important;
+	border-color: var(--gv2-primary) !important;
+	box-shadow: 0 0 0 4px rgba(48, 75, 57, 0.13) !important;
+}
+
+/* Password Eye Toggle */
+.gv2-pw-toggle {
+	position: absolute;
+	right: 8px;
+	width: 34px;
+	height: 34px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border: none;
+	background: transparent;
+	color: var(--gv2-muted);
+	border-radius: 50%;
+	cursor: pointer;
+	transition: color 0.2s ease, background 0.2s ease;
+	-webkit-tap-highlight-color: transparent;
+}
+
+.gv2-pw-toggle:hover {
+	color: var(--gv2-text);
+	background: rgba(36, 41, 35, 0.06);
+}
+
+/* Remember Me & Lost Password Row */
+.gv2-auth-meta-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	margin: 4px 0 18px;
+	flex-wrap: wrap;
+}
+
+.gv2-auth-meta-row .woocommerce-form-login__rememberme {
+	margin: 0 !important;
+}
+
+.gv2-auth-lost-link {
+	font-size: 13px;
+	font-weight: 600;
+	color: var(--gv2-primary);
+	text-decoration: none;
+}
+
+.gv2-auth-lost-link:hover {
+	text-decoration: underline;
+	text-underline-offset: 3px;
+}
+
+.gv2-auth-submit-row {
+	margin: 0 !important;
+}
+
+.woocommerce-account .gv2-auth-form .button[type="submit"] {
+	width: 100%;
+	min-height: 50px !important;
+	border-radius: var(--gv2-radius-pill) !important;
+	background: var(--gv2-primary) !important;
+	color: #FFFFFF !important;
+	font-size: 15px !important;
+	font-weight: 700 !important;
+	border: none !important;
+	box-shadow: 0 10px 24px rgba(48, 75, 57, 0.26) !important;
+	transition: transform 0.18s var(--gv2-spring), background 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.woocommerce-account .gv2-auth-form .button[type="submit"]:hover {
+	background: var(--gv2-primary-hover) !important;
+}
+
+.woocommerce-account .gv2-auth-form .button[type="submit"]:active {
+	transform: scale(0.98);
+}
+
+.gv2-auth-info-pill {
+	padding: 12px 14px;
+	border-radius: 14px;
+	background: rgba(48, 75, 57, 0.07);
+	border: 1px solid rgba(48, 75, 57, 0.14);
+	font-size: 13px;
+	line-height: 1.5;
+	color: var(--gv2-text);
+	margin: 0 0 16px;
+}
+
+.gv2-auth-switch {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 6px;
+	margin: 16px 0 0;
+	font-size: 13px;
+	color: var(--gv2-muted);
+}
+
+.gv2-auth-switch__btn {
+	border: none;
+	background: transparent;
+	padding: 2px 4px;
+	font-family: var(--gv2-font-sans);
+	font-size: 13px;
+	font-weight: 700;
+	color: var(--gv2-primary);
+	cursor: pointer;
+	text-decoration: underline;
+	text-underline-offset: 3px;
+}
+
+/* Bottom Perks Strip */
+.gv2-auth-perks {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 8px;
+	margin-top: 20px;
+	padding-top: 16px;
+	border-top: 1px solid rgba(36, 41, 35, 0.08);
+}
+
+.gv2-auth-perk {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	padding: 5px 10px;
+	border-radius: var(--gv2-radius-pill);
+	background: rgba(36, 41, 35, 0.04);
+	font-size: 11.5px;
+	font-weight: 600;
+	color: var(--gv2-muted);
+}
+
+.gv2-auth-perk svg {
+	color: var(--gv2-primary);
+}
+
+@media (max-width: 480px) {
+	.gv2-auth-card {
+		padding: 22px 18px 18px;
+		border-radius: 26px;
+	}
+}
+
 @media (max-width: 768px) {
 	.woocommerce-account table.shop_table_responsive tr {
 		display: block;
