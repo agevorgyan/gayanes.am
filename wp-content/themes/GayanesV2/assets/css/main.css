@@ -4379,7 +4379,9 @@ form.woocommerce-checkout {
 	padding: 8px 0 28px;
 }
 
-.gv2-auth-card {
+.gv2-auth-card,
+.woocommerce-account #customer_login.gv2-auth-card {
+	display: block !important;
 	width: 100%;
 	max-width: 440px;
 	background: linear-gradient(165deg, rgba(255, 255, 255, 0.90) 0%, rgba(255, 255, 255, 0.76) 100%);
@@ -4763,8 +4765,7 @@ form.woocommerce-checkout {
 		padding: 28px 32px;
 	}
 
-	.woocommerce-account .woocommerce-Addresses,
-	.woocommerce-account #customer_login {
+	.woocommerce-account .woocommerce-Addresses {
 		grid-template-columns: 1fr 1fr;
 		gap: 20px;
 	}
