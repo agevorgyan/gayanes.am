@@ -153,6 +153,16 @@ function gv2_render_product_card( WC_Product $product ): void {
 	$in_stock     = $product->is_in_stock();
 	$purchasable  = $product->is_purchasable();
 	$max_qty      = $product->get_max_purchase_quantity();
+	$qty_rules    = apply_filters(
+		'gayanes_product_qty_rules',
+		array(
+			'min'  => 1,
+			'step' => 1,
+		),
+		$product_id
+	);
+	$min_qty      = max( 1, (int) ( $qty_rules['min'] ?? 1 ) );
+	$step_qty     = max( 1, (int) ( $qty_rules['step'] ?? 1 ) );
 	$weight_label = gv2_get_product_weight_label( $product );
 	$permalink    = $product->get_permalink();
 
@@ -186,6 +196,8 @@ function gv2_render_product_card( WC_Product $product ): void {
 		class="gv2-card<?php echo ! $in_stock ? ' is-out-of-stock' : ''; ?>"
 		data-product-id="<?php echo esc_attr( (string) $product_id ); ?>"
 		data-product-type="<?php echo esc_attr( $product->get_type() ); ?>"
+		data-min-qty="<?php echo esc_attr( (string) $min_qty ); ?>"
+		data-step-qty="<?php echo esc_attr( (string) $step_qty ); ?>"
 		data-max-qty="<?php echo esc_attr( (string) $max_qty ); ?>"
 	>
 		<a href="<?php echo esc_url( $permalink ); ?>" class="gv2-card__media">

@@ -97,11 +97,25 @@ do_action( 'woocommerce_before_cart' );
 							<span class="gv2-cart-row__qty-fixed">1</span>
 							<input type="hidden" name="cart[<?php echo esc_attr( $cart_item_key ); ?>][qty]" value="1" />
 						<?php else : ?>
+							<?php
+							$qty_rules = apply_filters(
+								'gayanes_product_qty_rules',
+								array(
+									'min'  => 1,
+									'step' => 1,
+								),
+								$variation_id > 0 ? $variation_id : $product_id
+							);
+							$min_qty   = max( 1, (int) ( $qty_rules['min'] ?? 1 ) );
+							$step_qty  = max( 1, (int) ( $qty_rules['step'] ?? 1 ) );
+							?>
 							<div
 								class="gv2-qty gv2-cart-qty"
 								data-gv2-qty-control
 								data-product-id="<?php echo esc_attr( (string) $display_id ); ?>"
 								data-cart-item-key="<?php echo esc_attr( $cart_item_key ); ?>"
+								data-min-qty="<?php echo esc_attr( (string) $min_qty ); ?>"
+								data-step-qty="<?php echo esc_attr( (string) $step_qty ); ?>"
 							>
 								<button
 									type="button"

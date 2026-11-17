@@ -125,7 +125,7 @@
 				<div class="gv2-mini-item__info">
 					<a href="${escapeHtml(item.permalink)}" class="gv2-mini-item__name">${escapeHtml(item.name)}</a>
 					<div class="gv2-mini-item__price">${escapeHtml(item.line_total)}</div>
-					<div class="gv2-qty gv2-qty--sm" data-gv2-qty-control data-product-id="${escapeHtml(item.product_id)}" data-cart-item-key="${escapeHtml(item.key)}">
+					<div class="gv2-qty gv2-qty--sm" data-gv2-qty-control data-product-id="${escapeHtml(item.product_id)}" data-cart-item-key="${escapeHtml(item.key)}" data-min-qty="${escapeHtml(item.min_qty || 1)}" data-step-qty="${escapeHtml(item.step_qty || 1)}">
 						<button type="button" class="gv2-qty__btn" data-gv2-qty-step="-1" aria-label="${escapeHtml(cfg.i18n.decreaseQty || 'Decrease')}">&minus;</button>
 						<span class="gv2-qty__val" data-gv2-qty-val>${escapeHtml(item.quantity)}</span>
 						<button type="button" class="gv2-qty__btn" data-gv2-qty-step="1" aria-label="${escapeHtml(cfg.i18n.increaseQty || 'Increase')}">+</button>
@@ -283,13 +283,15 @@
 		if (addBtn) {
 			const productId = addBtn.getAttribute('data-gv2-add');
 			if (!productId || addBtn.disabled) return;
+			const card = addBtn.closest('.gv2-card');
+			const minQty = Math.max(1, parseInt(addBtn.getAttribute('data-min-qty') || card?.getAttribute('data-min-qty') || '1', 10) || 1);
 			addBtn.disabled = true;
 
 			try {
-				const res = await postAjax('gayanes_add_to_cart', { product_id: productId, quantity: 1 });
+				const res = await postAjax('gayanes_add_to_cart', { product_id: productId, quantity: minQty });
 				if (res && res.success) {
 					const key = res.data?.cart_item_key || '';
-					const qty = res.data?.quantity || 1;
+					const qty = res.data?.quantities?.[productId]?.qty || res.data?.quantity || minQty;
 					syncProductCards(productId, qty, key);
 					applyCartPayload(res.data);
 					showToast(cfg.i18n.addedToCart || 'Added to cart');
@@ -310,9 +312,17 @@
 			if (!qtyBox) return;
 
 			const delta = parseInt(stepBtn.getAttribute('data-gv2-qty-step') || '0', 10);
+			const card = qtyBox.closest('.gv2-card');
+			const minQty = Math.max(1, parseInt(qtyBox.getAttribute('data-min-qty') || card?.getAttribute('data-min-qty') || '1', 10) || 1);
+			const stepQty = Math.max(1, parseInt(qtyBox.getAttribute('data-step-qty') || card?.getAttribute('data-step-qty') || '1', 10) || 1);
 			const valEl = qtyBox.querySelector('[data-gv2-qty-val]');
 			const current = parseInt(valEl?.textContent || '0', 10);
-			const nextQty = Math.max(0, current + delta);
+			let nextQty;
+			if (delta > 0) {
+				nextQty = current < minQty ? minQty : current + stepQty;
+			} else {
+				nextQty = (current - stepQty) < minQty ? 0 : (current - stepQty);
+			}
 			const productId = qtyBox.getAttribute('data-product-id') || '';
 			const cartKey = qtyBox.getAttribute('data-cart-item-key') || '';
 

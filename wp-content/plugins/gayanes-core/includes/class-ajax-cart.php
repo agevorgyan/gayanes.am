@@ -65,6 +65,7 @@ class Ajax_Cart {
 		$product_id   = isset( $_POST['product_id'] ) ? absint( $_POST['product_id'] ) : 0;
 		$variation_id = isset( $_POST['variation_id'] ) ? absint( $_POST['variation_id'] ) : 0;
 		$quantity     = isset( $_POST['quantity'] ) ? max( 1, absint( $_POST['quantity'] ) ) : 1;
+		$quantity     = (int) apply_filters( 'gayanes_add_to_cart_quantity', $quantity, $variation_id > 0 ? $variation_id : $product_id );
 		$variation    = array();
 
 		if ( isset( $_POST['variation'] ) && is_array( $_POST['variation'] ) ) {
@@ -349,6 +350,15 @@ class Ajax_Cart {
 				$thumb_id  = $display_product->get_image_id() ?: $product->get_image_id();
 				$thumb_url = $thumb_id ? wp_get_attachment_image_url( $thumb_id, 'woocommerce_thumbnail' ) : wc_placeholder_img_src( 'woocommerce_thumbnail' );
 
+				$qty_rules = apply_filters(
+					'gayanes_product_qty_rules',
+					array(
+						'min'  => 1,
+						'step' => 1,
+					),
+					$variation_id > 0 ? $variation_id : $product_id
+				);
+
 				$items[] = array(
 					'key'          => (string) $key,
 					'product_id'   => $display_id,
@@ -359,6 +369,8 @@ class Ajax_Cart {
 					'unit_price'   => self::format_plain_price( wc_price( wc_get_price_to_display( $product ) ) ),
 					'line_total'   => self::format_plain_price( WC()->cart->get_product_subtotal( $product, $qty ) ),
 					'quantity'     => $qty,
+					'min_qty'      => max( 1, (int) ( $qty_rules['min'] ?? 1 ) ),
+					'step_qty'     => max( 1, (int) ( $qty_rules['step'] ?? 1 ) ),
 					'max_qty'      => $product->get_max_purchase_quantity(),
 					'weight'       => $display_product->get_weight() ? $display_product->get_weight() . ' ' . get_option( 'woocommerce_weight_unit' ) : '',
 				);
