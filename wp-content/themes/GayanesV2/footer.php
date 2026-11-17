@@ -127,21 +127,17 @@ $phone        = (string) get_theme_mod( 'gv2_phone', '+374 99 00 00 00' );
 
 <!-- iOS 27 Floating Liquid Glass Bottom Tab Bar (Mobile) -->
 <nav class="gv2-tabbar" aria-label="<?php echo esc_attr( gv2_t( 'Primary Navigation' ) ); ?>">
-	<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="gv2-tabbar__item<?php echo is_front_page() ? ' is-active' : ''; ?>">
-		<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5V21h-6v-6H9v6H3z" stroke-linejoin="round"/></svg>
-		<span><?php echo esc_html( gv2_t( 'Home' ) ); ?></span>
+	<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="gv2-tabbar__item<?php echo is_front_page() ? ' is-active' : ''; ?>" aria-label="<?php echo esc_attr( gv2_t( 'Home' ) ); ?>">
+		<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.35" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5V21h-6v-6H9v6H3z"/></svg>
 	</a>
-	<a href="<?php echo esc_url( $shop_url ); ?>" class="gv2-tabbar__item<?php echo ( function_exists( 'is_shop' ) && ( is_shop() || is_product_category() ) ) ? ' is-active' : ''; ?>">
-		<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg>
-		<span><?php echo esc_html( gv2_t( 'Shop' ) ); ?></span>
+	<a href="<?php echo esc_url( $shop_url ); ?>" class="gv2-tabbar__item<?php echo ( function_exists( 'is_shop' ) && ( is_shop() || is_product_category() ) ) ? ' is-active' : ''; ?>" aria-label="<?php echo esc_attr( gv2_t( 'Shop' ) ); ?>">
+		<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.35" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg>
 	</a>
-	<button type="button" class="gv2-tabbar__item" data-gv2-toggle-search>
-		<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5" stroke-linecap="round"/></svg>
-		<span><?php echo esc_html( gv2_t( 'Search' ) ); ?></span>
+	<button type="button" class="gv2-tabbar__item" data-gv2-toggle-search aria-label="<?php echo esc_attr( gv2_t( 'Search' ) ); ?>">
+		<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.35" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
 	</button>
-	<a href="<?php echo esc_url( $account_url ); ?>" class="gv2-tabbar__item">
-		<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4 5-6 8-6s6.5 2 8 6" stroke-linecap="round"/></svg>
-		<span><?php echo esc_html( gv2_t( 'Account' ) ); ?></span>
+	<a href="<?php echo esc_url( $account_url ); ?>" class="gv2-tabbar__item<?php echo ( function_exists( 'is_account_page' ) && is_account_page() ) ? ' is-active' : ''; ?>" aria-label="<?php echo esc_attr( gv2_t( 'Account' ) ); ?>">
+		<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.35" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4 5-6 8-6s6.5 2 8 6"/></svg>
 	</a>
 </nav>
 
