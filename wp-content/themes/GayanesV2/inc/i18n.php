@@ -900,7 +900,7 @@ function gv2_render_language_switcher(): void {
 }
 
 /**
- * Translate primary/mobile navigation menu item labels for EN and RU.
+ * Filter language-tagged custom menu items and translate fallback labels for EN and RU.
  *
  * @param array<int, WP_Post> $items Menu items.
  * @return array<int, WP_Post>
@@ -908,10 +908,8 @@ function gv2_render_language_switcher(): void {
 add_filter(
 	'wp_nav_menu_objects',
 	static function ( array $items ): array {
-		$lang = gv2_current_lang();
-		if ( 'hy' === $lang ) {
-			return $items;
-		}
+		$lang     = gv2_current_lang();
+		$filtered = array();
 
 		$map = array(
 			'Մեր մասին'                    => array( 'en' => 'About Us', 'ru' => 'О нас' ),
@@ -926,12 +924,24 @@ add_filter(
 		);
 
 		foreach ( $items as $item ) {
-			if ( isset( $item->title, $map[ $item->title ][ $lang ] ) ) {
+			$classes = is_array( $item->classes ?? null ) ? $item->classes : array();
+			$skip    = false;
+			foreach ( $classes as $cls ) {
+				if ( str_starts_with( (string) $cls, 'gv2-lang-only-' ) && 'gv2-lang-only-' . $lang !== $cls ) {
+					$skip = true;
+					break;
+				}
+			}
+			if ( $skip ) {
+				continue;
+			}
+			if ( 'hy' !== $lang && isset( $item->title, $map[ $item->title ][ $lang ] ) ) {
 				$item->title = $map[ $item->title ][ $lang ];
 			}
+			$filtered[] = $item;
 		}
 
-		return $items;
+		return $filtered;
 	}
 );
 
