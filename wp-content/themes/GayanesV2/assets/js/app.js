@@ -266,6 +266,16 @@
 			return;
 		}
 
+		const navDropdownTrigger = e.target.closest('.menu-item-has-children > a');
+		if (navDropdownTrigger && (navDropdownTrigger.getAttribute('href') === '#' || navDropdownTrigger.closest('.gv2-mobile-nav__list'))) {
+			e.preventDefault();
+			const parentLi = navDropdownTrigger.closest('.menu-item-has-children');
+			if (parentLi) {
+				parentLi.classList.toggle('is-open');
+			}
+			return;
+		}
+
 		const searchToggle = e.target.closest('[data-gv2-toggle-search]');
 		if (searchToggle) {
 			const searchBar = document.getElementById('gv2-header-search');

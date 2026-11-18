@@ -899,3 +899,39 @@ function gv2_render_language_switcher(): void {
 	<?php
 }
 
+/**
+ * Translate primary/mobile navigation menu item labels for EN and RU.
+ *
+ * @param array<int, WP_Post> $items Menu items.
+ * @return array<int, WP_Post>
+ */
+add_filter(
+	'wp_nav_menu_objects',
+	static function ( array $items ): array {
+		$lang = gv2_current_lang();
+		if ( 'hy' === $lang ) {
+			return $items;
+		}
+
+		$map = array(
+			'Մեր մասին'                    => array( 'en' => 'About Us', 'ru' => 'О нас' ),
+			'Պայմաններ'                    => array( 'en' => 'Terms & Info', 'ru' => 'Условия' ),
+			'Կորպորատիվ հաճախորդներին'     => array( 'en' => 'For Corporate Clients', 'ru' => 'Корпоративным клиентам' ),
+			'Առաքում և վճարում'            => array( 'en' => 'Delivery & Payment', 'ru' => 'Доставка и оплата' ),
+			'Աշխատանք Կարիերա'             => array( 'en' => 'Careers', 'ru' => 'Карьера' ),
+			'Գաղտնիության քաղաքականություն' => array( 'en' => 'Privacy Policy', 'ru' => 'Политика конфиденциальности' ),
+			'Օգտագործման պայմաններ'        => array( 'en' => 'Terms of Use', 'ru' => 'Условия использования' ),
+			'Հ.Տ.Հ.'                       => array( 'en' => 'F.A.Q.', 'ru' => 'Частые вопросы' ),
+			'Կապ'                          => array( 'en' => 'Contact', 'ru' => 'Контакты' ),
+		);
+
+		foreach ( $items as $item ) {
+			if ( isset( $item->title, $map[ $item->title ][ $lang ] ) ) {
+				$item->title = $map[ $item->title ][ $lang ];
+			}
+		}
+
+		return $items;
+	}
+);
+
