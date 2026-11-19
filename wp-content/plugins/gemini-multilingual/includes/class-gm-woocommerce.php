@@ -25,8 +25,10 @@ class GM_WooCommerce {
 		// Allow linked translations of the same product group to share the same SKU.
 		add_filter( 'wc_product_has_unique_sku', array( $this, 'allow_shared_sku_for_translations' ), 10, 3 );
 
-		// Sync stock/price when a product is saved.
+		// Sync stock/price/media when a product or category is saved.
 		add_action( 'woocommerce_update_product', array( $this, 'on_woocommerce_update_product' ), 20 );
+		add_action( 'edited_product_cat', array( $this, 'on_update_product_cat' ), 20 );
+		add_action( 'created_product_cat', array( $this, 'on_update_product_cat' ), 20 );
 	}
 
 	public function translate_wc_page_id( $page_id ): int {
@@ -222,16 +224,11 @@ class GM_WooCommerce {
 	}
 
 	/**
-	 * Keeps stock and price synced across linked product translations when edited manually.
+	 * Keeps stock, price, weight, qty rules, and images synced across linked product translations when edited manually.
 	 */
 	public function on_woocommerce_update_product( int $product_id ): void {
 		static $syncing = false;
 		if ( $syncing ) {
-			return;
-		}
-
-		$settings = GM_Plugin::get_settings();
-		if ( empty( $settings['wc_sync_stock_price'] ) ) {
 			return;
 		}
 
@@ -240,15 +237,60 @@ class GM_WooCommerce {
 			return;
 		}
 
+		$settings   = GM_Plugin::get_settings();
+		$sync_price = ! empty( $settings['wc_sync_stock_price'] );
+		$sync_media = ! empty( $settings['wc_sync_media'] );
+
+		$keys = array( '_weight', '_gayanes_min_qty', '_gayanes_step_qty' );
+		if ( $sync_price ) {
+			$keys = array_merge( $keys, array( '_regular_price', '_sale_price', '_price', '_manage_stock', '_stock', '_stock_status', '_sku' ) );
+		}
+		if ( $sync_media ) {
+			$keys = array_merge( $keys, array( '_thumbnail_id', '_product_image_gallery' ) );
+		}
+
 		$syncing = true;
-		$keys    = array( '_regular_price', '_sale_price', '_price', '_manage_stock', '_stock', '_stock_status', '_sku' );
 		foreach ( $translations as $tr_id ) {
-			if ( $tr_id === $product_id ) {
+			if ( (int) $tr_id === $product_id ) {
 				continue;
 			}
 			foreach ( $keys as $key ) {
 				$val = get_post_meta( $product_id, $key, true );
-				update_post_meta( $tr_id, $key, $val );
+				if ( '' !== $val && null !== $val ) {
+					update_post_meta( (int) $tr_id, $key, $val );
+				} else {
+					delete_post_meta( (int) $tr_id, $key );
+				}
+			}
+		}
+		$syncing = false;
+	}
+
+	/**
+	 * Keep category thumbnail synced across linked category translations when edited manually.
+	 */
+	public function on_update_product_cat( int $term_id ): void {
+		static $syncing = false;
+		if ( $syncing ) {
+			return;
+		}
+
+		$translations = $this->translations->get_translations( $term_id, 'term' );
+		if ( count( $translations ) <= 1 ) {
+			return;
+		}
+
+		$syncing  = true;
+		$thumb_id = get_term_meta( $term_id, 'thumbnail_id', true );
+		foreach ( $translations as $tr_term_id ) {
+			$tr_term_id = (int) $tr_term_id;
+			if ( $tr_term_id === $term_id ) {
+				continue;
+			}
+			if ( '' !== $thumb_id && (int) $thumb_id > 0 ) {
+				update_term_meta( $tr_term_id, 'thumbnail_id', (int) $thumb_id );
+			} else {
+				delete_term_meta( $tr_term_id, 'thumbnail_id' );
 			}
 		}
 		$syncing = false;
