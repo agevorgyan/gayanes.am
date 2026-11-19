@@ -317,6 +317,14 @@ function gv2_ajax_load_products(): void {
 		'paged'          => $paged,
 	);
 
+	if ( function_exists( 'gm_plugin' ) && isset( gm_plugin()->translations ) ) {
+		$current_lang = gv2_current_lang();
+		$exclude_ids  = gm_plugin()->translations->get_object_ids_not_in_language( $current_lang, 'post' );
+		if ( ! empty( $exclude_ids ) ) {
+			$args['post__not_in'] = $exclude_ids;
+		}
+	}
+
 	if ( '' !== $search ) {
 		$args['s'] = $search;
 	}
@@ -352,7 +360,7 @@ function gv2_ajax_load_products(): void {
 			$args['order']    = 'DESC';
 			break;
 		default:
-			$args['orderby'] = array( 'menu_order' => 'ASC', 'title' => 'ASC' );
+			$args['orderby'] = array( 'menu_order' => 'ASC', 'title' => 'ASC', 'ID' => 'ASC' );
 			break;
 	}
 
