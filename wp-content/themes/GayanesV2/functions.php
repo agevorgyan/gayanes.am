@@ -10,7 +10,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'GV2_VERSION', '2.1.15' );
+define( 'GV2_VERSION', '2.1.16' );
 define( 'GV2_DIR', get_template_directory() );
 define( 'GV2_URI', get_template_directory_uri() );
 

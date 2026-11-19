@@ -425,7 +425,8 @@
 			});
 
 			try {
-				const res = await fetch(`${cfg.ajaxUrl}?${params.toString()}`, { credentials: 'same-origin' });
+				const sep = cfg.ajaxUrl.includes('?') ? '&' : '?';
+				const res = await fetch(`${cfg.ajaxUrl}${sep}${params.toString()}`, { credentials: 'same-origin' });
 				const json = await res.json();
 				if (json && json.success && json.data?.html) {
 					grid.insertAdjacentHTML('beforeend', json.data.html);
