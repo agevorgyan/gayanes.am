@@ -220,3 +220,26 @@ function gv2_login_logo_text(): string {
 }
 add_filter( 'login_headertext', 'gv2_login_logo_text' );
 
+/**
+ * Ensure custom cron intervals used by Action Scheduler & Yoast SEO are always registered.
+ *
+ * @param array<string, array<string, mixed>> $schedules Existing cron schedules.
+ * @return array<string, array<string, mixed>>
+ */
+function gv2_register_missing_cron_schedules( array $schedules ): array {
+	if ( ! isset( $schedules['every_minute'] ) ) {
+		$schedules['every_minute'] = array(
+			'interval' => 60,
+			'display'  => 'Every Minute',
+		);
+	}
+	if ( ! isset( $schedules['fifteen_minutes'] ) ) {
+		$schedules['fifteen_minutes'] = array(
+			'interval' => 900,
+			'display'  => 'Every 15 Minutes',
+		);
+	}
+	return $schedules;
+}
+add_filter( 'cron_schedules', 'gv2_register_missing_cron_schedules', 5 );
+

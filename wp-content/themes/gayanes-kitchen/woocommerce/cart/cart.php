@@ -35,7 +35,8 @@ do_action( 'woocommerce_before_cart' );
 					continue;
 				}
 
-				$display_id = (int) $product_id;
+				$display_id   = (int) $product_id;
+				$variation_id = (int) ( $cart_item['variation_id'] ?? 0 );
 				if ( function_exists( 'pll_get_post' ) ) {
 					$tr_id = (int) pll_get_post( $display_id );
 					if ( $tr_id > 0 ) {
