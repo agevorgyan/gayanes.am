@@ -36,6 +36,7 @@ Thumbs.db
 /wp-content/wflogs/
 /wp-content/themes/index.php
 /wp-content/plugins/index.php
+/wp-content/languages/
 
 # Third-party plugins (managed via WordPress Admin on cPanel)
 /wp-content/plugins/woocommerce/
