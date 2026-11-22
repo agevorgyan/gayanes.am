@@ -24,6 +24,7 @@ class SEO_Schema {
 	public static function init(): void {
 		add_action( 'wp_head', array( __CLASS__, 'output_json_ld' ), 25 );
 		add_filter( 'wp_get_attachment_image_attributes', array( __CLASS__, 'ensure_image_alt' ), 10, 2 );
+		add_filter( 'woocommerce_structured_data_product', '__return_empty_array', 99 );
 	}
 
 	/**
@@ -55,10 +56,14 @@ class SEO_Schema {
 
 		$graph = array();
 
-		// Organization & WebSite on front page (or globally if Yoast isn't active).
-		if ( is_front_page() || ! defined( 'WPSEO_VERSION' ) ) {
+		// Organization, WebSite & BreadcrumbList only when Yoast SEO is inactive (avoid duplicates).
+		if ( ! defined( 'WPSEO_VERSION' ) ) {
 			$graph[] = self::get_organization_schema();
 			$graph[] = self::get_website_schema();
+		}
+
+		if ( is_front_page() ) {
+			$graph[] = self::get_local_business_schema();
 		}
 
 		if ( function_exists( 'is_product' ) && is_product() ) {
@@ -72,7 +77,7 @@ class SEO_Schema {
 			$graph[] = self::get_article_schema();
 		}
 
-		if ( ! is_front_page() ) {
+		if ( ! is_front_page() && ! defined( 'WPSEO_VERSION' ) ) {
 			$breadcrumbs = self::get_breadcrumb_schema();
 			if ( ! empty( $breadcrumbs ) ) {
 				$graph[] = $breadcrumbs;
@@ -139,6 +144,39 @@ class SEO_Schema {
 	}
 
 	/**
+	 * LocalBusiness / FoodEstablishment schema for Armenia.
+	 *
+	 * @return array<string, mixed>
+	 */
+	private static function get_local_business_schema(): array {
+		return array(
+			'@type'             => array( 'FoodEstablishment', 'LocalBusiness' ),
+			'@id'               => home_url( '/#localbusiness' ),
+			'name'              => "Gayane's Kitchen | Գայանեի Խոհանոց",
+			'url'               => home_url( '/' ),
+			'description'       => 'Homemade Armenian frozen food and semi-finished dishes handcrafted in Yerevan using natural ingredients: dolma, khinkali, pelmeni, vareniks, crepes, ishli kufta, falafel, and vegan options.',
+			'servesCuisine'     => array( 'Armenian', 'Homemade Frozen Food', 'Vegan & Fasting Food' ),
+			'priceRange'        => 'AMD',
+			'availableLanguage' => array( 'Armenian', 'Russian', 'English' ),
+			'knowsAbout'        => array( 'Armenian Dolma', 'Homemade Khinkali', 'Pelmeni', 'Vareniks', 'Ishli Kufta', 'Frozen Semi-Finished Food Yerevan' ),
+			'hasOfferCatalog'   => array(
+				'@type' => 'OfferCatalog',
+				'name'  => "Gayane's Kitchen Menu",
+				'url'   => home_url( '/shop/' ),
+			),
+			'address'           => array(
+				'@type'           => 'PostalAddress',
+				'addressLocality' => 'Yerevan',
+				'addressCountry'  => 'AM',
+			),
+			'areaServed'        => array(
+				'@type' => 'City',
+				'name'  => 'Yerevan',
+			),
+		);
+	}
+
+	/**
 	 * WooCommerce Product schema.
 	 *
 	 * @return array<string, mixed>
@@ -150,7 +188,10 @@ class SEO_Schema {
 		}
 
 		$image_url = wp_get_attachment_image_url( $product->get_image_id(), 'large' );
-		$currency  = function_exists( 'get_woocommerce_currency' ) ? get_woocommerce_currency() : 'AMD';
+		if ( ! $image_url && function_exists( 'wc_placeholder_img_src' ) ) {
+			$image_url = wc_placeholder_img_src( 'large' );
+		}
+		$currency = function_exists( 'get_woocommerce_currency' ) ? get_woocommerce_currency() : 'AMD';
 
 		$schema = array(
 			'@type'       => 'Product',
@@ -174,6 +215,10 @@ class SEO_Schema {
 
 		if ( $image_url ) {
 			$schema['image'] = $image_url;
+		}
+
+		if ( method_exists( $product, 'get_global_unique_id' ) && '' !== $product->get_global_unique_id() ) {
+			$schema['gtin'] = $product->get_global_unique_id();
 		}
 
 		if ( $product->get_rating_count() > 0 ) {
