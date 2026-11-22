@@ -150,18 +150,26 @@ class SEO_Schema {
 	 */
 	private static function get_local_business_schema(): array {
 		return array(
-			'@type'         => array( 'FoodEstablishment', 'LocalBusiness' ),
-			'@id'           => home_url( '/#localbusiness' ),
-			'name'          => "Gayane's Kitchen | Գայանեի Խոհանոց",
-			'url'           => home_url( '/' ),
-			'servesCuisine' => array( 'Armenian', 'Homemade Frozen Food' ),
-			'priceRange'    => 'AMD',
-			'address'       => array(
+			'@type'             => array( 'FoodEstablishment', 'LocalBusiness' ),
+			'@id'               => home_url( '/#localbusiness' ),
+			'name'              => "Gayane's Kitchen | Գայանեի Խոհանոց",
+			'url'               => home_url( '/' ),
+			'description'       => 'Homemade Armenian frozen food and semi-finished dishes handcrafted in Yerevan using natural ingredients: dolma, khinkali, pelmeni, vareniks, crepes, ishli kufta, falafel, and vegan options.',
+			'servesCuisine'     => array( 'Armenian', 'Homemade Frozen Food', 'Vegan & Fasting Food' ),
+			'priceRange'        => 'AMD',
+			'availableLanguage' => array( 'Armenian', 'Russian', 'English' ),
+			'knowsAbout'        => array( 'Armenian Dolma', 'Homemade Khinkali', 'Pelmeni', 'Vareniks', 'Ishli Kufta', 'Frozen Semi-Finished Food Yerevan' ),
+			'hasOfferCatalog'   => array(
+				'@type' => 'OfferCatalog',
+				'name'  => "Gayane's Kitchen Menu",
+				'url'   => home_url( '/shop/' ),
+			),
+			'address'           => array(
 				'@type'           => 'PostalAddress',
 				'addressLocality' => 'Yerevan',
 				'addressCountry'  => 'AM',
 			),
-			'areaServed'    => array(
+			'areaServed'        => array(
 				'@type' => 'City',
 				'name'  => 'Yerevan',
 			),

@@ -23,13 +23,124 @@ function gv2_seo_init(): void {
 	}
 
 	add_action( 'template_redirect', 'gv2_redirect_legacy_sitemap_index', 1 );
+	add_action( 'template_redirect', 'gv2_serve_llms_txt', 1 );
+	add_action( 'wp_head', 'gv2_output_llms_head_link', 5 );
 	add_filter( 'wpseo_title', 'gv2_normalize_seo_title_length', 20 );
 	add_filter( 'robots_txt', 'gv2_optimize_robots_txt', 100000, 2 );
 }
 add_action( 'init', 'gv2_seo_init' );
 
 /**
- * Clean up robots.txt: point Sitemap directly to /wp-sitemap.xml and remove redundant empty block.
+ * Advertise /llms.txt in HTML <head> for AI crawlers (Gemini, ChatGPT, Claude, Perplexity).
+ */
+function gv2_output_llms_head_link(): void {
+	if ( is_admin() || is_feed() || is_404() ) {
+		return;
+	}
+	echo '<link rel="alternate" type="text/plain" title="LLMs.txt" href="' . esc_url( home_url( '/llms.txt' ) ) . '" />' . "\n";
+}
+
+/**
+ * Serve dynamic /llms.txt and /llms-full.txt Markdown endpoints for AI assistants & search agents.
+ */
+function gv2_serve_llms_txt(): void {
+	$uri  = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
+	$path = (string) wp_parse_url( $uri, PHP_URL_PATH );
+	$path = '/' . trim( $path, '/' );
+
+	if ( '/llms.txt' !== $path && '/llms-full.txt' !== $path ) {
+		return;
+	}
+
+	status_header( 200 );
+	header( 'Content-Type: text/markdown; charset=utf-8' );
+	header( 'X-Robots-Tag: index, follow' );
+
+	$home = untrailingslashit( home_url( '/' ) );
+
+	if ( '/llms.txt' === $path ) {
+		$out  = "# Gayane's Kitchen (Գայանեի Խոհանոց)\n\n";
+		$out .= "> Homemade Armenian frozen food and semi-finished dishes handcrafted in Yerevan, Armenia using natural ingredients, available for online ordering and delivery in Yerevan.\n\n";
+		$out .= "## Core Brand Facts\n";
+		$out .= "- **Brand:** Gayane's Kitchen (Գայանեի Խոհանոց)\n";
+		$out .= "- **Location & Service Area:** Yerevan, Armenia\n";
+		$out .= "- **Languages:** Armenian (hy-AM), Russian (ru-AM), English (en-AM)\n";
+		$out .= "- **Currency:** AMD (Armenian Dram)\n";
+		$out .= "- **Specialties:** Dolma (grape leaf, cabbage, vegetable, lenten/pasuts), Khinkali, Pelmeni, Vareniks, Blini/Crepes, Ishli Kufta, Kololak, Cutlets, Falafel, Spring Rolls, Vegan & Fasting frozen dishes\n\n";
+		$out .= "## Key Pages\n";
+		$out .= "- [Homepage (Armenian)](" . $home . "/)\n";
+		$out .= "- [Homepage (Russian)](" . $home . "/?lang=ru)\n";
+		$out .= "- [Homepage (English)](" . $home . "/?lang=en)\n";
+		$out .= "- [Online Shop Catalog](" . $home . "/shop/)\n";
+		$out .= "- [Delivery & Payment](" . $home . "/delivery/)\n";
+		$out .= "- [About Us](" . $home . "/about-us/)\n";
+		$out .= "- [Corporate Clients (HoReCa / B2B)](" . $home . "/corporate-clients/)\n";
+		$out .= "- [FAQ](" . $home . "/faq/)\n";
+		$out .= "- [Blog & Recipes](" . $home . "/blog/)\n";
+		$out .= "- [Contact](" . $home . "/contact/)\n\n";
+		$out .= "## Complete Product & Category Index\n";
+		$out .= "- [Full Product & Category Catalog (llms-full.txt)](" . $home . "/llms-full.txt)\n";
+		$out .= "- [XML Sitemap](" . $home . "/wp-sitemap.xml)\n";
+		echo $out; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		exit;
+	}
+
+	// /llms-full.txt — Complete verified catalog across all languages.
+	$out  = "# Gayane's Kitchen — Full Product & Category Catalog\n\n";
+	$out .= "Primary website: " . $home . "/\n\n";
+
+	$terms = get_terms(
+		array(
+			'taxonomy'           => 'product_cat',
+			'hide_empty'         => true,
+			'gm_skip_lang_filter' => true,
+		)
+	);
+	if ( is_array( $terms ) && ! empty( $terms ) ) {
+		$out .= "## Product Categories\n";
+		foreach ( $terms as $term ) {
+			if ( str_starts_with( $term->slug, 'uncategorized' ) ) {
+				continue;
+			}
+			$link = get_term_link( $term );
+			if ( ! is_wp_error( $link ) ) {
+				$out .= "- [" . html_entity_decode( $term->name, ENT_QUOTES | ENT_HTML5, 'UTF-8' ) . "](" . $link . ")\n";
+			}
+		}
+		$out .= "\n";
+	}
+
+	$products = get_posts(
+		array(
+			'post_type'           => 'product',
+			'post_status'         => 'publish',
+			'posts_per_page'      => 200,
+			'gm_skip_lang_filter' => true,
+			'orderby'             => 'title',
+			'order'               => 'ASC',
+		)
+	);
+	if ( ! empty( $products ) && function_exists( 'wc_get_product' ) ) {
+		$out .= "## Published Products (" . count( $products ) . ")\n";
+		foreach ( $products as $p ) {
+			$wc_p = wc_get_product( $p->ID );
+			if ( ! $wc_p ) {
+				continue;
+			}
+			$price = $wc_p->get_price();
+			$stock = $wc_p->is_in_stock() ? 'InStock' : 'OutOfStock';
+			$link  = get_permalink( $p->ID );
+			$title = html_entity_decode( $wc_p->get_name(), ENT_QUOTES | ENT_HTML5, 'UTF-8' );
+			$out  .= "- **{$title}** — {$price} AMD ({$stock}) — {$link}\n";
+		}
+	}
+
+	echo $out; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	exit;
+}
+
+/**
+ * Clean up robots.txt: point Sitemap directly to /wp-sitemap.xml, welcome AI crawlers, and remove redundant empty block.
  *
  * @param string $output Robots.txt content.
  * @param bool   $public Site visibility flag.
@@ -42,6 +153,13 @@ function gv2_optimize_robots_txt( string $output, $public ): string {
 
 	$output = str_replace( '/sitemap_index.xml', '/wp-sitemap.xml', $output );
 	$output = preg_replace( "/User-agent:\s*\*\s*\r?\nDisallow:\s*\r?\n\r?\n(?=Sitemap:)/i", '', $output ) ?? $output;
+
+	$ai_bots = array( 'GPTBot', 'OAI-SearchBot', 'ChatGPT-User', 'ClaudeBot', 'Claude-Web', 'Google-Extended', 'PerplexityBot', 'Applebot-Extended' );
+	$output .= "\n# AI Search & Assistant Crawlers (GEO)\n";
+	foreach ( $ai_bots as $bot ) {
+		$output .= "User-agent: {$bot}\nAllow: /\nDisallow: /wp-admin/\nDisallow: /cart/\nDisallow: /checkout/\nDisallow: /my-account/\n\n";
+	}
+	$output .= '# LLMs.txt: ' . esc_url_raw( home_url( '/llms.txt' ) ) . "\n";
 
 	return $output;
 }
