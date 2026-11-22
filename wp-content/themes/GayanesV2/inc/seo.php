@@ -24,8 +24,27 @@ function gv2_seo_init(): void {
 
 	add_action( 'template_redirect', 'gv2_redirect_legacy_sitemap_index', 1 );
 	add_filter( 'wpseo_title', 'gv2_normalize_seo_title_length', 20 );
+	add_filter( 'robots_txt', 'gv2_optimize_robots_txt', 100000, 2 );
 }
 add_action( 'init', 'gv2_seo_init' );
+
+/**
+ * Clean up robots.txt: point Sitemap directly to /wp-sitemap.xml and remove redundant empty block.
+ *
+ * @param string $output Robots.txt content.
+ * @param bool   $public Site visibility flag.
+ * @return string
+ */
+function gv2_optimize_robots_txt( string $output, $public ): string {
+	if ( ! $public ) {
+		return $output;
+	}
+
+	$output = str_replace( '/sitemap_index.xml', '/wp-sitemap.xml', $output );
+	$output = preg_replace( "/User-agent:\s*\*\s*\r?\nDisallow:\s*\r?\n\r?\n(?=Sitemap:)/i", '', $output ) ?? $output;
+
+	return $output;
+}
 
 /**
  * Keep SEO titles concise (<= 65 chars) by compacting the bilingual site-name suffix when needed.
