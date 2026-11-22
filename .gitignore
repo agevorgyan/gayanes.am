@@ -30,7 +30,6 @@ Thumbs.db
 
 # WordPress wp-content unchanging / environment-specific directories
 /wp-content/index.php
-/wp-content/languages/
 /wp-content/upgrade/
 /wp-content/uploads/wc-logs/
 /wp-content/cache/
