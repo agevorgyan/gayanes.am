@@ -391,6 +391,63 @@ function gv2_ajax_load_products(): void {
 add_action( 'wp_ajax_gv2_load_products', 'gv2_ajax_load_products' );
 add_action( 'wp_ajax_nopriv_gv2_load_products', 'gv2_ajax_load_products' );
 
+/**
+ * AJAX Live Product Search (triggers from 2+ characters, language-aware).
+ */
+function gv2_ajax_live_search(): void {
+	$q = isset( $_GET['q'] ) ? sanitize_text_field( wp_unslash( $_GET['q'] ) ) : '';
+	if ( '' === $q && isset( $_POST['q'] ) ) {
+		$q = sanitize_text_field( wp_unslash( $_POST['q'] ) );
+	}
+	$q = trim( $q );
+
+	if ( mb_strlen( $q, 'UTF-8' ) < 2 ) {
+		wp_send_json_success( array( 'items' => array(), 'total' => 0 ) );
+	}
+
+	$query = new WP_Query(
+		array(
+			'post_type'      => 'product',
+			'post_status'    => 'publish',
+			's'              => $q,
+			'posts_per_page' => 8,
+			'orderby'        => 'relevance',
+		)
+	);
+
+	$items = array();
+	if ( $query->have_posts() ) {
+		foreach ( $query->posts as $post ) {
+			$product = wc_get_product( $post->ID );
+			if ( ! $product instanceof WC_Product ) {
+				continue;
+			}
+			$img_url = wp_get_attachment_image_url( (int) $product->get_image_id(), 'thumbnail' );
+			if ( ! $img_url && function_exists( 'wc_placeholder_img_src' ) ) {
+				$img_url = wc_placeholder_img_src( 'thumbnail' );
+			}
+			$price_num = (string) $product->get_price();
+			$price_txt = '' !== $price_num ? number_format_i18n( (float) $price_num ) . ' ֏' : '';
+			$items[]   = array(
+				'id'    => $product->get_id(),
+				'name'  => html_entity_decode( $product->get_name(), ENT_QUOTES | ENT_HTML5, 'UTF-8' ),
+				'url'   => $product->get_permalink(),
+				'price' => $price_txt,
+				'image' => $img_url ?: '',
+			);
+		}
+	}
+
+	wp_send_json_success(
+		array(
+			'items' => $items,
+			'total' => (int) $query->found_posts,
+		)
+	);
+}
+add_action( 'wp_ajax_gv2_live_search', 'gv2_ajax_live_search' );
+add_action( 'wp_ajax_nopriv_gv2_live_search', 'gv2_ajax_live_search' );
+
 
 /**
  * Render an iOS 27 Liquid Glass Profile Header Card at the top of /my-account/.

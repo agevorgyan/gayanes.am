@@ -824,4 +824,104 @@
 			});
 		});
 	}
+
+	// Live Header Product Search (triggers on 2+ characters)
+	const headerSearchWrap = document.getElementById('gv2-header-search');
+	const searchInput = headerSearchWrap ? headerSearchWrap.querySelector('.gv2-search-form__input') : null;
+	const searchResults = document.getElementById('gv2-search-results');
+	if (headerSearchWrap && searchInput && searchResults) {
+		let searchTimer = null;
+		let searchAbort = null;
+
+		const hideSearchResults = () => {
+			searchResults.hidden = true;
+			searchResults.innerHTML = '';
+		};
+
+		const renderSearchResults = (items, query) => {
+			searchResults.innerHTML = '';
+			if (!items || !items.length) {
+				const empty = document.createElement('div');
+				empty.className = 'gv2-search-results__empty';
+				empty.textContent = cfg.i18n.noResults || 'Nothing found';
+				searchResults.appendChild(empty);
+				searchResults.hidden = false;
+				return;
+			}
+			items.forEach((item) => {
+				const row = document.createElement('a');
+				row.className = 'gv2-search-result-item';
+				row.href = item.url;
+				row.setAttribute('role', 'option');
+
+				if (item.image) {
+					const img = document.createElement('img');
+					img.className = 'gv2-search-result-item__img';
+					img.src = item.image;
+					img.alt = item.name;
+					img.loading = 'lazy';
+					row.appendChild(img);
+				}
+
+				const info = document.createElement('span');
+				info.className = 'gv2-search-result-item__info';
+				const title = document.createElement('span');
+				title.className = 'gv2-search-result-item__title';
+				title.textContent = item.name;
+				info.appendChild(title);
+
+				if (item.price) {
+					const price = document.createElement('span');
+					price.className = 'gv2-search-result-item__price';
+					price.textContent = item.price;
+					info.appendChild(price);
+				}
+
+				row.appendChild(info);
+				searchResults.appendChild(row);
+			});
+			searchResults.hidden = false;
+		};
+
+		searchInput.addEventListener('input', () => {
+			const q = searchInput.value.trim();
+			clearTimeout(searchTimer);
+			if (q.length < 2) {
+				if (searchAbort) searchAbort.abort();
+				hideSearchResults();
+				return;
+			}
+			searchTimer = setTimeout(async () => {
+				if (searchAbort) searchAbort.abort();
+				searchAbort = new AbortController();
+				try {
+					const sep = cfg.ajaxUrl.includes('?') ? '&' : '?';
+					const res = await fetch(
+						`${cfg.ajaxUrl}${sep}action=gv2_live_search&q=${encodeURIComponent(q)}`,
+						{ credentials: 'same-origin', signal: searchAbort.signal }
+					);
+					const json = await res.json();
+					if (json && json.success) {
+						renderSearchResults(json.data?.items || [], q);
+					}
+				} catch (err) {
+					if (err && err.name !== 'AbortError') {
+						hideSearchResults();
+					}
+				}
+			}, 220);
+		});
+
+		document.addEventListener('click', (e) => {
+			if (!headerSearchWrap.contains(e.target)) {
+				hideSearchResults();
+			}
+		});
+
+		document.addEventListener('keydown', (e) => {
+			if (e.key === 'Escape') {
+				hideSearchResults();
+			}
+		});
+	}
 })();
