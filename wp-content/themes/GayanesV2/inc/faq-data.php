@@ -157,9 +157,9 @@ function gv2_get_faqs( bool $featured_only = false ): array {
 				'en' => 'What payment methods are accepted on gayanes.am?',
 			),
 			'a'        => array(
-				'hy' => 'Կարող եք վճարել կանխիկ առաքիչին՝ պատվերը ստանալու պահին, կամ անկանխիկ եղանակով՝ առցանց վճարմամբ և բանկային քարտերով։ Բոլոր գները ներկայացված են ՀՀ դրամով (AMD)։',
-				'ru' => 'Вы можете оплатить заказ наличными курьеру при получении или безналичным способом онлайн банковской картой. Все цены на сайте указаны в армянских драмах (AMD).',
-				'en' => 'You can pay cash on delivery or via online bank card / cashless payment at checkout. All prices are listed in Armenian Drams (AMD).',
+				'hy' => 'Կարող եք վճարել կանխիկ առաքիչին՝ պատվերը ստանալու պահին, կամ առցանց՝ բանկային քարտերով (Ameriabank vPOS), Idram, Telcell և Fastshift վճարային համակարգերով։ Բոլոր գները ներկայացված են ՀՀ դրամով (AMD)։',
+				'ru' => 'Вы можете оплатить заказ наличными курьеру при получении или онлайн банковской картой (Ameriabank vPOS), а также через Idram, Telcell и Fastshift. Все цены на сайте указаны в армянских драмах (AMD).',
+				'en' => 'You can pay cash on delivery or online via bank card (Ameriabank vPOS), Idram, Telcell, and Fastshift at checkout. All prices are listed in Armenian Drams (AMD).',
 			),
 		),
 		array(
@@ -235,6 +235,51 @@ function gv2_get_faqs( bool $featured_only = false ): array {
 				'hy' => 'Ի տարբերություն արդյունաբերական արտադրության՝ Գայանեի Խոհանոցում ամեն ինչ պատրաստվում է փոքր խմբաքանակներով և ձեռքով՝ բարակ տնական խմորով, առատ միջուկով և առանց էժան փոխարինիչների։ Համը, բույրն ու կառուցվածքը ճիշտ նույնն են, ինչ տանը պատրաստված ուտեստինը։',
 				'ru' => 'В отличие от фабричного производства, на «Кухне Гаяне» всё готовится небольшими партиями и вручную — с тонким домашним тестом, щедрой начинкой и без дешёвых заменителей. Вкус и аромат получаются точно такими же, как дома.',
 				'en' => 'Unlike factory-made frozen foods, everything at Gayane’s Kitchen is handcrafted daily in small batches with thin homemade dough, generous fillings, and zero cheap fillers — giving you true home-cooked taste and texture.',
+			),
+		),
+		array(
+			'id'       => 'full-product-catalog-specialties',
+			'category' => 'ordering',
+			'featured' => false,
+			'q'        => array(
+				'hy' => 'Ի՞նչ ամբողջական տեսականի է ներկայացված Գայանեի Խոհանոցի կատալոգում։',
+				'ru' => 'Какой полный ассортимент блюд представлен в каталоге «Кухни Гаяне»?',
+				'en' => 'What is the full range of homemade dishes in the Gayane’s Kitchen catalog?',
+			),
+			'a'        => array(
+				'hy' => 'Կատալոգում ներկայացված են հայկական և ավանդական տնական սառեցված ուտեստներ՝ տոլմա (թփով, կաղամբով, ամառային բանջարեղենով, պասուց և բրնձով պահքի), տնական խինկալի և մանթի, պելմենի (ֆիրմային, սիբիրյան, միայն տավարի մսով, գունավոր), վարենիկներ (կարտոֆիլով, սպանախով, կաթնաշոռով, սնկով), նրբաբլիթներ (տավարի մսով, կաթնաշոռով, բլինչիկի շերտիկ), իշլի քյուֆթա (դասական, ընկույզով, փոքր), կոլոլակ (տավարի, տավարի և հավի), կոտլետներ (Կիևյան, հավի, տավարի), հավի նագեթս, թաթար բորակի, խաշ, ֆալաֆել և սփրինգ ռոլեր (բանջարեղենով, սնկով)։',
+				'ru' => 'В каталоге представлены армянские и традиционные домашние замороженные блюда: толма (в виноградных листьях, голубцы, летняя с овощами, пасуц и постная с рисом), домашние хинкали и манты, пельмени (фирменные, сибирские, из говядины, цветные), вареники (с картофелем, шпинатом, творогом, грибами), блинчики (с говядиной, творогом и блинные листы), ишли кюфта (классическая, с грецким орехом, малая), кололак, котлеты (по-киевски, куриная, говяжья), наггетсы, татар бораки, хаш, фалафель и спринг-роллы.',
+				'en' => 'Our catalog features handmade Armenian and traditional frozen dishes: dolma (grape leaf, cabbage, summer vegetable, pasuts lentil, and lenten rice), homemade khinkali and manti, pelmeni (signature, Siberian, all-beef, colorful), vareniks (potato, spinach, cottage cheese, mushroom), crepes/blini (beef, cottage cheese, crepe sheets), ishli kufta (classic, walnut, mini), kololak, cutlets (Chicken Kiev, chicken, beef), chicken breast nuggets, tatar boraki, khash, falafel, and spring rolls.',
+			),
+		),
+		array(
+			'id'       => 'horeca-corporate-supply',
+			'category' => 'ordering',
+			'featured' => false,
+			'q'        => array(
+				'hy' => 'Արդյո՞ք Գայանեի Խոհանոցը համագործակցում է ռեստորանների, սրճարանների (HoReCa) և ընկերությունների հետ։',
+				'ru' => 'Сотрудничает ли «Кухня Гаяне» с ресторанами, кафе (HoReCa) и компаниями?',
+				'en' => 'Does Gayane’s Kitchen supply restaurants, cafes (HoReCa), and corporate clients?',
+			),
+			'a'        => array(
+				'hy' => 'Այո՛։ Մենք առաջարկում ենք կայուն որակով տնական սառեցված կիսաֆաբրիկատների մատակարարում Երևանի ռեստորանների, սրճարանների, հյուրանոցների և գրասենյակների համար։ Մանրամասների համար այցելեք Կորպորատիվ հաճախորդների բաժին (/corporate-clients/) կամ զանգահարեք +374 (55) 600655։',
+				'ru' => 'Да! Мы поставляем домашние замороженные полуфабрикаты стабильного качества для ресторанов, кафе, отелей и офисов в Ереване. Подробности доступны на странице для корпоративных клиентов (/corporate-clients/) или по телефону +374 (55) 600655.',
+				'en' => 'Yes! We supply consistent-quality homemade frozen semi-finished dishes to restaurants, cafes, hotels, and offices in Yerevan. Visit our Corporate Clients page (/corporate-clients/) or call +374 (55) 600655 for B2B inquiries.',
+			),
+		),
+		array(
+			'id'       => 'how-to-order-online',
+			'category' => 'ordering',
+			'featured' => false,
+			'q'        => array(
+				'hy' => 'Ինչպե՞ս պատվիրել առցանց և ի՞նչ լեզուներով է հասանելի կայքը։',
+				'ru' => 'Как оформить заказ онлайн и на каких языках доступен сайт?',
+				'en' => 'How do I order online and which languages does the website support?',
+			),
+			'a'        => array(
+				'hy' => 'Կայքը հասանելի է 3 լեզվով՝ հայերեն, ռուսերեն և անգլերեն։ Ընտրեք ուտեստները խանութի բաժնից (/shop/), ավելացրեք զամբյուղ, նշեք առաքման հասցեն Երևանում և վճարման եղանակը՝ կանխիկ կամ առցանց։ Հարցերի դեպքում կարող եք նաև զանգահարել +374 (55) 600655։',
+				'ru' => 'Сайт доступен на трёх языках: армянском, русском и английском. Выберите блюда в каталоге (/shop/), добавьте их в корзину, укажите адрес доставки в Ереване и удобный способ оплаты — наличными или онлайн. Также можно позвонить по номеру +374 (55) 600655.',
+				'en' => 'The website is available in Armenian, Russian, and English. Browse our online shop (/shop/), add dishes to your cart, enter your Yerevan delivery address, and choose cash or online payment at checkout — or call +374 (55) 600655 for assistance.',
 			),
 		),
 	);

@@ -66,7 +66,13 @@ function gv2_serve_llms_txt(): void {
 		$out .= "- **Location & Service Area:** Yerevan, Armenia\n";
 		$out .= "- **Languages:** Armenian (hy-AM), Russian (ru-AM), English (en-AM)\n";
 		$out .= "- **Currency:** AMD (Armenian Dram)\n";
-		$out .= "- **Specialties:** Dolma (grape leaf, cabbage, vegetable, lenten/pasuts), Khinkali, Pelmeni, Vareniks, Blini/Crepes, Ishli Kufta, Kololak, Cutlets, Falafel, Spring Rolls, Vegan & Fasting frozen dishes\n\n";
+		$out .= "- **Specialties:** Dolma (grape leaf, cabbage, vegetable, lenten/pasuts), Khinkali, Pelmeni, Vareniks, Blini/Crepes, Ishli Kufta, Kololak, Cutlets, Falafel, Spring Rolls, Vegan & Fasting frozen dishes\n";
+		$out .= "- **Kitchen Address (Pickup):** Davtashen 2nd District, 37, Yerevan 0054, Armenia\n";
+		$out .= "- **Phone / WhatsApp / Telegram:** +374 (55) 600655, +374 (11) 600111\n";
+		$out .= "- **Delivery:** Same-day chilled delivery across Yerevan; FREE for orders of 15,000 AMD or more\n";
+		$out .= "- **Payment Methods:** Cash on delivery, Online Bank Cards (Ameriabank vPOS), Idram, Telcell, Fastshift\n";
+		$out .= "- **Storage & Cooking:** Store at -18°C up to 90 days; cook straight from frozen in 5–12 minutes (no thawing, zero preservatives or soy fillers)\n";
+		$out .= "- **B2B / HoReCa:** Wholesale supply available for restaurants, cafes, hotels, and offices in Yerevan\n\n";
 		$out .= "## Key Pages\n";
 		$out .= "- [Homepage (Armenian)](" . $home . "/)\n";
 		$out .= "- [Homepage (Russian)](" . $home . "/?lang=ru)\n";
