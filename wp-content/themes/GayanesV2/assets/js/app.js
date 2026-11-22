@@ -595,8 +595,8 @@
 			let visibleCount = 0;
 
 			faqItems.forEach((item) => {
-				const itemCat = item.getAttribute('data-category') || '';
-				const blob = item.getAttribute('data-search') || '';
+				const itemCat = item.getAttribute('data-faq-category') || item.getAttribute('data-category') || '';
+				const blob = (item.getAttribute('data-search') || item.textContent || '').toLowerCase();
 				const matchCat = activeCat === 'all' || itemCat === activeCat;
 				const matchQuery = !query || blob.includes(query);
 				const show = matchCat && matchQuery;
