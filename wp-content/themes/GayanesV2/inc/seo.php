@@ -16,8 +16,150 @@ function gv2_seo_init(): void {
 	add_action( 'wp_head', 'gv2_output_json_ld_graph', 24 );
 	add_action( 'wp_head', 'gv2_output_faq_json_ld', 25 );
 	add_filter( 'wp_get_attachment_image_attributes', 'gv2_ensure_image_alt', 10, 2 );
+
+	if ( ! defined( 'WPSEO_VERSION' ) ) {
+		remove_action( 'wp_head', 'rel_canonical' );
+		add_filter( 'wp_robots', 'gv2_filter_wp_robots', 20 );
+	}
+
+	add_action( 'template_redirect', 'gv2_redirect_legacy_sitemap_index', 1 );
+	add_filter( 'wpseo_title', 'gv2_normalize_seo_title_length', 20 );
 }
 add_action( 'init', 'gv2_seo_init' );
+
+/**
+ * Keep SEO titles concise (<= 65 chars) by compacting the bilingual site-name suffix when needed.
+ *
+ * @param string $title Document title.
+ * @return string
+ */
+function gv2_normalize_seo_title_length( string $title ): string {
+	$title = html_entity_decode( $title, ENT_QUOTES | ENT_HTML5, 'UTF-8' );
+	$title = preg_replace( '/\s+/u', ' ', trim( $title ) ) ?? trim( $title );
+
+	if ( mb_strlen( $title, 'UTF-8' ) <= 65 ) {
+		return $title;
+	}
+
+	$brand = ( 'hy' === gv2_current_lang() ) ? 'Գայանեի Խոհանոց' : "Gayane's Kitchen";
+	$title = str_replace(
+		array(
+			" - Gayane's Kitchen | Գայանեի Խոհանոց",
+			" | Gayane's Kitchen | Գայանեի Խոհանոց",
+			" - Gayane’s Kitchen | Գայանեի Խոհանոց",
+		),
+		' | ' . $brand,
+		$title
+	);
+
+	if ( mb_strlen( $title, 'UTF-8' ) <= 65 ) {
+		return $title;
+	}
+
+	$suffix = ' | ' . $brand;
+	if ( str_ends_with( $title, $suffix ) ) {
+		$max_head = 65 - mb_strlen( $suffix, 'UTF-8' );
+		if ( $max_head > 15 ) {
+			$head = mb_substr( mb_substr( $title, 0, -mb_strlen( $suffix, 'UTF-8' ), 'UTF-8' ), 0, $max_head - 3, 'UTF-8' );
+			$head = preg_replace( '/\s+\S*$/u', '', $head ) ?: $head;
+			return rtrim( $head, " \t\n\r\0\x0B,-:|" ) . '...' . $suffix;
+		}
+	}
+
+	$cut = mb_substr( $title, 0, 62, 'UTF-8' );
+	return ( preg_replace( '/\s+\S*$/u', '', $cut ) ?: $cut ) . '...';
+}
+
+// Register sitemap provider filter before core `wp_sitemaps_get_server()` runs at init:10.
+add_filter(
+	'wp_sitemaps_add_provider',
+	static function ( $provider, string $name ) {
+		return 'users' === $name ? false : $provider;
+	},
+	10,
+	2
+);
+add_filter(
+	'wp_sitemaps_posts_query_args',
+	static function ( array $args ): array {
+		$args['gm_skip_lang_filter'] = true;
+
+		if ( 'page' === ( $args['post_type'] ?? '' ) && function_exists( 'wc_get_page_id' ) ) {
+			$exclude = array_filter(
+				array(
+					(int) wc_get_page_id( 'cart' ),
+					(int) wc_get_page_id( 'checkout' ),
+					(int) wc_get_page_id( 'myaccount' ),
+				),
+				static fn( int $id ): bool => $id > 0
+			);
+			if ( ! empty( $exclude ) ) {
+				$existing             = isset( $args['post__not_in'] ) ? (array) $args['post__not_in'] : array();
+				$args['post__not_in'] = array_values( array_unique( array_merge( $existing, $exclude ) ) );
+			}
+		}
+
+		return $args;
+	}
+);
+add_filter(
+	'wp_sitemaps_taxonomies_query_args',
+	static function ( array $args ): array {
+		$args['gm_skip_lang_filter'] = true;
+		return $args;
+	}
+);
+
+/**
+ * Redirect legacy Yoast /sitemap_index.xml requests to WordPress core /wp-sitemap.xml (same host).
+ */
+function gv2_redirect_legacy_sitemap_index(): void {
+	if ( ! is_404() ) {
+		return;
+	}
+	$req_path = wp_parse_url( sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ?? '' ) ), PHP_URL_PATH );
+	if ( '/sitemap_index.xml' === $req_path ) {
+		wp_safe_redirect( home_url( '/wp-sitemap.xml' ), 301 );
+		exit;
+	}
+}
+
+/**
+ * Enforce index/noindex directives via WordPress core wp_robots filter (single robots tag).
+ *
+ * @param array<string, bool|string> $robots Robots directives.
+ * @return array<string, bool|string>
+ */
+function gv2_filter_wp_robots( array $robots ): array {
+	if ( is_404() ) {
+		return array(
+			'noindex'  => true,
+			'nofollow' => true,
+		);
+	}
+
+	$is_transactional = ( function_exists( 'is_cart' ) && is_cart() )
+		|| ( function_exists( 'is_checkout' ) && is_checkout() )
+		|| ( function_exists( 'is_account_page' ) && is_account_page() );
+
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	$has_non_canonical_param = isset( $_GET['add-to-cart'] ) || isset( $_GET['orderby'] );
+
+	if ( $is_transactional || is_search() || is_author() || $has_non_canonical_param ) {
+		return array(
+			'noindex' => true,
+			'follow'  => true,
+		);
+	}
+
+	return array(
+		'index'               => true,
+		'follow'              => true,
+		'max-image-preview'   => 'large',
+		'max-snippet'         => '-1',
+		'max-video-preview'   => '-1',
+	);
+}
 
 /**
  * Ensure every image has a descriptive alt attribute for Google Images & Yandex.
@@ -43,7 +185,7 @@ function gv2_ensure_image_alt( array $attr, WP_Post $attachment ): array {
  * Output verification, meta description, canonical, hreflang, and Open Graph tags.
  */
 function gv2_output_seo_meta_tags(): void {
-	if ( is_admin() || is_feed() ) {
+	if ( is_admin() || is_feed() || is_404() ) {
 		return;
 	}
 
@@ -72,15 +214,30 @@ function gv2_output_seo_meta_tags(): void {
 	$site_name = get_bloginfo( 'name' );
 	$desc      = gv2_t( 'Handcrafted daily with 100% natural ingredients and delivered chilled to your door.' );
 	$title     = wp_get_document_title();
-	$url       = home_url( add_query_arg( array(), $GLOBALS['wp']->request ?? '' ) );
+	$url       = home_url( '/' );
 	$image     = GV2_URI . '/assets/images/logo-dark.png';
 	$og_type   = 'website';
 
-	if ( is_singular() ) {
-		$post_id = get_queried_object_id();
-		$excerpt = get_the_excerpt( $post_id );
-		if ( '' !== trim( $excerpt ) ) {
-			$desc = wp_trim_words( wp_strip_all_tags( $excerpt ), 28, '...' );
+	if ( is_front_page() ) {
+		$url      = home_url( '/' );
+		$front_id = (int) get_option( 'page_on_front' );
+		if ( $front_id > 0 ) {
+			$meta_desc = trim( (string) get_post_meta( $front_id, '_yoast_wpseo_metadesc', true ) );
+			if ( '' !== $meta_desc ) {
+				$desc = $meta_desc;
+			}
+		}
+		if ( 'ru' === gv2_current_lang() ) {
+			$desc = 'Домашние замороженные полуфабрикаты ручной лепки от Gayane’s Kitchen в Ереване: долма, хинкали, пельмени, вареники, блинчики и постные блюда.';
+		} elseif ( 'en' === gv2_current_lang() ) {
+			$desc = "Homemade Armenian frozen food & semi-finished dishes by Gayane's Kitchen in Yerevan: dolma, khinkali, pelmeni, vareniks, crepes, and vegan options.";
+		}
+	} elseif ( is_singular() ) {
+		$post_id   = get_queried_object_id();
+		$meta_desc = trim( (string) get_post_meta( $post_id, '_yoast_wpseo_metadesc', true ) );
+		$excerpt   = '' !== $meta_desc ? $meta_desc : trim( (string) get_the_excerpt( $post_id ) );
+		if ( '' !== $excerpt ) {
+			$desc = wp_strip_all_tags( $excerpt );
 		}
 		$url = (string) get_permalink( $post_id );
 		if ( has_post_thumbnail( $post_id ) ) {
@@ -94,13 +251,50 @@ function gv2_output_seo_meta_tags(): void {
 		} elseif ( is_single() ) {
 			$og_type = 'article';
 		}
+	} elseif ( function_exists( 'is_shop' ) && is_shop() ) {
+		$url     = (string) wc_get_page_permalink( 'shop' );
+		$shop_id = function_exists( 'wc_get_page_id' ) ? (int) wc_get_page_id( 'shop' ) : 0;
+		if ( 'ru' === gv2_current_lang() ) {
+			$desc = 'Каталог домашних замороженных полуфабрикатов Gayane’s Kitchen: хинкали, пельмени, вареники, толма, блинчики и постные блюда с доставкой в Ереване.';
+		} elseif ( 'en' === gv2_current_lang() ) {
+			$desc = "Shop homemade Armenian frozen food from Gayane's Kitchen: khinkali, pelmeni, vareniks, dolma, crepes, and vegan dishes with delivery in Yerevan.";
+		} elseif ( $shop_id > 0 ) {
+			$meta_desc = trim( (string) get_post_meta( $shop_id, '_yoast_wpseo_metadesc', true ) );
+			if ( '' !== $meta_desc ) {
+				$desc = $meta_desc;
+			}
+		}
+	} elseif ( is_tax() || is_category() || is_tag() ) {
+		$term = get_queried_object();
+		if ( $term instanceof WP_Term ) {
+			$term_link = get_term_link( $term );
+			if ( ! is_wp_error( $term_link ) ) {
+				$url = (string) $term_link;
+			}
+			$term_meta_desc = trim( (string) get_term_meta( $term->term_id, '_yoast_wpseo_metadesc', true ) );
+			$raw_term_desc  = '' !== $term_meta_desc ? $term_meta_desc : trim( (string) $term->description );
+			if ( '' !== $raw_term_desc ) {
+				$desc = wp_strip_all_tags( $raw_term_desc );
+			}
+		}
+	} else {
+		$url = home_url( add_query_arg( array(), $GLOBALS['wp']->request ?? '' ) );
+	}
+
+	$desc = preg_replace( '/\s+/u', ' ', trim( $desc ) ) ?? trim( $desc );
+	if ( mb_strlen( $desc, 'UTF-8' ) > 160 ) {
+		$cut  = mb_substr( $desc, 0, 157, 'UTF-8' );
+		$desc = preg_replace( '/\s+\S*$/u', '', $cut ) . '...';
+	}
+
+	if ( function_exists( 'gm_plugin' ) && isset( gm_plugin()->router ) ) {
+		$url = gm_plugin()->router->add_lang_to_url( $url, gv2_current_lang() );
 	}
 
 	$lang_map = array( 'hy' => 'hy_AM', 'ru' => 'ru_RU', 'en' => 'en_US' );
 	$locale   = $lang_map[ gv2_current_lang() ] ?? 'hy_AM';
 	?>
 	<meta name="description" content="<?php echo esc_attr( $desc ); ?>" />
-	<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
 	<link rel="canonical" href="<?php echo esc_url( $url ); ?>" />
 	<meta property="og:locale" content="<?php echo esc_attr( $locale ); ?>" />
 	<meta property="og:type" content="<?php echo esc_attr( $og_type ); ?>" />
@@ -114,10 +308,10 @@ function gv2_output_seo_meta_tags(): void {
 	<meta name="twitter:description" content="<?php echo esc_attr( $desc ); ?>" />
 	<meta name="twitter:image" content="<?php echo esc_url( $image ); ?>" />
 	<?php
-	if ( ! function_exists( 'pll_the_languages' ) ) {
-		echo '<link rel="alternate" hreflang="hy" href="' . esc_url( home_url( '/' ) ) . '" />' . "\n";
-		echo '<link rel="alternate" hreflang="ru" href="' . esc_url( home_url( '/ru/' ) ) . '" />' . "\n";
-		echo '<link rel="alternate" hreflang="en" href="' . esc_url( home_url( '/en/' ) ) . '" />' . "\n";
+	if ( ! function_exists( 'pll_the_languages' ) && ! function_exists( 'gm_plugin' ) ) {
+		echo '<link rel="alternate" hreflang="hy-AM" href="' . esc_url( home_url( '/' ) ) . '" />' . "\n";
+		echo '<link rel="alternate" hreflang="ru-AM" href="' . esc_url( add_query_arg( 'lang', 'ru', home_url( '/' ) ) ) . '" />' . "\n";
+		echo '<link rel="alternate" hreflang="en-AM" href="' . esc_url( add_query_arg( 'lang', 'en', home_url( '/' ) ) ) . '" />' . "\n";
 		echo '<link rel="alternate" hreflang="x-default" href="' . esc_url( home_url( '/' ) ) . '" />' . "\n";
 	}
 }
@@ -145,7 +339,7 @@ function gv2_output_json_ld_graph(): void {
 			'@type'       => array( 'Organization', 'FoodEstablishment' ),
 			'@id'         => $site_url . '#organization',
 			'name'        => "Gayane's Kitchen",
-			'url'         => 'https://gayanes.am/',
+			'url'         => $site_url,
 			'logo'        => GV2_URI . '/assets/images/logo-dark.png',
 			'telephone'   => $phone,
 			'servesCuisine' => 'Armenian',

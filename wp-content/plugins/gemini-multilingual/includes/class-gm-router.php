@@ -176,7 +176,7 @@ class GM_Router {
 	}
 
 	public function filter_terms_args( array $args, array $taxonomies ): array {
-		if ( is_admin() ) {
+		if ( is_admin() || ! empty( $args['gm_skip_lang_filter'] ) ) {
 			return $args;
 		}
 
@@ -301,7 +301,11 @@ class GM_Router {
 		$hide_default = ! empty( $settings['hide_default_lang_url'] );
 
 		if ( 'query' === ( $settings['url_mode'] ?? 'prefix' ) ) {
-			$url = remove_query_arg( 'lang', $url );
+			$url    = remove_query_arg( 'lang', $url );
+			$parsed = wp_parse_url( $url );
+			if ( ! empty( $parsed['path'] ) && ! str_ends_with( $parsed['path'], '/' ) && ! str_contains( basename( $parsed['path'] ), '.' ) ) {
+				$url = str_replace( $parsed['path'], $parsed['path'] . '/', $url );
+			}
 			if ( $hide_default && $lang_slug === $default_slug ) {
 				return $url;
 			}
@@ -339,17 +343,39 @@ class GM_Router {
 	}
 
 	public function output_hreflang_tags(): void {
+		if ( is_404() || is_search() ) {
+			return;
+		}
+		if ( ( function_exists( 'is_cart' ) && is_cart() ) || ( function_exists( 'is_checkout' ) && is_checkout() ) || ( function_exists( 'is_account_page' ) && is_account_page() ) ) {
+			return;
+		}
 		$langs = $this->languages->get_languages( true );
 		if ( count( $langs ) <= 1 ) {
 			return;
 		}
+		$am_map       = array(
+			'hy' => 'hy-AM',
+			'en' => 'en-AM',
+			'ru' => 'ru-AM',
+		);
+		$default_slug = $this->languages->get_default_slug();
+		$default_url  = '';
 		foreach ( $langs as $lang ) {
-			$url      = $this->get_switch_url( $lang['slug'] );
-			$hreflang = str_replace( '_', '-', $lang['locale'] ?: $lang['slug'] );
+			$url = $this->get_switch_url( $lang['slug'] );
+			if ( $lang['slug'] === $default_slug ) {
+				$default_url = $url;
+			}
+			$hreflang = $am_map[ $lang['slug'] ] ?? str_replace( '_', '-', $lang['locale'] ?: $lang['slug'] );
 			printf(
 				"<link rel=\"alternate\" hreflang=\"%s\" href=\"%s\" />\n",
 				esc_attr( $hreflang ),
 				esc_url( $url )
+			);
+		}
+		if ( '' !== $default_url ) {
+			printf(
+				"<link rel=\"alternate\" hreflang=\"x-default\" href=\"%s\" />\n",
+				esc_url( $default_url )
 			);
 		}
 	}
