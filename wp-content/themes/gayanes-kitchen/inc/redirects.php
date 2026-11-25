@@ -121,6 +121,56 @@ function gv2_get_legacy_redirect_map(): array {
 		'/ru/как-правильно-хранить-полуфабрикаты/'       => '/ru/kak-pravilno-khranit-polufabrikaty/',
 		'/inchpes-pahpanel-kisafabrikaty-gayanes-kitchen/' => '/inchpes-chisht-pahpanel-kisafabrikatnere/',
 		'/inchpes-ephel-khinkaly/'                       => '/inchpes-chisht-yepel-khinkalin/',
+
+		// Legacy Product Tags
+		'/product-tag/gayanes-kitchen/'                  => '/product-tag/gayanei-khohanots/',
+		'/product-tag/ավանդական/'                        => '/product-tag/avandakan-haykakan-khohanots/',
+		'/product-tag/բաստուրմա/'                        => '/product-category/tnakan-msamterk/',
+		'/product-tag/բնական-միս/'                       => '/product-category/tnakan-msamterk/',
+		'/product-tag/բուսական/'                         => '/product-tag/vegan-ev-pahki/',
+		'/product-tag/բուսակերների-համար/'               => '/product-tag/vegan-ev-pahki/',
+		'/product-tag/թարմ-մսով-խինկալի/'                => '/product-category/khinkali-ev-manti/',
+		'/product-tag/խինկալի/'                          => '/product-category/khinkali-ev-manti/',
+		'/product-tag/խինկալի-երևան/'                    => '/product-category/khinkali-ev-manti/',
+		'/product-tag/կիսաֆաբրիկատներ/'                  => '/product-tag/saretsvats-kisapatrastukner/',
+		'/product-tag/հյութեղ-խինկալի/'                  => '/product-category/khinkali-ev-manti/',
+		'/product-tag/մսամթերք/'                         => '/product-category/tnakan-msamterk/',
+		'/product-tag/մսով-խինկալի/'                     => '/product-category/khinkali-ev-manti/',
+		'/product-tag/նախուտեստ/'                        => '/shop/',
+		'/product-tag/պահքի-տեսականի/'                   => '/product-tag/vegan-ev-pahki/',
+		'/product-tag/պատրաստի-խինկալի/'                 => '/product-category/khinkali-ev-manti/',
+		'/product-tag/սառեցված-խինկալի/'                 => '/product-category/khinkali-ev-manti/',
+		'/product-tag/սառեցված-կիսաֆաբրիկատներ/'         => '/product-tag/saretsvats-kisapatrastukner/',
+		'/product-tag/վրացական-խինկալի/'                 => '/product-category/khinkali-ev-manti/',
+		'/product-tag/տավարի-միս/'                       => '/product-tag/tavari-msov/',
+		'/product-tag/տեղական-միս/'                      => '/product-category/tnakan-msamterk/',
+		'/product-tag/տնական-բաստուրմա/'                 => '/product-category/tnakan-msamterk/',
+		'/product-tag/տնական-խինկալի/'                   => '/product-category/khinkali-ev-manti/',
+
+		// Legacy Blog Categories & Tags
+		'/category/semi-finished-products/'              => '/blog/',
+		'/category/полуфабрикаты/'                       => '/ru/blog/',
+		'/category/կիսապատրաստվածքներ/'                  => '/blog/',
+		'/category/հնարքներ/'                            => '/category/khohanotsayin-khorhurdner/',
+		'/category/բլոգ/'                                => '/blog/',
+		'/ru/category/блог/'                             => '/ru/blog/',
+		'/ru/category/полуфабрикаты-ru/'                 => '/ru/blog/',
+		'/ru/tag/купить-ишли-кюфту-в-армении/'           => '/ru/product/ishli-kyufta-domashnyaya/',
+		'/ru/tag/национальная-кухня-армении/'            => '/ru/blog/',
+		'/ru/tag/рецепт-ишли-кюфты/'                     => '/ru/istoriya-i-traditsii-ishli-kyufty/',
+		'/ru/tag/традиционные-армянские-блюда/'          => '/ru/blog/',
+		'/tag/բդիկ-բուդ-գրիլ-կիևյան-կոտլետ-կրծքամի/'     => '/product/kotlet-kievyan/',
+		'/tag/եփել/'                                     => '/category/baghadratomser/',
+		'/tag/իշլի-քյուֆթա-գնել-հայաստանում/'           => '/product/ishli-kyufta/',
+		'/tag/իշլի-քյուֆթայի-բաղադրատոմս/'              => '/ishli-kyuftayi-patmutyuny-ev-avanduytner/',
+		'/tag/կիևյան-կոտլետ/'                            => '/product/kotlet-kievyan/',
+		'/tag/հայկական-ավանդական-ուտեստներ/'             => '/blog/',
+		'/tag/հայկական-խոհանոցի-լավագույն-ուտեստն/'      => '/blog/',
+		'/tag/հավ/'                                      => '/inchpes-chisht-yntrel-havi-misy/',
+		'/tag/հավի-միս/'                                 => '/inchpes-chisht-yntrel-havi-misy/',
+		'/tag/մատուցել/'                                 => '/blog/',
+		'/tag/պատրաստել/'                                => '/category/baghadratomser/',
+		'/tag/պելմեններ/'                                => '/inchpes-yepel-hamegh-pelmeniner/',
 	);
 }
 
@@ -253,18 +303,23 @@ add_action(
 			}
 		}
 
-		// 3b. Determine target type (product_cat, product, or post/page) and find closest slug in same language.
-		$is_cat     = str_contains( $sub, '/product-category/' );
-		$is_product = str_contains( $sub, '/product/' );
+		// 3b. Determine target type (product_cat, product_tag, category, product, or post/page) and find closest slug in same language.
+		$is_cat         = str_contains( $sub, '/product-category/' );
+		$is_product_tag = str_contains( $sub, '/product-tag/' );
+		$is_blog_cat    = str_contains( $sub, '/category/' );
+		$is_blog_tag    = str_contains( $sub, '/tag/' );
+		$is_product     = str_contains( $sub, '/product/' );
 
-		if ( $is_cat ) {
+		if ( $is_cat || $is_product_tag || $is_blog_cat ) {
+			$tax = $is_cat ? 'product_cat' : ( $is_product_tag ? 'product_tag' : 'category' );
 			$candidates = $wpdb->get_results(
 				$wpdb->prepare(
 					"SELECT t.term_id, t.slug
 					FROM {$wpdb->terms} t
-					JOIN {$wpdb->term_taxonomy} tt ON tt.term_id = t.term_id AND tt.taxonomy = 'product_cat' AND tt.count > 0
+					JOIN {$wpdb->term_taxonomy} tt ON tt.term_id = t.term_id AND tt.taxonomy = %s AND tt.count > 0
 					LEFT JOIN {$wpdb->prefix}gm_translations tr ON tr.object_id = t.term_id AND tr.object_type = 'term'
 					WHERE COALESCE(tr.lang, 'hy') = %s",
+					$tax,
 					$lang
 				)
 			);
@@ -278,12 +333,16 @@ add_action(
 				}
 			}
 			if ( $best_id > 0 && $best_score >= 68.0 ) {
-				$term_link = get_term_link( $best_id, 'product_cat' );
+				$term_link = get_term_link( $best_id, $tax );
 				if ( ! is_wp_error( $term_link ) ) {
 					wp_safe_redirect( $term_link, 301 );
 					exit;
 				}
 			}
+		} elseif ( $is_blog_tag ) {
+			$blog_path = ( 'hy' === $lang ) ? '/blog/' : '/' . $lang . '/blog/';
+			wp_safe_redirect( home_url( $blog_path ), 301 );
+			exit;
 		} else {
 			$post_types = $is_product ? array( 'product' ) : array( 'post', 'page', 'product' );
 			$placeholders = implode( ',', array_fill( 0, count( $post_types ), '%s' ) );
