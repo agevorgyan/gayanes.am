@@ -3158,6 +3158,103 @@ form.woocommerce-checkout {
 	background: rgba(36, 41, 35, 0.05);
 }
 
+.gv2-single-brands {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+.gv2-single-brand-card {
+	display: inline-flex;
+	align-items: center;
+	gap: 10px;
+	padding: 5px 14px 5px 5px;
+	border-radius: var(--gv2-radius-pill);
+	background: rgba(48, 75, 57, 0.035);
+	border: 1px solid rgba(48, 75, 57, 0.11);
+	text-decoration: none;
+	color: var(--gv2-text);
+	transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s var(--gv2-spring);
+}
+
+.gv2-single-brand-card:hover {
+	background: rgba(48, 75, 57, 0.07);
+	border-color: rgba(48, 75, 57, 0.24);
+	transform: translateY(-1px);
+}
+
+.gv2-single-brand-card__logo {
+	width: 34px;
+	height: 34px;
+	border-radius: 50%;
+	background: #FFFFFF;
+	border: 1px solid rgba(48, 75, 57, 0.08);
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+	padding: 3px;
+	flex-shrink: 0;
+}
+
+.gv2-single-brand-card__img {
+	width: 100% !important;
+	height: 100% !important;
+	object-fit: contain !important;
+	display: block;
+}
+
+.gv2-single-brand-card__monogram {
+	font-family: var(--gv2-font-serif);
+	font-size: 16px;
+	font-weight: 700;
+	color: var(--gv2-primary);
+}
+
+.gv2-single-brand-card__info {
+	display: flex;
+	align-items: baseline;
+	gap: 6px;
+}
+
+.gv2-single-brand-card__label {
+	font-size: 11px;
+	font-weight: 500;
+	color: var(--gv2-muted);
+}
+
+.gv2-single-brand-card__label::after {
+	content: "·";
+	margin-left: 6px;
+	opacity: 0.5;
+}
+
+.gv2-single-brand-card__name {
+	font-size: 13px;
+	font-weight: 600;
+	color: var(--gv2-text);
+	letter-spacing: -0.01em;
+}
+
+.gv2-single-brand-card__arrow {
+	color: var(--gv2-muted);
+	opacity: 0.45;
+	display: inline-flex;
+	align-items: center;
+	transition: transform 0.2s ease, opacity 0.2s ease, color 0.2s ease;
+}
+
+.gv2-single-brand-card__arrow svg {
+	width: 14px;
+	height: 14px;
+}
+
+.gv2-single-brand-card:hover .gv2-single-brand-card__arrow {
+	transform: translateX(2px);
+	opacity: 1;
+	color: var(--gv2-primary);
+}
+
 /* iOS 27 Segmented Pill Tabs */
 .single-product div.product .woocommerce-tabs {
 	clear: both;
@@ -5208,26 +5305,35 @@ form.woocommerce-checkout {
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: center;
-	gap: 10px;
+	gap: 12px;
 }
 
 .gv2-social-btn {
-	width: 42px;
-	height: 42px;
+	width: 50px;
+	height: 50px;
 	border-radius: 50%;
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	background: rgba(255, 255, 255, 0.12);
-	border: 1px solid rgba(255, 255, 255, 0.22);
+	background: rgba(255, 255, 255, 0.18);
+	border: 1px solid rgba(255, 255, 255, 0.34);
 	color: #FFFFFF !important;
+	box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16);
 	backdrop-filter: blur(12px);
-	transition: transform 0.2s var(--gv2-spring), background 0.2s ease;
+	transition: transform 0.2s var(--gv2-spring), background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.gv2-social-btn svg {
+	width: 24px;
+	height: 24px;
+	display: block;
 }
 
 .gv2-social-btn:hover {
-	transform: translateY(-2px) scale(1.06);
-	background: rgba(255, 255, 255, 0.24);
+	transform: translateY(-2px) scale(1.08);
+	background: rgba(255, 255, 255, 0.3);
+	border-color: rgba(255, 255, 255, 0.55);
+	box-shadow: 0 8px 20px rgba(0, 0, 0, 0.22);
 }
 
 @media (min-width: 900px) {

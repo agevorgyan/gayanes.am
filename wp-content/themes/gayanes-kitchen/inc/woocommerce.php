@@ -926,3 +926,83 @@ add_action(
 	},
 	9
 );
+
+/**
+ * Remove default plain-text Brand output from product_meta on single product pages.
+ */
+add_action(
+	'woocommerce_single_product_summary',
+	static function (): void {
+		global $wp_filter;
+		if ( empty( $wp_filter['woocommerce_product_meta_end'] ) ) {
+			return;
+		}
+		foreach ( $wp_filter['woocommerce_product_meta_end']->callbacks as $prio => $callbacks ) {
+			foreach ( $callbacks as $id => $cb ) {
+				if ( is_array( $cb['function'] ) && isset( $cb['function'][1] ) && 'show_brand' === $cb['function'][1] ) {
+					unset( $wp_filter['woocommerce_product_meta_end']->callbacks[ $prio ][ $id ] );
+				}
+			}
+		}
+	},
+	1
+);
+
+/**
+ * Render dedicated styled Brand card with logo on Single Product page.
+ */
+add_action(
+	'woocommerce_single_product_summary',
+	static function (): void {
+		global $product;
+		if ( ! $product instanceof WC_Product || ! taxonomy_exists( 'product_brand' ) ) {
+			return;
+		}
+		$brands = get_the_terms( $product->get_id(), 'product_brand' );
+		if ( empty( $brands ) || is_wp_error( $brands ) ) {
+			return;
+		}
+		?>
+		<div class="gv2-single-brands">
+			<?php foreach ( $brands as $brand ) : ?>
+				<?php
+				$thumb_id  = (int) get_term_meta( $brand->term_id, 'thumbnail_id', true );
+				$logo_html = $thumb_id
+					? wp_get_attachment_image(
+						$thumb_id,
+						'thumbnail',
+						false,
+						array(
+							'class'   => 'gv2-single-brand-card__img',
+							'alt'     => $brand->name,
+							'loading' => 'lazy',
+						)
+					)
+					: '';
+				$brand_url = get_term_link( $brand, 'product_brand' );
+				if ( is_wp_error( $brand_url ) ) {
+					$brand_url = '#';
+				}
+				?>
+				<a href="<?php echo esc_url( $brand_url ); ?>" class="gv2-single-brand-card">
+					<span class="gv2-single-brand-card__logo">
+						<?php if ( '' !== $logo_html ) : ?>
+							<?php echo wp_kses_post( $logo_html ); ?>
+						<?php else : ?>
+							<span class="gv2-single-brand-card__monogram"><?php echo esc_html( mb_substr( $brand->name, 0, 1 ) ); ?></span>
+						<?php endif; ?>
+					</span>
+					<span class="gv2-single-brand-card__info">
+						<span class="gv2-single-brand-card__label"><?php echo esc_html( gv2_t( 'Brand' ) ); ?></span>
+						<span class="gv2-single-brand-card__name"><?php echo esc_html( $brand->name ); ?></span>
+					</span>
+					<span class="gv2-single-brand-card__arrow" aria-hidden="true">
+						<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+					</span>
+				</a>
+			<?php endforeach; ?>
+		</div>
+		<?php
+	},
+	35
+);

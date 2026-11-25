@@ -267,6 +267,10 @@ function gv2_translations_map(): array {
 			'hy' => 'Բուսական',
 			'ru' => 'Веган',
 		),
+		'Brand' => array(
+			'hy' => 'Բրենդ',
+			'ru' => 'Бренд',
+		),
 		'Crafted Like Home' => array(
 			'hy' => 'Պատրաստված ինչպես տանը',
 			'ru' => 'Сделано как дома',
