@@ -206,6 +206,48 @@ function gv2_get_product_weight_label( WC_Product $product ): string {
 }
 
 /**
+ * Determine whether a product is plant-based / vegan.
+ *
+ * Uses explicit `_gv2_is_vegan` meta first ('yes'/'no'), falling back to
+ * vegan/fasting product categories or tags.
+ *
+ * @param WC_Product $product WooCommerce product.
+ */
+function gv2_is_product_vegan( WC_Product $product ): bool {
+	$product_id = $product->get_id();
+	$meta       = get_post_meta( $product_id, '_gv2_is_vegan', true );
+
+	if ( 'yes' === $meta ) {
+		return true;
+	}
+	if ( 'no' === $meta ) {
+		return false;
+	}
+
+	if ( has_term( array( 'vegan', 'vegan-pahki', 'vegan-postnoe' ), 'product_cat', $product_id ) ) {
+		return true;
+	}
+
+	if ( has_term( array( 'busakan', 'busakerneri-hamar', 'vegan-ev-pahki', 'postnoe-i-veganskoe', 'vegan-and-fasting' ), 'product_tag', $product_id ) ) {
+		return true;
+	}
+
+	return false;
+}
+
+/**
+ * Return HTML for the plant-based / vegan badge with a crisp leaf SVG icon.
+ *
+ * @param string $extra_class Optional extra CSS class.
+ */
+function gv2_get_vegan_badge_html( string $extra_class = '' ): string {
+	$classes = trim( 'gv2-badge gv2-badge--vegan ' . $extra_class );
+	$icon    = '<svg class="gv2-vegan-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>';
+
+	return '<span class="' . esc_attr( $classes ) . '">' . $icon . '<span>' . esc_html( gv2_t( 'Vegan' ) ) . '</span></span>';
+}
+
+/**
  * Render a 2:3 portrait product card with instant Add -> [ - qty + ] stepper.
  *
  * @param WC_Product $product WooCommerce product.
@@ -282,6 +324,9 @@ function gv2_render_product_card( WC_Product $product ): void {
 			?>
 			<?php if ( $product->is_on_sale() ) : ?>
 				<span class="gv2-badge gv2-badge--sale"><?php echo esc_html( gv2_t( 'Sale' ) ); ?></span>
+			<?php endif; ?>
+			<?php if ( gv2_is_product_vegan( $product ) ) : ?>
+				<?php echo gv2_get_vegan_badge_html( 'gv2-badge--card-vegan' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 			<?php endif; ?>
 		</a>
 
@@ -802,11 +847,15 @@ add_action(
 add_filter( 'woocommerce_shipping_estimate_html', '__return_empty_string' );
 
 /**
- * Add custom Unit / Pack label field to WooCommerce Product General tab.
+ * Add custom Unit / Pack label & Vegan checkbox fields to WooCommerce Product General tab.
  */
 add_action(
 	'woocommerce_product_options_pricing',
 	static function (): void {
+		global $post;
+		$product = $post ? wc_get_product( $post->ID ) : null;
+		$is_vegan = ( $product instanceof WC_Product && gv2_is_product_vegan( $product ) ) ? 'yes' : 'no';
+
 		woocommerce_wp_text_input(
 			array(
 				'id'          => '_gv2_unit_label',
@@ -816,11 +865,20 @@ add_action(
 				'description' => 'Ցուցադրվում է գնի վերևում՝ լեյբլի տեսքով (ապրանքի քարտում և ապրանքի էջում)։ Եթե դատարկ է, օգտագործվում է ապրանքի քաշը։',
 			)
 		);
+
+		woocommerce_wp_checkbox(
+			array(
+				'id'          => '_gv2_is_vegan',
+				'label'       => 'Բուսական (Vegan)',
+				'value'       => $is_vegan,
+				'description' => 'Նշել ապրանքը «Բուսական» լեյբլով և տերևի պատկերակով։',
+			)
+		);
 	}
 );
 
 /**
- * Save custom Unit / Pack label field.
+ * Save custom Unit / Pack label & Vegan fields.
  */
 add_action(
 	'woocommerce_process_product_meta',
@@ -835,11 +893,15 @@ add_action(
 				delete_post_meta( $post_id, '_gv2_unit_label' );
 			}
 		}
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing
+		$is_vegan = isset( $_POST['_gv2_is_vegan'] ) ? 'yes' : 'no';
+		update_post_meta( $post_id, '_gv2_is_vegan', $is_vegan );
 	}
 );
 
 /**
- * Display Unit / Pack label badge right above the price on Single Product page.
+ * Display Unit / Pack label & Vegan badge right above the price on Single Product page.
  */
 add_action(
 	'woocommerce_single_product_summary',
@@ -849,10 +911,18 @@ add_action(
 			return;
 		}
 		$unit_label = gv2_get_product_weight_label( $product );
-		if ( '' === $unit_label ) {
+		$is_vegan   = gv2_is_product_vegan( $product );
+		if ( '' === $unit_label && ! $is_vegan ) {
 			return;
 		}
-		echo '<div class="gv2-single-unit"><span class="gv2-unit-badge gv2-unit-badge--lg">' . esc_html( $unit_label ) . '</span></div>';
+		echo '<div class="gv2-single-unit">';
+		if ( '' !== $unit_label ) {
+			echo '<span class="gv2-unit-badge gv2-unit-badge--lg">' . esc_html( $unit_label ) . '</span>';
+		}
+		if ( $is_vegan ) {
+			echo gv2_get_vegan_badge_html( 'gv2-badge--lg' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		}
+		echo '</div>';
 	},
 	9
 );

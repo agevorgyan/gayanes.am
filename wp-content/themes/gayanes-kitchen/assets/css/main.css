@@ -747,6 +747,40 @@ img {
 	font-weight: 700;
 }
 
+.gv2-badge--vegan {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	padding: 4px 10px;
+	border-radius: var(--gv2-radius-pill);
+	background: rgba(232, 245, 233, 0.92);
+	backdrop-filter: blur(10px);
+	-webkit-backdrop-filter: blur(10px);
+	border: 1px solid rgba(46, 125, 50, 0.25);
+	color: #1f6b2c;
+	font-size: 11px;
+	font-weight: 700;
+	line-height: 1.2;
+}
+
+.gv2-badge--card-vegan {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	z-index: 2;
+	box-shadow: 0 2px 8px rgba(31, 107, 44, 0.14);
+}
+
+.gv2-badge--lg {
+	padding: 5px 12px;
+	font-size: 13px;
+	gap: 6px;
+}
+
+.gv2-vegan-icon {
+	flex-shrink: 0;
+}
+
 .gv2-card__body {
 	display: flex;
 	flex-direction: column;
@@ -799,7 +833,9 @@ img {
 
 .gv2-single-unit {
 	display: flex;
+	flex-wrap: wrap;
 	align-items: center;
+	gap: 8px;
 	margin-bottom: -6px;
 }
 
