@@ -243,3 +243,47 @@ function gv2_register_missing_cron_schedules( array $schedules ): array {
 }
 add_filter( 'cron_schedules', 'gv2_register_missing_cron_schedules', 5 );
 
+/**
+ * Automatically transliterate Armenian and Cyrillic (Russian) characters to Latin in WordPress slugs.
+ *
+ * @param string $title     Sanitized title.
+ * @param string $raw_title Raw title before sanitization.
+ * @param string $context   Context ('save' for slugs, 'display' otherwise).
+ * @return string
+ */
+function gv2_transliterate_armenian_slug( string $title, string $raw_title = '', string $context = 'display' ): string {
+	if ( 'save' !== $context ) {
+		return $title;
+	}
+
+	$source = '' !== $raw_title ? $raw_title : urldecode( $title );
+	if ( ! preg_match( '/[\x{0530}-\x{058F}\x{0400}-\x{04FF}]/u', $source ) ) {
+		return $title;
+	}
+
+	$str = mb_strtolower( $source, 'UTF-8' );
+	$str = str_replace( 'ու', 'u', $str );
+	$str = preg_replace( '/(^|[\s\-_])ե/u', '$1ye', $str ) ?? $str;
+
+	$map = array(
+		// Armenian
+		'ա' => 'a', 'բ' => 'b', 'գ' => 'g', 'դ' => 'd', 'ե' => 'e', 'զ' => 'z',
+		'է' => 'e', 'ը' => 'y', 'թ' => 't', 'ժ' => 'zh', 'ի' => 'i', 'լ' => 'l',
+		'խ' => 'kh', 'ծ' => 'ts', 'կ' => 'k', 'հ' => 'h', 'ձ' => 'dz', 'ղ' => 'gh',
+		'ճ' => 'ch', 'մ' => 'm', 'յ' => 'y', 'ն' => 'n', 'շ' => 'sh', 'ո' => 'o',
+		'չ' => 'ch', 'պ' => 'p', 'ջ' => 'j', 'ռ' => 'r', 'ս' => 's', 'վ' => 'v',
+		'տ' => 't', 'ր' => 'r', 'ց' => 'ts', 'ւ' => 'v', 'փ' => 'p', 'ք' => 'k',
+		'և' => 'ev', 'օ' => 'o', 'ֆ' => 'f',
+		// Russian (Cyrillic)
+		'а' => 'a', 'б' => 'b', 'в' => 'v', 'г' => 'g', 'д' => 'd', 'е' => 'e',
+		'ё' => 'yo', 'ж' => 'zh', 'з' => 'z', 'и' => 'i', 'й' => 'y', 'к' => 'k',
+		'л' => 'l', 'м' => 'm', 'н' => 'n', 'о' => 'o', 'п' => 'p', 'р' => 'r',
+		'с' => 's', 'т' => 't', 'у' => 'u', 'ф' => 'f', 'х' => 'kh', 'ц' => 'ts',
+		'ч' => 'ch', 'ш' => 'sh', 'щ' => 'shch', 'ъ' => '', 'ы' => 'y', 'ь' => '',
+		'э' => 'e', 'ю' => 'yu', 'я' => 'ya',
+	);
+
+	return strtr( $str, $map );
+}
+add_filter( 'sanitize_title', 'gv2_transliterate_armenian_slug', 9, 3 );
+

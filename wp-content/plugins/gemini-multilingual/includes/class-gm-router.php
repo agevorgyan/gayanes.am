@@ -245,10 +245,14 @@ class GM_Router {
 	}
 
 	public function filter_home_url( string $url, string $path ): string {
-		if ( is_admin() ) {
+		static $filtering = false;
+		if ( is_admin() || $filtering ) {
 			return $url;
 		}
-		return $this->add_lang_to_url( $url, $this->languages->get_current_slug() );
+		$filtering = true;
+		$result    = $this->add_lang_to_url( $url, $this->languages->get_current_slug() );
+		$filtering = false;
+		return $result;
 	}
 
 	public function filter_object_permalink( string $url, $post ): string {
@@ -314,7 +318,7 @@ class GM_Router {
 
 		// Prefix mode: strip any existing language prefix first.
 		$parsed = wp_parse_url( $url );
-		$home   = wp_parse_url( home_url( '/' ) );
+		$home   = wp_parse_url( trailingslashit( (string) get_option( 'home', '' ) ) );
 		$base   = rtrim( $home['path'] ?? '/', '/' );
 		$path   = $parsed['path'] ?? '/';
 		$rel    = ltrim( substr( $path, strlen( $base ) ), '/' );
