@@ -5367,6 +5367,219 @@ form.woocommerce-checkout {
 }
 
 /* ==========================================================================
+   404 Page — Creative Liquid Glass + Homemade Kitchen Edition
+   ========================================================================== */
+
+.gv2-404 {
+	padding-top: 18px;
+	padding-bottom: 48px;
+	display: flex;
+	flex-direction: column;
+	gap: 40px;
+}
+
+.gv2-404-hero {
+	position: relative;
+	overflow: hidden;
+	padding: clamp(28px, 5vw, 56px) clamp(20px, 4vw, 48px);
+	text-align: center;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 18px;
+}
+
+.gv2-404-orb {
+	position: absolute;
+	border-radius: 50%;
+	pointer-events: none;
+	filter: blur(48px);
+	opacity: 0.45;
+}
+
+.gv2-404-orb--1 {
+	width: 240px;
+	height: 240px;
+	top: -60px;
+	left: -60px;
+	background: rgba(48, 75, 57, 0.22);
+}
+
+.gv2-404-orb--2 {
+	width: 220px;
+	height: 220px;
+	bottom: -70px;
+	right: -50px;
+	background: rgba(184, 107, 75, 0.22);
+}
+
+.gv2-404-visual {
+	position: relative;
+	z-index: 1;
+}
+
+.gv2-404-plate {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.gv2-404-illustration {
+	display: block;
+	filter: drop-shadow(0 12px 24px rgba(48, 75, 57, 0.14));
+}
+
+.gv2-404-code {
+	position: absolute;
+	bottom: -4px;
+	right: -18px;
+	padding: 4px 12px;
+	border-radius: var(--gv2-radius-pill);
+	background: var(--gv2-terracotta);
+	color: #FFFFFF;
+	font-family: var(--gv2-font-serif);
+	font-size: 20px;
+	font-weight: 700;
+	letter-spacing: 0.04em;
+	box-shadow: 0 6px 16px rgba(184, 107, 75, 0.34);
+}
+
+.gv2-404-title {
+	position: relative;
+	z-index: 1;
+	margin: 4px 0 0;
+	font-family: var(--gv2-font-serif);
+	font-size: clamp(28px, 4.5vw, 42px);
+	line-height: 1.15;
+	font-weight: 700;
+	color: var(--gv2-text);
+	max-width: 640px;
+}
+
+.gv2-404-desc {
+	position: relative;
+	z-index: 1;
+	margin: 0;
+	font-size: 15px;
+	line-height: 1.6;
+	color: var(--gv2-muted);
+	max-width: 520px;
+}
+
+.gv2-404-search {
+	position: relative;
+	z-index: 1;
+	width: 100%;
+	max-width: 440px;
+	display: flex;
+	align-items: center;
+	padding: 4px;
+	border-radius: var(--gv2-radius-pill);
+	background: rgba(255, 255, 255, 0.9);
+	border: 1px solid rgba(48, 75, 57, 0.16);
+	box-shadow: 0 6px 20px rgba(36, 41, 35, 0.06);
+}
+
+.gv2-404-search__input {
+	flex: 1 1 auto;
+	border: none !important;
+	background: transparent !important;
+	padding: 10px 16px !important;
+	font-size: 14px;
+	color: var(--gv2-text);
+	outline: none;
+	min-width: 0;
+}
+
+.gv2-404-search__btn {
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	border: none;
+	background: var(--gv2-primary);
+	color: #FFFFFF;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	flex-shrink: 0;
+	transition: transform 0.18s var(--gv2-spring), background 0.18s ease;
+}
+
+.gv2-404-search__btn:hover {
+	background: var(--gv2-primary-hover);
+	transform: scale(1.05);
+}
+
+.gv2-404-actions {
+	position: relative;
+	z-index: 1;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 12px;
+	margin-top: 4px;
+}
+
+.gv2-404-btn {
+	min-height: 44px;
+	padding: 0 24px;
+}
+
+.gv2-404-cats {
+	position: relative;
+	z-index: 1;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 10px;
+	margin-top: 8px;
+	padding-top: 18px;
+	border-top: 1px solid rgba(48, 75, 57, 0.1);
+	width: 100%;
+	max-width: 680px;
+}
+
+.gv2-404-cats__label {
+	font-size: 12px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+	color: var(--gv2-muted);
+}
+
+.gv2-404-cats__list {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 8px;
+}
+
+.gv2-404-cat-pill {
+	padding: 6px 14px;
+	border-radius: var(--gv2-radius-pill);
+	background: rgba(255, 255, 255, 0.72);
+	border: 1px solid rgba(48, 75, 57, 0.14);
+	color: var(--gv2-text);
+	font-size: 13px;
+	font-weight: 600;
+	text-decoration: none;
+	transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s var(--gv2-spring);
+}
+
+.gv2-404-cat-pill:hover {
+	background: var(--gv2-primary);
+	border-color: var(--gv2-primary);
+	color: #FFFFFF;
+	transform: translateY(-1px);
+}
+
+.gv2-404-suggested .gv2-section-title {
+	margin-bottom: 18px;
+}
+
+/* ==========================================================================
    About Us Page (Մեր մասին) — Editorial + Liquid Glass
    ========================================================================== */
 

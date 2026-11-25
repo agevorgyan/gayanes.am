@@ -271,6 +271,34 @@ function gv2_translations_map(): array {
 			'hy' => 'Բրենդ',
 			'ru' => 'Бренд',
 		),
+		"Oops, this dish isn't on the shelf" => array(
+			'hy' => 'Օյ, այս ուտեստը դեռ պատրաստ չէ',
+			'ru' => 'Упс, этого блюда нет на полке',
+		),
+		"Looks like this page has moved or is no longer available. Explore our fresh homemade menu — there's plenty more to enjoy!" => array(
+			'hy' => 'Թվում է՝ այս էջը տեղափոխվել է կամ այլևս հասանելի չէ։ Բայց մեր տնական խոհանոցում ձեզ սպասում են թարմ ու համեղ ուտեստներ։',
+			'ru' => 'Похоже, эта страница переехала или больше недоступна. Загляните в наше меню — там вас ждут свежие домашние блюда!',
+		),
+		'Browse Menu' => array(
+			'hy' => 'Բացել տեսականին',
+			'ru' => 'Открыть меню',
+		),
+		'Back to Home' => array(
+			'hy' => 'Գլխավոր էջ',
+			'ru' => 'На главную',
+		),
+		'Popular Categories' => array(
+			'hy' => 'Հանրաճանաչ բաժիններ',
+			'ru' => 'Популярные категории',
+		),
+		'You Might Also Like' => array(
+			'hy' => 'Կարող է ձեզ դուր գալ',
+			'ru' => 'Вам может понравиться',
+		),
+		'Search dishes...' => array(
+			'hy' => 'Փնտրել ուտեստներ...',
+			'ru' => 'Поиск блюд...',
+		),
 		'Crafted Like Home' => array(
 			'hy' => 'Պատրաստված ինչպես տանը',
 			'ru' => 'Сделано как дома',

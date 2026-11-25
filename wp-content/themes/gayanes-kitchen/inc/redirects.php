@@ -240,6 +240,12 @@ add_action(
 			exit;
 		}
 
+		// 1b. Paginated legacy /menu/page/N/ -> /shop/page/N/.
+		if ( preg_match( '#^/menu/page/(\d+)/?$#', $normalized, $pm ) ) {
+			wp_safe_redirect( home_url( '/shop/page/' . (int) $pm[1] . '/' ), 301 );
+			exit;
+		}
+
 		// 2. Legacy ?lang=ru / ?lang=en query parameter redirect.
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( isset( $_GET['lang'] ) && in_array( $_GET['lang'], array( 'ru', 'en' ), true ) ) {
