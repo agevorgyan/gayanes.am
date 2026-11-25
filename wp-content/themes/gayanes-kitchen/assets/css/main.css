@@ -770,7 +770,37 @@ img {
 	margin-top: auto;
 	display: flex;
 	flex-direction: column;
-	gap: 8px;
+	gap: 6px;
+}
+
+.gv2-card__unit {
+	display: flex;
+	align-items: center;
+}
+
+.gv2-unit-badge {
+	display: inline-flex;
+	align-items: center;
+	padding: 3px 9px;
+	border-radius: var(--gv2-radius-pill);
+	background: rgba(48, 75, 57, 0.08);
+	border: 1px solid rgba(48, 75, 57, 0.14);
+	color: var(--gv2-primary);
+	font-size: 11px;
+	font-weight: 600;
+	line-height: 1.3;
+	letter-spacing: 0.01em;
+}
+
+.gv2-unit-badge--lg {
+	padding: 5px 12px;
+	font-size: 13px;
+}
+
+.gv2-single-unit {
+	display: flex;
+	align-items: center;
+	margin-bottom: -6px;
 }
 
 .gv2-card__price {

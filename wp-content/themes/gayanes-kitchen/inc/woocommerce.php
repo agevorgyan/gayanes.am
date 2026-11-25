@@ -141,14 +141,58 @@ add_action(
 );
 
 /**
- * Get product weight or portion label.
+ * Get localized weight unit label.
+ *
+ * @param string $unit Raw WooCommerce weight unit.
+ */
+function gv2_localize_weight_unit( string $unit ): string {
+	$locale = function_exists( 'get_locale' ) ? (string) get_locale() : 'hy';
+	$lang   = 'hy';
+	if ( str_starts_with( $locale, 'ru' ) ) {
+		$lang = 'ru';
+	} elseif ( str_starts_with( $locale, 'en' ) ) {
+		$lang = 'en';
+	}
+	$u    = strtolower( trim( $unit ) );
+	$map  = array(
+		'hy' => array(
+			'g'   => 'գրամ',
+			'kg'  => 'կգ',
+			'lbs' => 'ֆունտ',
+			'oz'  => 'ունցիա',
+		),
+		'ru' => array(
+			'g'   => 'г',
+			'kg'  => 'кг',
+			'lbs' => 'фунт',
+			'oz'  => 'унц.',
+		),
+		'en' => array(
+			'g'   => 'g',
+			'kg'  => 'kg',
+			'lbs' => 'lbs',
+			'oz'  => 'oz',
+		),
+	);
+
+	return $map[ $lang ][ $u ] ?? $unit;
+}
+
+/**
+ * Get product unit/pack or weight label (e.g. "10 հատ", "450 գրամ", "1 կգ").
  *
  * @param WC_Product $product WooCommerce product.
  */
 function gv2_get_product_weight_label( WC_Product $product ): string {
+	$custom_unit = trim( (string) get_post_meta( $product->get_id(), '_gv2_unit_label', true ) );
+	if ( '' !== $custom_unit ) {
+		return $custom_unit;
+	}
+
 	$weight = $product->get_weight();
 	if ( '' !== $weight && null !== $weight ) {
-		return trim( $weight . ' ' . get_option( 'woocommerce_weight_unit', 'g' ) );
+		$unit = gv2_localize_weight_unit( (string) get_option( 'woocommerce_weight_unit', 'g' ) );
+		return trim( $weight . ' ' . $unit );
 	}
 
 	foreach ( array( 'pa_weight', 'pa_size', 'weight', 'size' ) as $attr_name ) {
@@ -205,7 +249,7 @@ function gv2_render_product_card( WC_Product $product ): void {
 	$image_id      = $product->get_image_id();
 	$display_title = $product->get_name();
 	if ( '' !== $weight_label ) {
-		$cleaned = preg_replace( '/\s*\(?\d+(?:[.,]\d+)?\s*(?:գ|կգ|г|кг|g|kg)\)?\s*$/ui', '', $display_title );
+		$cleaned = preg_replace( '/\s*\(?\d+(?:[.,]\d+)?\s*(?:գրամ|գր?|կգ|հատ|г|гр|кг|шт|g|kg|pcs?|pc)\)?\s*$/ui', '', $display_title );
 		if ( is_string( $cleaned ) && '' !== trim( $cleaned ) ) {
 			$display_title = trim( $cleaned );
 		}
@@ -236,9 +280,6 @@ function gv2_render_product_card( WC_Product $product ): void {
 				echo '<img class="gv2-card__img" src="' . esc_url( wc_placeholder_img_src( 'gv2-product-portrait' ) ) . '" alt="' . esc_attr( $product->get_name() ) . '" loading="lazy" decoding="async" />';
 			}
 			?>
-			<?php if ( '' !== $weight_label ) : ?>
-				<span class="gv2-card__weight-pill"><?php echo esc_html( $weight_label ); ?></span>
-			<?php endif; ?>
 			<?php if ( $product->is_on_sale() ) : ?>
 				<span class="gv2-badge gv2-badge--sale"><?php echo esc_html( gv2_t( 'Sale' ) ); ?></span>
 			<?php endif; ?>
@@ -252,6 +293,12 @@ function gv2_render_product_card( WC_Product $product ): void {
 			</h3>
 
 			<div class="gv2-card__footer">
+				<?php if ( '' !== $weight_label ) : ?>
+					<div class="gv2-card__unit">
+						<span class="gv2-unit-badge"><?php echo esc_html( $weight_label ); ?></span>
+					</div>
+				<?php endif; ?>
+
 				<div class="gv2-card__price">
 					<?php echo wp_kses_post( $product->get_price_html() ); ?>
 				</div>
@@ -753,3 +800,59 @@ add_action(
  * Remove the generic "Shipping options will be updated during checkout." estimate note on Cart.
  */
 add_filter( 'woocommerce_shipping_estimate_html', '__return_empty_string' );
+
+/**
+ * Add custom Unit / Pack label field to WooCommerce Product General tab.
+ */
+add_action(
+	'woocommerce_product_options_pricing',
+	static function (): void {
+		woocommerce_wp_text_input(
+			array(
+				'id'          => '_gv2_unit_label',
+				'label'       => 'Չափման միավոր / Փաթեթավորում',
+				'placeholder' => 'Օր․ 10 հատ, 450 գրամ, 1 կգ',
+				'desc_tip'    => true,
+				'description' => 'Ցուցադրվում է գնի վերևում՝ լեյբլի տեսքով (ապրանքի քարտում և ապրանքի էջում)։ Եթե դատարկ է, օգտագործվում է ապրանքի քաշը։',
+			)
+		);
+	}
+);
+
+/**
+ * Save custom Unit / Pack label field.
+ */
+add_action(
+	'woocommerce_process_product_meta',
+	static function ( int $post_id ): void {
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing
+		if ( isset( $_POST['_gv2_unit_label'] ) ) {
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing
+			$val = sanitize_text_field( (string) wp_unslash( $_POST['_gv2_unit_label'] ) );
+			if ( '' !== $val ) {
+				update_post_meta( $post_id, '_gv2_unit_label', $val );
+			} else {
+				delete_post_meta( $post_id, '_gv2_unit_label' );
+			}
+		}
+	}
+);
+
+/**
+ * Display Unit / Pack label badge right above the price on Single Product page.
+ */
+add_action(
+	'woocommerce_single_product_summary',
+	static function (): void {
+		global $product;
+		if ( ! $product instanceof WC_Product ) {
+			return;
+		}
+		$unit_label = gv2_get_product_weight_label( $product );
+		if ( '' === $unit_label ) {
+			return;
+		}
+		echo '<div class="gv2-single-unit"><span class="gv2-unit-badge gv2-unit-badge--lg">' . esc_html( $unit_label ) . '</span></div>';
+	},
+	9
+);

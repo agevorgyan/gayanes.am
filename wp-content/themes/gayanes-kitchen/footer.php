@@ -202,9 +202,20 @@ $phone        = (string) get_theme_mod( 'gv2_phone', '+374 99 00 00 00' );
 		<button type="button" class="gv2-glass-btn" data-gv2-drawer-close aria-label="<?php echo esc_attr( gv2_t( 'Close' ) ); ?>">&times;</button>
 	</div>
 
+	<?php
+	$gv2_cart_subtotal  = ( function_exists( 'WC' ) && WC()->cart ) ? (float) WC()->cart->get_subtotal() : 0.0;
+	$gv2_free_threshold = function_exists( 'gv2_get_free_shipping_threshold' ) ? (float) gv2_get_free_shipping_threshold() : 15000.0;
+	$gv2_progress_pct   = $gv2_free_threshold > 0 ? min( 100, (int) round( ( $gv2_cart_subtotal / $gv2_free_threshold ) * 100 ) ) : 100;
+	if ( $gv2_free_threshold <= 0 || $gv2_cart_subtotal >= $gv2_free_threshold ) {
+		$gv2_progress_text = gv2_t( 'Free delivery unlocked!' );
+	} else {
+		$gv2_diff          = number_format( max( 0, $gv2_free_threshold - $gv2_cart_subtotal ), 0, '.', ',' );
+		$gv2_progress_text = sprintf( gv2_t( 'Add %s more for free delivery' ), $gv2_diff . ' ֏' );
+	}
+	?>
 	<div class="gv2-delivery-progress" id="gv2-delivery-progress">
-		<div class="gv2-delivery-progress__text" id="gv2-delivery-text"></div>
-		<div class="gv2-delivery-progress__bar"><span id="gv2-delivery-fill" style="width:0%"></span></div>
+		<div class="gv2-delivery-progress__text" id="gv2-delivery-text"><?php echo esc_html( $gv2_progress_text ); ?></div>
+		<div class="gv2-delivery-progress__bar"><span id="gv2-delivery-fill" style="width:<?php echo esc_attr( (string) $gv2_progress_pct ); ?>%"></span></div>
 	</div>
 
 	<div class="gv2-sheet__body" id="gv2-mini-cart-items">

@@ -176,6 +176,31 @@ function gv2_customize_register( WP_Customize_Manager $wp_customize ): void {
 			'choices' => $deal_choices,
 		)
 	);
+
+	foreach ( array(
+		'gv2_home_hero_image_id'   => __( 'Homepage Hero Image', 'gayanes-kitchen' ),
+		'gv2_about_hero_image_id'  => __( 'About Us Hero Image', 'gayanes-kitchen' ),
+		'gv2_about_story_image_id' => __( 'About Us Story Image', 'gayanes-kitchen' ),
+	) as $setting_key => $label ) {
+		$wp_customize->add_setting(
+			$setting_key,
+			array(
+				'default'           => 0,
+				'sanitize_callback' => 'absint',
+			)
+		);
+		$wp_customize->add_control(
+			new WP_Customize_Media_Control(
+				$wp_customize,
+				$setting_key,
+				array(
+					'label'     => $label,
+					'section'   => 'gv2_brand_section',
+					'mime_type' => 'image',
+				)
+			)
+		);
+	}
 }
 add_action( 'customize_register', 'gv2_customize_register' );
 

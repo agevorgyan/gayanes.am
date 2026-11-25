@@ -10,12 +10,13 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'GV2_VERSION', '2.1.20' );
+define( 'GV2_VERSION', '2.1.21' );
 define( 'GV2_DIR', get_template_directory() );
 define( 'GV2_URI', get_template_directory_uri() );
 
 require_once GV2_DIR . '/inc/i18n.php';
 require_once GV2_DIR . '/inc/setup.php';
+require_once GV2_DIR . '/inc/theme-settings.php';
 require_once GV2_DIR . '/inc/assets.php';
 require_once GV2_DIR . '/inc/faq-data.php';
 require_once GV2_DIR . '/inc/contact-handler.php';

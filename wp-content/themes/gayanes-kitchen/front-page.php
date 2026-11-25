@@ -30,7 +30,20 @@ $shop_url = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 
 			<div class="gv2-hero__media">
 				<div class="gv2-hero__arch">
 					<?php
-					if ( has_post_thumbnail() ) {
+					$hero_img_id = absint( get_theme_mod( 'gv2_home_hero_image_id', 0 ) );
+					if ( $hero_img_id > 0 ) {
+						echo wp_get_attachment_image(
+							$hero_img_id,
+							'large',
+							false,
+							array(
+								'class'         => 'gv2-hero__img',
+								'loading'       => 'eager',
+								'fetchpriority' => 'high',
+								'decoding'      => 'async',
+							)
+						);
+					} elseif ( has_post_thumbnail() ) {
 						the_post_thumbnail(
 							'large',
 							array(
@@ -76,47 +89,7 @@ $shop_url = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 
 		</div>
 	</section>
 
-	<!-- 2. Quick Product Categories -->
-	<?php if ( taxonomy_exists( 'product_cat' ) ) : ?>
-		<?php
-		$categories = get_terms(
-			array(
-				'taxonomy'   => 'product_cat',
-				'hide_empty' => true,
-				'parent'     => 0,
-				'number'     => 8,
-			)
-		);
-		if ( is_array( $categories ) && ! empty( $categories ) ) :
-			?>
-			<section class="gv2-section gv2-container">
-				<div class="gv2-section__head">
-					<h2 class="gv2-section__title"><?php echo esc_html( gv2_t( 'Categories' ) ); ?></h2>
-					<a href="<?php echo esc_url( $shop_url ); ?>" class="gv2-link"><?php echo esc_html( gv2_t( 'View All' ) ); ?> &rarr;</a>
-				</div>
-				<div class="gv2-cat-rail">
-					<?php foreach ( $categories as $cat ) : ?>
-						<?php
-						$thumb_id = (int) get_term_meta( $cat->term_id, 'thumbnail_id', true );
-						$cat_link = get_term_link( $cat );
-						?>
-						<a href="<?php echo esc_url( is_wp_error( $cat_link ) ? $shop_url : $cat_link ); ?>" class="gv2-cat-chip">
-							<div class="gv2-cat-chip__media">
-								<?php if ( $thumb_id ) : ?>
-									<?php echo wp_get_attachment_image( $thumb_id, 'thumbnail', false, array( 'loading' => 'lazy', 'decoding' => 'async' ) ); ?>
-								<?php else : ?>
-									<span class="gv2-cat-chip__fallback" aria-hidden="true"><?php echo esc_html( mb_substr( $cat->name, 0, 1 ) ); ?></span>
-								<?php endif; ?>
-							</div>
-							<span class="gv2-cat-chip__name"><?php echo esc_html( $cat->name ); ?></span>
-						</a>
-					<?php endforeach; ?>
-				</div>
-			</section>
-		<?php endif; ?>
-	<?php endif; ?>
-
-	<!-- 3. Product of the Day (Daily Deal Promo) -->
+	<!-- 2. Product of the Day (Daily Deal Promo) -->
 	<?php if ( function_exists( 'wc_get_products' ) ) : ?>
 		<?php
 		$deal_id = absint( get_theme_mod( 'gv2_daily_deal_product_id', 0 ) );

@@ -924,4 +924,10 @@
 			}
 		});
 	}
+
+	// Sync mini-cart delivery progress bar on initial page load
+	const initialSubEl = document.getElementById('gv2-mini-cart-subtotal');
+	if (initialSubEl) {
+		updateDeliveryProgress(parseSubtotalNumber(initialSubEl.textContent || initialSubEl.innerHTML));
+	}
 })();
