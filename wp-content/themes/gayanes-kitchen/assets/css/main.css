@@ -2151,6 +2151,8 @@ img {
 .woocommerce-checkout .woocommerce-info {
 	display: flex;
 	align-items: center;
+	justify-content: flex-start !important;
+	flex-wrap: wrap;
 	gap: 10px;
 	background: linear-gradient(135deg, rgba(255, 255, 255, 0.88), rgba(234, 230, 220, 0.72)) !important;
 	backdrop-filter: blur(20px) saturate(180%);
@@ -2163,6 +2165,10 @@ img {
 	font-size: 14px;
 	font-weight: 500;
 	box-shadow: 0 6px 20px rgba(36, 41, 35, 0.05);
+}
+
+.woocommerce-checkout .woocommerce-info::after {
+	display: none !important;
 }
 
 .woocommerce-checkout .woocommerce-info::before {
@@ -2521,6 +2527,19 @@ form.woocommerce-checkout {
 		gap: 28px;
 	}
 
+	form.woocommerce-checkout > .woocommerce-NoticeGroup,
+	form.woocommerce-checkout > .woocommerce-notices-wrapper,
+	form.woocommerce-checkout > .woocommerce-error,
+	form.woocommerce-checkout > .woocommerce-message,
+	form.woocommerce-checkout > .woocommerce-info {
+		grid-column: 1 / -1;
+		margin-bottom: 0 !important;
+	}
+
+	form.woocommerce-checkout > #customer_details {
+		grid-column: 1;
+	}
+
 	.woocommerce-checkout #customer_details,
 	.woocommerce-checkout #order_review {
 		padding: 26px;
@@ -2531,6 +2550,7 @@ form.woocommerce-checkout {
 	}
 
 	.woocommerce-checkout #order_review {
+		grid-column: 2;
 		position: sticky;
 		top: 86px;
 	}
