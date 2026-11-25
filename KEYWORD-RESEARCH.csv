@@ -1,23 +1,41 @@
 language,primary_keyword,search_intent,priority_est_demand,target_url,secondary_keywords,cluster
-hy,ավանդական հայկական կիսաֆաբրիկատներ,Transactional/Commercial,High (Primary),/,"տնական կիսաֆաբրիկատներ Երևան, սառեցված ուտեստներ առաքում",Core Brand & Storefront
-hy,գնել տնական տոլմա Երևանում,Transactional,High,/product-category/dolma/,"թփով տոլմա առաքում, պասուց տոլմա գնել, կաղամբով տոլմա",Category + Product
-hy,սառեցված խինկալի Երևան,Transactional,High,/product-category/khinkali/,"տնական խինկալի պատվիրել, խինկալի առաքում Երևանում",Category + Product
-hy,գնել տնական վարենիկներ Երևանում,Transactional,Medium-High,/product-category/vareniki/,"կարտոֆիլով վարենիկ, սպանախով վարենիկ, կաթնաշոռով վարենիկ",Category + Product
-hy,սառեցված պելմենի առաքում,Transactional,High,/product-category/pelmeni/,"տնական պելմենի, գունավոր պելմենի երեխաների համար, սիբիրյան պելմենի",Category + Product
-hy,նրբաբլիթներ առաքում Երևան,Transactional,Medium-High,/product-category/crepes/,"մսով բլինչիկ պատվիրել, կաթնաշոռով նրբաբլիթ, բլինչիկի շերտիկ",Category + Product
-hy,վեգան սառեցված ուտեստներ Երևան,Transactional,Medium,/product-category/vegan-fasting/,"պահքի ուտեստներ առաքում, տնական ֆալաֆել, բանջարեղենով սպրինգ ռոլլ",Category + Vegan Cluster
-hy,տնական իշլի քյուֆթա պատվիրել,Transactional,Medium-High,/product-category/traditional-dishes/,"թաթար բորակի գնել, տնական խաշ առաքում Երևան",Traditional Armenian
-hy,կոլոլակ և կոտլետներ առաքում,Transactional,Medium,/product-category/meatballs-cutlets/,"Կիևյան կոտլետ գնել, տավարի կոլոլակ Երևան",Meatballs & Cutlets
-hy,ինչպես եփել սառեցված խինկալի,Informational,Medium,/blog/,"քանի րոպե եփել խինկալին, սառեցված պելմենի պատրաստում",Blog/Recipe Cluster
-ru,домашние полуфабрикаты Ереван доставка,Transactional,High,/?lang=ru,"замороженные полуфабрикаты Армения, домашняя еда с доставкой Ереван",Core Brand (RU)
-ru,купить домашнюю толму в Ереване,Transactional,Medium-High,/product-category/dolma/?lang=ru,"толма в виноградных листьях доставка, постная толма Ереван",Category (RU)
-ru,замороженные хинкали Ереван,Transactional,High,/product-category/khinkali/?lang=ru,"домашние хинкали с доставкой Ереван, купить манты Ереван",Category (RU)
-ru,купить вареники в Ереване,Transactional,Medium-High,/product-category/vareniki/?lang=ru,"вареники с картошкой Ереван, вареники со шпинатом доставка",Category (RU)
-ru,домашние пельмени Ереван,Transactional,High,/product-category/pelmeni/?lang=ru,"цветные пельмени для детей Ереван, сибирские пельмени доставка",Category (RU)
-ru,блинчики с мясом доставка Ереван,Transactional,Medium,/product-category/crepes/?lang=ru,"блины с творогом Ереван, блинные листы купить",Category (RU)
-ru,веганские полуфабрикаты Ереван,Transactional,Medium,/product-category/vegan-fasting/?lang=ru,"постная еда доставка Ереван, фалафель замороженный",Vegan Cluster (RU)
-en,homemade Armenian food delivery Yerevan,Transactional,High,/?lang=en,"frozen Armenian food Armenia, Gayane's Kitchen Yerevan",Core Brand (EN)
-en,buy homemade dolma in Yerevan,Transactional,Medium,/product-category/dolma/?lang=en,"Armenian grape leaf dolma delivery, vegan pasuts dolma",Category (EN)
-en,frozen khinkali Armenia,Transactional,Medium,/product-category/khinkali/?lang=en,"homemade khinkali Yerevan, Armenian manti delivery",Category (EN)
-en,buy vareniks in Yerevan,Transactional,Low-Medium,/product-category/vareniki/?lang=en,"potato vareniki Yerevan, spinach dumplings Armenia",Category (EN)
-en,vegan frozen food Yerevan,Transactional,Medium,/product-category/vegan-fasting/?lang=en,"homemade falafel Yerevan, vegan spring rolls delivery",Vegan Cluster (EN)
+hy,տնական սառեցված կիսապատրաստվածքներ Երևան,Transactional/Commercial,High (Primary),/,"ավանդական հայկական կիսաֆաբրիկատներ, տնական սառեցված ուտեստներ Երևան, Գայանեի Խոհանոց",Core Brand & Storefront
+hy,գնել սառեցված կիսապատրաստվածքներ Երևան,Transactional,High,/shop/,"սառեցված ուտեստներ առաքում Երևանում, տնական կիսաֆաբրիկատներ պատվիրել",Shop Catalog
+hy,գնել տնական տոլմա Երևանում,Transactional,High,/product-category/dolma/,"թփով տոլմա առաքում, պասուց տոլմա գնել, կաղամբով տոլմա, բանջարեղենով տոլմա",Category: Dolma
+hy,սառեցված խինկալի և մանթի Երևան,Transactional,High,/product-category/khinkali-ev-manti/,"տնական խինկալի ձեռագործ, տնական հայկական մանթի, խինկալի առաքում Երևանում",Category: Khinkali & Manti
+hy,գնել տնական վարենիկներ Երևանում,Transactional,Medium-High,/product-category/vareniki/,"կարտոֆիլով վարենիկ տնական, սպանախով վարենիկ, կաթնաշոռով վարենիկ, սնկով վարենիկ",Category: Vareniki
+hy,սառեցված պելմենի առաքում,Transactional,High,/product-category/pelmeni/,"պելմենի ֆիրմային, գունավոր պելմենի երեխաների համար, սիբիրյան պելմենի",Category: Pelmeni
+hy,նրբաբլիթներ առաքում Երևան,Transactional,Medium-High,/product-category/nrbablitner/,"տավարի մսով նրբաբլիթ տնական, կաթնաշոռով նրբաբլիթ, նրբաբլիթի շերտեր պատրաստի",Category: Crepes
+hy,հավի նագեթսներ և կոտլետներ,Transactional,Medium,/product-category/nrbablitner-ev-nagetsner/,"հավի կրծքամսով նագեթս տնական, պատրաստի նագեթս Երևան",Category: Nuggets
+hy,վեգան և պահքի սառեցված ուտեստներ Երևան,Transactional,Medium,/product-category/vegan-pahki/,"պահքի ուտեստներ առաքում, տնական ֆալաֆել, բանջարեղենով սպրինգ ռոլլ, սնկով սպրինգ ռոլլ",Category: Vegan & Fasting
+hy,տնական իշլի քյուֆթա պատվիրել,Transactional,Medium-High,/product-category/avandakan-utestner/,"իշլի քյուֆթա ընկույզով, տնական սառեցված խաշ առաքում Երևան",Category: Traditional Armenian
+hy,կոլոլակ և կոտլետներ առաքում,Transactional,Medium,/product-category/kololak-ev-kotletner/,"կիևյան կոտլետ տնական, հավի կոտլետ, տավարի մսով կոլոլակ Երևան",Category: Meatballs & Cutlets
+hy,հայկական ավանդական ուտեստների բաղադրատոմսեր,Informational,Medium,/blog/,"ինչպես ճիշտ եփել խինկալին, ինչպես եփել պելմենիներ, կիսաֆաբրիկատների պահպանում, իշլի քյուֆթա պատմություն",Blog & Recipes Cluster
+hy,սառեցված ուտեստների առաքում Երևանում,Commercial/Service,Medium,/delivery/,"անվճար առաքում Երևանում, առցանց պատվեր կիսաֆաբրիկատներ",Delivery & Payment
+hy,կորպորատիվ սննդի մատակարարում Երևան,Commercial (B2B),Low-Medium,/corporate-clients/,"B2B կիսաֆաբրիկատների մատակարարում, ռեստորանների համար սառեցված ուտեստներ",Corporate / B2B
+ru,домашние полуфабрикаты Ереван,Transactional/Commercial,High,/ru/,"замороженные полуфабрикаты Ереван, армянская кухня доставка, Gayane's Kitchen Ереван",Core Brand (RU)
+ru,купить замороженные полуфабрикаты Ереван,Transactional,High,/ru/shop/,"домашние блюда доставка по Еревану, быстрый ужин Ереван",Shop Catalog (RU)
+ru,купить домашнюю толму в Ереване,Transactional,Medium-High,/ru/product-category/tolma-ru/,"толма в виноградных листьях, постная толма с рисом, голубцы толма в капустных листьях",Category: Dolma (RU)
+ru,замороженные хинкали и манты Ереван,Transactional,High,/ru/product-category/khinkali-i-manty/,"домашние хинкали ручной лепки, домашние манты армянские, хинкали с доставкой Ереван",Category: Khinkali & Manti (RU)
+ru,купить вареники в Ереване,Transactional,Medium-High,/ru/product-category/vareniki-ru/,"вареники с картофелем домашние, вареники со шпинатом, вареники с творогом, вареники с грибами",Category: Vareniki (RU)
+ru,домашние пельмени Ереван,Transactional,High,/ru/product-category/pelmeni-ru/,"цветные пельмени для детей, пельмени сибирские, пельмени фирменные",Category: Pelmeni (RU)
+ru,блинчики с мясом доставка Ереван,Transactional,Medium,/ru/product-category/blinchiki/,"блинчики с творогом домашние, блинные листы заготовка",Category: Crepes (RU)
+ru,наггетсы из куриной грудки Ереван,Transactional,Medium,/ru/product-category/blinchiki-i-naggetsy/,"домашние куриные наггетсы замороженные",Category: Nuggets (RU)
+ru,веган и постное меню Ереван,Transactional,Medium,/ru/product-category/vegan-postnoe/,"постная еда доставка Ереван, фалафель домашний, спринг-роллы с грибами и овощами",Category: Vegan & Fasting (RU)
+ru,домашняя ишли кюфта и хаш Ереван,Transactional,Medium-High,/ru/product-category/traditsionnye-blyuda/,"ишли кюфта с грецким орехом, домашний хаш замороженный",Category: Traditional Armenian (RU)
+ru,кололак и котлеты доставка Ереван,Transactional,Medium,/ru/product-category/kololak-i-kotlety/,"котлета по-киевски домашняя, куриная котлета, кололак из говядины",Category: Meatballs & Cutlets (RU)
+ru,как правильно варить хинкали и пельмени,Informational,Medium,/ru/blog/,"как правильно хранить полуфабрикаты, история ишли кюфты, как выбрать куриное мясо",Blog & Recipes Cluster (RU)
+ru,доставка замороженной еды Ереван,Commercial/Service,Medium,/ru/delivery/,"бесплатная доставка по Еревану от 10000 драм",Delivery & Payment (RU)
+en,homemade Armenian food delivery Yerevan,Transactional/Commercial,High,/en/,"frozen Armenian food Armenia, Gayane's Kitchen Yerevan",Core Brand (EN)
+en,buy frozen semi-finished food Yerevan,Transactional,High,/en/shop/,"homemade dishes delivery Yerevan, quick frozen meals",Shop Catalog (EN)
+en,buy homemade dolma in Yerevan,Transactional,Medium,/en/product-category/dolma-en/,"Armenian grape leaf dolma, lenten rice dolma, Armenian cabbage dolma, pasuts lentil dolma",Category: Dolma (EN)
+en,frozen khinkali and manti Armenia,Transactional,Medium,/en/product-category/khinkali-and-manti/,"homemade khinkali Yerevan, Armenian homemade manti delivery",Category: Khinkali & Manti (EN)
+en,buy vareniks in Yerevan,Transactional,Low-Medium,/en/product-category/vareniks/,"potato vareniks Yerevan, spinach vareniks, cottage cheese vareniki, mushroom vareniki",Category: Vareniki (EN)
+en,homemade pelmeni delivery Yerevan,Transactional,Medium,/en/product-category/pelmeni-en/,"signature homemade pelmeni, siberian pelmeni, colorful homemade pelmeni",Category: Pelmeni (EN)
+en,homemade crepes delivery Yerevan,Transactional,Low-Medium,/en/product-category/crepes/,"homemade beef crepes, cottage cheese crepes, homemade crepe sheets",Category: Crepes (EN)
+en,vegan and fasting frozen food Yerevan,Transactional,Medium,/en/product-category/vegan/,"homemade frozen falafel, vegetable spring rolls, mushroom spring rolls",Category: Vegan & Fasting (EN)
+en,homemade ishli kufta and khash Yerevan,Transactional,Medium,/en/product-category/traditional-dishes/,"ishli kufta with walnuts, traditional Armenian khash",Category: Traditional Armenian (EN)
+en,kololak and cutlets delivery Yerevan,Transactional,Low-Medium,/en/product-category/meatballs-and-cutlets/,"homemade chicken kiev cutlet, all-beef kololak, homemade beef cutlet",Category: Meatballs & Cutlets (EN)
+en,how to cook khinkali and pelmeni,Informational,Medium,/en/blog/,"how to store frozen semi-finished foods, history of ishli kufta, how to choose fresh chicken",Blog & Recipes Cluster (EN)
+en,frozen food delivery Yerevan,Commercial/Service,Medium,/en/delivery/,"free delivery Yerevan, online food order Armenia",Delivery & Payment (EN)
+en,B2B frozen food supply Yerevan,Commercial (B2B),Low,/en/corporate-clients/,"wholesale Armenian semi-finished food Yerevan",Corporate / B2B (EN)
