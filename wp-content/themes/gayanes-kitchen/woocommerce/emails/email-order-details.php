@@ -115,7 +115,7 @@ if ( '' !== trim( wp_strip_all_tags( $payment_method_display ) ) ) :
 $delivery_date = trim( (string) $order->get_meta( '_gayanes_delivery_date' ) );
 $delivery_time = trim( (string) $order->get_meta( '_gayanes_delivery_time' ) );
 if ( '' !== $delivery_date || '' !== $delivery_time ) :
-	$clock_icon = defined( 'GV2_URI' ) ? GV2_URI . '/assets/images/email/clock.png' : '';
+	$clock_icon = defined( 'GV2_URI' ) ? GV2_URI . '/assets/images/email/clock.png?v=2' : '';
 	?>
 	<div class="gv2-delivery-card">
 		<table width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation">

@@ -12,6 +12,7 @@ defined( 'ABSPATH' ) || exit;
  * Holds the active language code ('hy', 'ru', 'en') while rendering an email.
  */
 $GLOBALS['gv2_active_email_lang']     = null;
+$GLOBALS['gv2_active_email_object']   = null;
 $GLOBALS['gv2_email_previous_locale'] = null;
 
 /**
@@ -133,6 +134,7 @@ add_action(
 		}
 
 		$GLOBALS['gv2_active_email_lang']     = $lang;
+		$GLOBALS['gv2_active_email_object']   = $email;
 		$GLOBALS['gv2_email_previous_locale'] = determine_locale();
 
 		$target_locale = gv2_lang_to_locale( $lang );
@@ -154,6 +156,7 @@ add_action(
 		$prev = $GLOBALS['gv2_email_previous_locale'] ?? null;
 
 		$GLOBALS['gv2_active_email_lang']     = null;
+		$GLOBALS['gv2_active_email_object']   = null;
 		$GLOBALS['gv2_email_previous_locale'] = null;
 
 		if ( is_string( $prev ) && '' !== $prev ) {
@@ -725,6 +728,22 @@ function gv2_clean_email_customer_note( string $note ): string {
 	}
 	return implode( "\n", $cleaned );
 }
+
+add_action(
+	'woocommerce_email_header',
+	static function ( $email_heading, $email = null ): void {
+		if ( is_object( $email ) ) {
+			$GLOBALS['gv2_active_email_object'] = $email;
+		}
+	},
+	1,
+	2
+);
+
+/**
+ * Remove English "via <shipping method>" suffix in email order totals.
+ */
+add_filter( 'woocommerce_order_shipping_to_display_shipped_via', '__return_false', 20 );
 
 /**
  * Ensure order totals labels (Subtotal, Shipping, Discount, Payment method, Total) match the order's language.

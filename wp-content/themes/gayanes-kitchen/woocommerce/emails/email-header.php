@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$email      = $email ?? null;
+$email      = $email ?? ( $GLOBALS['gv2_active_email_object'] ?? null );
 $order      = ( is_object( $email ) && isset( $email->object ) && $email->object instanceof WC_Order ) ? $email->object : null;
 $lang       = function_exists( 'gv2_get_email_lang' ) ? gv2_get_email_lang( $email ) : 'hy';
 $store_name = $store_name ?? get_bloginfo( 'name', 'display' );

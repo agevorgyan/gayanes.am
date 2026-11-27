@@ -12,10 +12,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$email      = $email ?? null;
+$email      = $email ?? ( $GLOBALS['gv2_active_email_object'] ?? null );
 $lang       = function_exists( 'gv2_get_email_lang' ) ? gv2_get_email_lang( $email ) : 'hy';
 $store_name = get_bloginfo( 'name', 'display' );
 $icons_uri  = defined( 'GV2_URI' ) ? GV2_URI . '/assets/images/email' : '';
+$icon_ver   = '?v=2';
 ?>
 										</td>
 									</tr>
@@ -33,7 +34,7 @@ $icons_uri  = defined( 'GV2_URI' ) ? GV2_URI . '/assets/images/email' : '';
 										<div class="gv2-phone-label"><?php echo esc_html( gv2_email_t( 'questions_line', $lang ) ); ?></div>
 										<a href="tel:+37455600655" class="gv2-phone-cta">
 											<?php if ( $icons_uri ) : ?>
-												<img src="<?php echo esc_url( $icons_uri . '/phone.png' ); ?>" alt="" width="22" height="22" style="width: 22px; height: 22px; vertical-align: middle; margin-right: 8px; border-radius: 999px;" />
+												<img src="<?php echo esc_url( $icons_uri . '/phone.png' . $icon_ver ); ?>" alt="" width="22" height="22" style="width: 22px; height: 22px; vertical-align: middle; margin-right: 8px; border-radius: 999px;" />
 											<?php endif; ?>
 											<span style="vertical-align: middle;">+374 55 600 655</span>
 										</a>
@@ -44,22 +45,22 @@ $icons_uri  = defined( 'GV2_URI' ) ? GV2_URI . '/assets/images/email' : '';
 									<tr>
 										<td class="gv2-social-cell">
 											<a href="https://www.instagram.com/gayanes_kitchen" class="gv2-social-icon-link" target="_blank" aria-label="Instagram" title="Instagram">
-												<img src="<?php echo esc_url( $icons_uri . '/instagram.png' ); ?>" alt="Instagram" width="38" height="38" />
+												<img src="<?php echo esc_url( $icons_uri . '/instagram.png' . $icon_ver ); ?>" alt="Instagram" width="38" height="38" />
 											</a>
 										</td>
 										<td class="gv2-social-cell">
 											<a href="https://www.facebook.com/gayanes.kitchen" class="gv2-social-icon-link" target="_blank" aria-label="Facebook" title="Facebook">
-												<img src="<?php echo esc_url( $icons_uri . '/facebook.png' ); ?>" alt="Facebook" width="38" height="38" />
+												<img src="<?php echo esc_url( $icons_uri . '/facebook.png' . $icon_ver ); ?>" alt="Facebook" width="38" height="38" />
 											</a>
 										</td>
 										<td class="gv2-social-cell">
 											<a href="https://wa.me/37455600655" class="gv2-social-icon-link" target="_blank" aria-label="WhatsApp" title="WhatsApp">
-												<img src="<?php echo esc_url( $icons_uri . '/whatsapp.png' ); ?>" alt="WhatsApp" width="38" height="38" />
+												<img src="<?php echo esc_url( $icons_uri . '/whatsapp.png' . $icon_ver ); ?>" alt="WhatsApp" width="38" height="38" />
 											</a>
 										</td>
 										<td class="gv2-social-cell">
 											<a href="https://t.me/+37455600655" class="gv2-social-icon-link" target="_blank" aria-label="Telegram" title="Telegram">
-												<img src="<?php echo esc_url( $icons_uri . '/telegram.png' ); ?>" alt="Telegram" width="38" height="38" />
+												<img src="<?php echo esc_url( $icons_uri . '/telegram.png' . $icon_ver ); ?>" alt="Telegram" width="38" height="38" />
 											</a>
 										</td>
 									</tr>
