@@ -85,10 +85,23 @@ table {
 }
 
 .gv2-hero-logo img {
-	width: 184px;
-	max-width: 184px;
+	width: 152px;
+	max-width: 152px;
 	height: auto;
 	display: inline-block;
+}
+
+.gv2-hero-order-pill {
+	display: inline-block;
+	margin-top: 8px;
+	padding: 4px 14px;
+	border-radius: 999px;
+	background-color: rgba(255, 255, 255, 0.14);
+	border: 1px solid rgba(247, 246, 241, 0.35);
+	font-size: 13px;
+	font-weight: 600;
+	color: #F7F6F1;
+	letter-spacing: 0.02em;
 }
 
 .gv2-hero-wordmark {
@@ -166,6 +179,33 @@ table {
 	color: <?php echo esc_attr( $text_primary ); ?>;
 }
 
+.gv2-greeting {
+	margin: 0 0 22px;
+	padding-bottom: 18px;
+	border-bottom: 1px solid <?php echo esc_attr( $border_subtle ); ?>;
+}
+
+.gv2-greeting-name {
+	margin: 0 0 8px !important;
+	font-size: 18px;
+	font-weight: 700;
+	color: <?php echo esc_attr( $text_primary ); ?>;
+}
+
+.gv2-greeting-body {
+	margin: 0 0 8px !important;
+	font-size: 15px;
+	line-height: 1.6;
+	color: <?php echo esc_attr( $text_primary ); ?>;
+}
+
+.gv2-greeting-thanks {
+	margin: 0 !important;
+	font-size: 14px;
+	font-weight: 600;
+	color: <?php echo esc_attr( $hero_bg ); ?> !important;
+}
+
 .gv2-section-title {
 	margin: 4px 0 14px;
 	font-size: 16px;
@@ -193,6 +233,14 @@ table {
 	border-radius: 12px;
 	display: block;
 	background-color: <?php echo esc_attr( $strip_bg ); ?>;
+}
+
+.gv2-item-thumb-placeholder {
+	width: 60px;
+	height: 60px;
+	border-radius: 12px;
+	background-color: <?php echo esc_attr( $strip_bg ); ?>;
+	border: 1px solid <?php echo esc_attr( $border_subtle ); ?>;
 }
 
 .gv2-item-name {
@@ -250,6 +298,31 @@ table {
 	color: <?php echo esc_attr( $text_primary ); ?>;
 }
 
+/* Payment & Info Cards */
+.gv2-info-card {
+	margin: 18px 0 6px;
+	background-color: <?php echo esc_attr( $bg_outer ); ?>;
+	border: 1px solid <?php echo esc_attr( $border_subtle ); ?>;
+	border-radius: 16px;
+	padding: 13px 16px;
+}
+
+.gv2-info-label {
+	font-size: 11px;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+	color: <?php echo esc_attr( $text_muted ); ?>;
+	margin: 0 0 3px;
+}
+
+.gv2-info-value {
+	font-size: 14px;
+	font-weight: 600;
+	color: <?php echo esc_attr( $text_primary ); ?>;
+	line-height: 1.45;
+}
+
 /* Scheduled Delivery Card */
 .gv2-delivery-card {
 	margin: 20px 0 6px;
@@ -296,23 +369,25 @@ table {
 
 /* Primary Terracotta Pill CTA */
 .gv2-cta-wrap {
-	padding: 22px 0 10px;
+	padding: 20px 0 8px;
 	text-align: center;
 }
 
-.gv2-cta-btn {
-	display: inline-block;
-	width: 100%;
-	max-width: 340px;
+.gv2-cta-td {
+	border-radius: 999px;
 	background-color: <?php echo esc_attr( $cta_bg ); ?>;
+}
+
+.gv2-cta-btn {
+	display: block;
 	color: #FFFFFF !important;
 	font-size: 15px;
-	font-weight: 600;
+	font-weight: 700;
+	line-height: 22px;
 	text-decoration: none !important;
-	padding: 15px 28px;
+	padding: 16px 28px;
 	border-radius: 999px;
 	text-align: center;
-	box-sizing: border-box;
 }
 
 /* Addresses */
@@ -514,6 +589,12 @@ table {
 		background-color: #232D26 !important;
 		border-bottom-color: #2F3C33 !important;
 	}
+	.gv2-greeting {
+		border-bottom-color: #2B362E !important;
+	}
+	.gv2-greeting-name,
+	.gv2-greeting-body,
+	.gv2-info-value,
 	.gv2-strip-text,
 	#body_content_inner,
 	#body_content_inner p,
@@ -524,22 +605,29 @@ table {
 	.gv2-totals-table tr.gv2-total-grand th,
 	.gv2-totals-table tr.gv2-total-grand td,
 	.gv2-address-card h3,
-	.gv2-loyalty-title,
 	.gv2-delivery-value {
 		color: #F7F6F1 !important;
+	}
+	.gv2-greeting-thanks {
+		color: #8FC0A0 !important;
 	}
 	.gv2-item-meta,
 	.gv2-totals-table th,
 	.gv2-address-card,
-	.gv2-loyalty-sub,
 	.gv2-footer-text,
 	.gv2-delivery-label,
+	.gv2-info-label,
 	.gv2-phone-label {
 		color: #B4BDB6 !important;
 	}
 	.gv2-item-row td,
 	.gv2-totals-table tr.gv2-total-grand th,
 	.gv2-totals-table tr.gv2-total-grand td {
+		border-color: #2B362E !important;
+	}
+	.gv2-info-card,
+	.gv2-item-thumb-placeholder {
+		background-color: #151B17 !important;
 		border-color: #2B362E !important;
 	}
 	.gv2-delivery-card {
@@ -551,6 +639,7 @@ table {
 		background-color: #304B39 !important;
 		color: #FFFFFF !important;
 	}
+	.gv2-cta-td,
 	.gv2-cta-btn {
 		background-color: #C46845 !important;
 		color: #FFFFFF !important;

@@ -1,6 +1,7 @@
 <?php
 /**
- * Email Header — Gayane's Kitchen (Option 3: Bold Culinary & Marketing-Driven)
+ * Email Header — Gayane's Kitchen
+ * Compact #304B39 hero with dominant logo, confirmation status, and order number.
  *
  * @see     https://woocommerce.com/document/template-structure/
  * @package WooCommerce\Templates\Emails
@@ -17,17 +18,6 @@ $lang       = function_exists( 'gv2_get_email_lang' ) ? gv2_get_email_lang( $ema
 $store_name = $store_name ?? get_bloginfo( 'name', 'display' );
 $logo_url   = defined( 'GV2_URI' ) ? GV2_URI . '/assets/images/logo-light.png' : get_option( 'woocommerce_email_header_image' );
 $home_link  = apply_filters( 'woocommerce_email_header_image_url', home_url( '/' ) );
-
-// Personalized hero subtitle when an order is available.
-$subtitle = '';
-if ( $order instanceof WC_Order && function_exists( 'gv2_email_t' ) ) {
-	$first_name = trim( (string) $order->get_billing_first_name() );
-	if ( '' !== $first_name ) {
-		$subtitle = sprintf( gv2_email_t( 'hero_subtitle_named', $lang ), $first_name );
-	} else {
-		$subtitle = gv2_email_t( 'hero_subtitle_generic', $lang );
-	}
-}
 ?>
 <!DOCTYPE html>
 <html lang="<?php echo esc_attr( $lang ); ?>">
@@ -44,13 +34,13 @@ if ( $order instanceof WC_Order && function_exists( 'gv2_email_t' ) ) {
 			<td align="center" valign="top">
 				<div id="wrapper" dir="<?php echo is_rtl() ? 'rtl' : 'ltr'; ?>">
 					<table border="0" cellpadding="0" cellspacing="0" width="100%" id="template_container" role="presentation">
-						<!-- Option 3 Hero Header (stays #304B39 in both Light & Dark mode) -->
+						<!-- Compact Brand Hero (#304B39 locked in Light & Dark mode) -->
 						<tr>
 							<td align="center" valign="top" class="gv2-hero" bgcolor="#304B39" style="background-color: #304B39; background-image: linear-gradient(#304B39, #304B39);">
 								<div class="gv2-hero-logo">
 									<a href="<?php echo esc_url( $home_link ); ?>" class="gv2-hero-wordmark" target="_blank">
 										<?php if ( $logo_url ) : ?>
-											<img src="<?php echo esc_url( $logo_url ); ?>" alt="<?php echo esc_attr( $store_name ); ?>" width="184" height="184" style="width: 184px; max-width: 184px; height: auto; display: inline-block;" />
+											<img src="<?php echo esc_url( $logo_url ); ?>" alt="<?php echo esc_attr( $store_name ); ?>" width="152" height="152" style="width: 152px; max-width: 152px; height: auto; display: inline-block;" />
 										<?php else : ?>
 											GAYANE'S
 										<?php endif; ?>
@@ -60,11 +50,11 @@ if ( $order instanceof WC_Order && function_exists( 'gv2_email_t' ) ) {
 								<div class="gv2-blend-screen">
 									<div class="gv2-blend-difference">
 										<div class="gv2-hero-badge" style="color: #FFFFFF !important;" aria-hidden="true">&#10003;</div>
-
 										<h1 style="color: #FFFFFF !important;"><?php echo esc_html( $email_heading ); ?></h1>
-
-										<?php if ( '' !== $subtitle ) : ?>
-											<p class="gv2-hero-subtitle" style="color: #F7F6F1 !important;"><?php echo esc_html( $subtitle ); ?></p>
+										<?php if ( $order instanceof WC_Order && function_exists( 'gv2_email_t' ) ) : ?>
+											<div class="gv2-hero-order-pill" style="color: #F7F6F1 !important;">
+												<?php echo esc_html( sprintf( gv2_email_t( 'order_number_label', $lang ), $order->get_order_number() ) ); ?>
+											</div>
 										<?php endif; ?>
 									</div>
 								</div>
@@ -72,7 +62,7 @@ if ( $order instanceof WC_Order && function_exists( 'gv2_email_t' ) ) {
 						</tr>
 
 						<?php if ( $order instanceof WC_Order && function_exists( 'gv2_email_t' ) ) : ?>
-						<!-- Option 3 Warm Sand Summary Strip -->
+						<!-- Warm Sand Metadata Strip -->
 						<tr>
 							<td class="gv2-strip">
 								<table width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation">
@@ -84,7 +74,11 @@ if ( $order instanceof WC_Order && function_exists( 'gv2_email_t' ) ) {
 											<?php
 											$date_created = $order->get_date_created();
 											if ( $date_created ) {
-												echo esc_html( sprintf( gv2_email_t( 'order_date_label', $lang ), $date_created->date_i18n( 'd.m.Y' ) ) );
+												$raw_date = $date_created->date_i18n( 'Y-m-d' );
+												$fmt_date = function_exists( 'gv2_format_email_delivery_date' )
+													? gv2_format_email_delivery_date( $raw_date, $lang )
+													: $date_created->date_i18n( 'd.m.Y' );
+												echo esc_html( $fmt_date );
 											}
 											?>
 										</td>

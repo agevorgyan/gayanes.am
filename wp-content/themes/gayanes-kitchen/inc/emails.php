@@ -223,6 +223,28 @@ function gv2_email_translations_map(): array {
 			'en' => 'Password Reset',
 		),
 
+		// Greeting & Confirmation Copy.
+		'greeting_named'            => array(
+			'hy' => 'Ողջույն, %s 👋',
+			'ru' => 'Здравствуйте, %s 👋',
+			'en' => 'Hello, %s 👋',
+		),
+		'greeting_generic'          => array(
+			'hy' => 'Ողջույն 👋',
+			'ru' => 'Здравствуйте 👋',
+			'en' => 'Hello 👋',
+		),
+		'processing_body_1'         => array(
+			'hy' => 'Ձեր պատվերը հաջողությամբ հաստատվել է։ Մենք արդեն պատրաստվում ենք, որպեսզի ձեր սիրելի ուտեստները թարմ և ժամանակին հասնեն ձեզ։',
+			'ru' => 'Ваш заказ успешно подтверждён. Мы уже готовим ваши любимые блюда, чтобы доставить их свежими и вовремя.',
+			'en' => 'Your order is confirmed. We are already preparing your favorite dishes so they reach you fresh and on time.',
+		),
+		'processing_body_2'         => array(
+			'hy' => 'Շնորհակալություն, որ ընտրել եք Gayane’s Kitchen-ը։',
+			'ru' => 'Спасибо, что выбрали Gayane’s Kitchen.',
+			'en' => 'Thank you for choosing Gayane’s Kitchen.',
+		),
+
 		// Personalized Hero Subtitle.
 		'hero_subtitle_named'       => array(
 			'hy' => 'Շնորհակալություն, %s։ Ձեր պատվերը սիրով պատրաստվում է։',
@@ -271,9 +293,28 @@ function gv2_email_translations_map(): array {
 
 		// CTA Button.
 		'track_order_cta'           => array(
-			'hy' => 'Դիտել պատվերը',
-			'ru' => 'Отследить заказ',
-			'en' => 'Track Your Order',
+			'hy' => 'Դիտել իմ պատվերը',
+			'ru' => 'Посмотреть мой заказ',
+			'en' => 'View My Order',
+		),
+
+		// Payment Card.
+		'payment_method_title'      => array(
+			'hy' => 'Վճարման եղանակ',
+			'ru' => 'Способ оплаты',
+			'en' => 'Payment Method',
+		),
+
+		// Totals Note & Discount.
+		'totals_discount'           => array(
+			'hy' => 'Զեղչ՝',
+			'ru' => 'Скидка:',
+			'en' => 'Discount:',
+		),
+		'totals_note'               => array(
+			'hy' => 'Նշում՝',
+			'ru' => 'Примечание:',
+			'en' => 'Note:',
 		),
 
 		// Addresses.
@@ -610,7 +651,34 @@ function gv2_format_email_delivery_date( string $raw_date, string $lang ): strin
 }
 
 /**
- * Ensure order totals labels (Subtotal, Shipping, Payment method, Total) match the order's language.
+ * Remove auto-appended Scheduled Delivery line from customer_note in emails
+ * so delivery date & time are shown only in the dedicated Delivery Card.
+ */
+function gv2_clean_email_customer_note( string $note ): string {
+	if ( '' === trim( $note ) ) {
+		return '';
+	}
+	$lines   = preg_split( '/\r\n|\r|\n/', $note );
+	$cleaned = array();
+	foreach ( $lines as $line ) {
+		$trimmed = trim( $line );
+		if ( '' === $trimmed ) {
+			continue;
+		}
+		if (
+			str_starts_with( $trimmed, 'Նախատեսված առաքում:' ) ||
+			str_starts_with( $trimmed, 'Ожидаемая доставка:' ) ||
+			str_starts_with( $trimmed, 'Scheduled Delivery:' )
+		) {
+			continue;
+		}
+		$cleaned[] = $trimmed;
+	}
+	return implode( "\n", $cleaned );
+}
+
+/**
+ * Ensure order totals labels (Subtotal, Shipping, Discount, Payment method, Total) match the order's language.
  */
 add_filter(
 	'woocommerce_get_order_item_totals',
@@ -619,6 +687,7 @@ add_filter(
 		$map  = array(
 			'cart_subtotal'  => 'totals_subtotal',
 			'shipping'       => 'totals_shipping',
+			'discount'       => 'totals_discount',
 			'payment_method' => 'totals_payment_method',
 			'order_total'    => 'totals_order_total',
 		);
