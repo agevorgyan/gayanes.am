@@ -156,9 +156,19 @@ $shop_url = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 
 					<a href="<?php echo esc_url( $deal_permalink ); ?>" class="gv2-deal-card__media">
 						<?php
 						if ( $deal_img_id ) {
-							echo wp_get_attachment_image( $deal_img_id, 'gv2-product-portrait', false, array( 'class' => 'gv2-card__img', 'loading' => 'lazy', 'decoding' => 'async' ) );
+							echo wp_get_attachment_image(
+								$deal_img_id,
+								'gv2-product-portrait',
+								false,
+								array(
+									'class'         => 'gv2-card__img',
+									'loading'       => 'eager',
+									'fetchpriority' => 'high',
+									'decoding'      => 'async',
+								)
+							);
 						} else {
-							echo '<img class="gv2-card__img" src="' . esc_url( wc_placeholder_img_src( 'gv2-product-portrait' ) ) . '" alt="' . esc_attr( $deal_product->get_name() ) . '" loading="lazy" />';
+							echo '<img class="gv2-card__img" src="' . esc_url( wc_placeholder_img_src( 'gv2-product-portrait' ) ) . '" alt="' . esc_attr( $deal_product->get_name() ) . '" loading="eager" fetchpriority="high" decoding="async" />';
 						}
 						?>
 						<span class="gv2-deal-badge"><?php echo esc_html( gv2_t( 'Deal of the Day' ) ); ?></span>
