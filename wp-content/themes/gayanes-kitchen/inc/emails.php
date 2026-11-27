@@ -288,6 +288,35 @@ function gv2_email_translations_map(): array {
 			'en' => 'Delivery Address',
 		),
 
+		// Scheduled Delivery Card.
+		'scheduled_delivery_label'  => array(
+			'hy' => 'Նախատեսված առաքում',
+			'ru' => 'Ожидаемая доставка',
+			'en' => 'Scheduled Delivery',
+		),
+
+		// Totals Labels.
+		'totals_subtotal'           => array(
+			'hy' => 'Ենթագումար՝',
+			'ru' => 'Подытог:',
+			'en' => 'Subtotal:',
+		),
+		'totals_shipping'           => array(
+			'hy' => 'Առաքում՝',
+			'ru' => 'Доставка:',
+			'en' => 'Shipping:',
+		),
+		'totals_payment_method'     => array(
+			'hy' => 'Վճարման եղանակ՝',
+			'ru' => 'Способ оплаты:',
+			'en' => 'Payment method:',
+		),
+		'totals_order_total'        => array(
+			'hy' => 'Ընդամենը՝',
+			'ru' => 'Итого:',
+			'en' => 'Total:',
+		),
+
 		// Loyalty / Retention Card (Option 3).
 		'loyalty_title'             => array(
 			'hy' => 'Թարմ և տնական՝ ամեն օր Ձեր սեղանին',
@@ -492,4 +521,67 @@ add_filter(
 	},
 	10,
 	1
+);
+
+/**
+ * Remove WooCommerce's default English additional_content ("Thanks again! If you need any help...")
+ * from customer emails, since our branded footer handles support & contact in HY/RU/EN.
+ */
+foreach (
+	array(
+		'customer_processing_order',
+		'customer_completed_order',
+		'customer_on_hold_order',
+		'customer_invoice',
+		'customer_note',
+		'customer_refunded_order',
+		'customer_cancelled_order',
+		'customer_failed_order',
+		'customer_new_account',
+		'customer_reset_password',
+	) as $gv2_email_id
+) {
+	add_filter( "woocommerce_email_additional_content_{$gv2_email_id}", '__return_empty_string', 99 );
+}
+
+/**
+ * Replace Gayanes_Core\Checkout_Delivery plain <p> email meta in HTML emails
+ * with our styled Scheduled Delivery Card in email-order-details.php.
+ */
+add_action(
+	'woocommerce_email_after_order_table',
+	static function ( $order, $sent_to_admin, $plain_text ): void {
+		if ( ! $plain_text && class_exists( 'Gayanes_Core\Checkout_Delivery' ) ) {
+			remove_action( 'woocommerce_email_after_order_table', array( 'Gayanes_Core\Checkout_Delivery', 'display_email_meta' ), 10 );
+		}
+	},
+	1,
+	3
+);
+
+/**
+ * Ensure order totals labels (Subtotal, Shipping, Payment method, Total) match the order's language.
+ */
+add_filter(
+	'woocommerce_get_order_item_totals',
+	static function ( array $total_rows, $order ): array {
+		if ( empty( $GLOBALS['gv2_active_email_lang'] ) ) {
+			return $total_rows;
+		}
+		$lang = gv2_get_email_lang( $order );
+		$map  = array(
+			'cart_subtotal'  => 'totals_subtotal',
+			'shipping'       => 'totals_shipping',
+			'payment_method' => 'totals_payment_method',
+			'order_total'    => 'totals_order_total',
+		);
+		foreach ( $map as $row_key => $tr_key ) {
+			if ( isset( $total_rows[ $row_key ]['label'] ) ) {
+				$total_rows[ $row_key ]['label'] = gv2_email_t( $tr_key, $lang );
+			}
+		}
+		return $total_rows;
+	},
+	20,
+	2
 );

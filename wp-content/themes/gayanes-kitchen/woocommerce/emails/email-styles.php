@@ -79,13 +79,15 @@ table {
 /* Hero Header */
 .gv2-hero {
 	background-color: <?php echo esc_attr( $hero_bg ); ?>;
+	background-image: linear-gradient(<?php echo esc_attr( $hero_bg ); ?>, <?php echo esc_attr( $hero_bg ); ?>);
 	padding: 32px 28px 28px;
 	text-align: center;
 }
 
 .gv2-hero-logo img {
-	max-height: 44px;
-	width: auto;
+	width: 128px;
+	max-width: 128px;
+	height: auto;
 	display: inline-block;
 }
 
@@ -248,6 +250,50 @@ table {
 	color: <?php echo esc_attr( $text_primary ); ?>;
 }
 
+/* Scheduled Delivery Card */
+.gv2-delivery-card {
+	margin: 20px 0 6px;
+	background-color: <?php echo esc_attr( $bg_outer ); ?>;
+	border: 1px solid <?php echo esc_attr( $border_subtle ); ?>;
+	border-left: 4px solid <?php echo esc_attr( $hero_bg ); ?>;
+	border-radius: 16px;
+	padding: 14px 16px;
+}
+
+.gv2-delivery-label {
+	font-size: 11px;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+	color: <?php echo esc_attr( $text_muted ); ?>;
+	margin: 0 0 4px;
+}
+
+.gv2-delivery-value {
+	font-size: 15px;
+	font-weight: 700;
+	color: <?php echo esc_attr( $text_primary ); ?>;
+	line-height: 1.4;
+}
+
+.gv2-delivery-date {
+	display: inline-block;
+	margin-right: 8px;
+	vertical-align: middle;
+}
+
+.gv2-delivery-slot {
+	display: inline-block;
+	padding: 3px 10px;
+	border-radius: 999px;
+	background-color: <?php echo esc_attr( $hero_bg ); ?>;
+	color: #FFFFFF !important;
+	font-size: 12px;
+	font-weight: 600;
+	vertical-align: middle;
+	white-space: nowrap;
+}
+
 /* Primary Terracotta Pill CTA */
 .gv2-cta-wrap {
 	padding: 22px 0 10px;
@@ -348,26 +394,53 @@ table {
 
 /* Footer */
 #template_footer {
-	padding: 22px 16px 8px;
+	padding: 24px 16px 12px;
 	text-align: center;
 }
 
-.gv2-social-row {
-	margin: 0 0 14px;
-	text-align: center;
+.gv2-social-table {
+	margin: 0 auto 18px;
 }
 
-.gv2-social-pill {
+.gv2-social-cell {
+	padding: 0 6px;
+}
+
+.gv2-social-icon-link {
 	display: inline-block;
-	margin: 3px 4px;
-	padding: 6px 12px;
+	text-decoration: none !important;
+	border-radius: 999px;
+}
+
+.gv2-social-icon-link img {
+	width: 40px;
+	height: 40px;
+	display: block;
+	border-radius: 999px;
+}
+
+.gv2-phone-box {
+	margin: 0 auto 16px;
+	text-align: center;
+}
+
+.gv2-phone-label {
+	font-size: 13px;
+	color: <?php echo esc_attr( $text_muted ); ?>;
+	margin: 0 0 8px;
+}
+
+.gv2-phone-cta {
+	display: inline-block;
+	padding: 10px 20px;
 	border-radius: 999px;
 	background-color: <?php echo esc_attr( $bg_card ); ?>;
 	border: 1px solid <?php echo esc_attr( $border_subtle ); ?>;
 	color: <?php echo esc_attr( $text_primary ); ?> !important;
-	font-size: 12px;
-	font-weight: 600;
+	font-size: 16px;
+	font-weight: 700;
 	text-decoration: none !important;
+	white-space: nowrap;
 }
 
 .gv2-footer-text {
@@ -426,14 +499,16 @@ table {
 		background-color: #1B221D !important;
 		border-color: #2B362E !important;
 	}
+	/* Keep Hero exact brand #304B39 in Dark Mode */
 	.gv2-hero {
-		background-color: #111914 !important;
+		background-color: #304B39 !important;
+		background-image: linear-gradient(#304B39, #304B39) !important;
 	}
-	.gv2-hero h1, .gv2-hero-wordmark {
-		color: #F7F6F1 !important;
+	.gv2-hero h1, .gv2-hero-wordmark, .gv2-hero-badge {
+		color: #FFFFFF !important;
 	}
 	.gv2-hero-subtitle {
-		color: #C7CFC9 !important;
+		color: #EBF0EC !important;
 	}
 	.gv2-strip {
 		background-color: #232D26 !important;
@@ -449,20 +524,32 @@ table {
 	.gv2-totals-table tr.gv2-total-grand th,
 	.gv2-totals-table tr.gv2-total-grand td,
 	.gv2-address-card h3,
-	.gv2-loyalty-title {
+	.gv2-loyalty-title,
+	.gv2-delivery-value {
 		color: #F7F6F1 !important;
 	}
 	.gv2-item-meta,
 	.gv2-totals-table th,
 	.gv2-address-card,
 	.gv2-loyalty-sub,
-	.gv2-footer-text {
+	.gv2-footer-text,
+	.gv2-delivery-label,
+	.gv2-phone-label {
 		color: #B4BDB6 !important;
 	}
 	.gv2-item-row td,
 	.gv2-totals-table tr.gv2-total-grand th,
 	.gv2-totals-table tr.gv2-total-grand td {
 		border-color: #2B362E !important;
+	}
+	.gv2-delivery-card {
+		background-color: #151B17 !important;
+		border-color: #2B362E !important;
+		border-left-color: #4F7A5D !important;
+	}
+	.gv2-delivery-slot {
+		background-color: #304B39 !important;
+		color: #FFFFFF !important;
 	}
 	.gv2-cta-btn {
 		background-color: #C46845 !important;
@@ -486,22 +573,40 @@ table {
 		border-color: #C46845 !important;
 		color: #F09C7C !important;
 	}
-	.gv2-social-pill {
+	.gv2-phone-cta {
 		background-color: #1B221D !important;
-		border-color: #2F3C33 !important;
+		border-color: #3B4A40 !important;
 		color: #F7F6F1 !important;
 	}
+}
+
+/* Gmail iOS/Android Dark Mode Hero Lock */
+u + .gv2-body .gv2-hero {
+	background-color: #304B39 !important;
+	background-image: linear-gradient(#304B39, #304B39) !important;
+}
+u + .gv2-body .gv2-blend-screen {
+	background: #000000;
+	mix-blend-mode: screen;
+}
+u + .gv2-body .gv2-blend-difference {
+	background: #000000;
+	mix-blend-mode: difference;
+	color: #FFFFFF !important;
 }
 
 /* Outlook App / Web Dark Mode Attributes */
 [data-ogsc] #outer_wrapper { background-color: #0E130F !important; }
 [data-ogsc] #template_container,
 [data-ogsc] #body_content { background-color: #1B221D !important; }
-[data-ogsc] .gv2-hero { background-color: #111914 !important; }
+[data-ogsc] .gv2-hero { background-color: #304B39 !important; background-image: linear-gradient(#304B39, #304B39) !important; }
 [data-ogsc] .gv2-strip { background-color: #232D26 !important; }
+[data-ogsc] .gv2-delivery-card { background-color: #151B17 !important; border-color: #2B362E !important; }
 [data-ogsc] .gv2-cta-btn { background-color: #C46845 !important; }
 [data-ogsc] .gv2-loyalty-card { background-color: #161C18 !important; border-color: #C46845 !important; }
+[data-ogsc] .gv2-phone-cta { background-color: #1B221D !important; border-color: #3B4A40 !important; color: #F7F6F1 !important; }
 [data-ogsc] .gv2-item-name,
 [data-ogsc] .gv2-item-price,
 [data-ogsc] .gv2-section-title,
-[data-ogsc] .gv2-strip-text { color: #F7F6F1 !important; }
+[data-ogsc] .gv2-strip-text,
+[data-ogsc] .gv2-delivery-value { color: #F7F6F1 !important; }

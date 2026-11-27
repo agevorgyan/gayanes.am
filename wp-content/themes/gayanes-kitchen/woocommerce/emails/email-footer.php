@@ -51,16 +51,46 @@ $store_name  = get_bloginfo( 'name', 'display' );
 					<table border="0" cellpadding="0" cellspacing="0" width="100%" id="template_footer" role="presentation">
 						<tr>
 							<td align="center" valign="top">
-								<div class="gv2-social-row">
-									<a href="https://www.instagram.com/gayanes_kitchen" class="gv2-social-pill" target="_blank">Instagram</a>
-									<a href="https://www.facebook.com/gayanes.kitchen" class="gv2-social-pill" target="_blank">Facebook</a>
-									<a href="https://wa.me/37455600655" class="gv2-social-pill" target="_blank">WhatsApp</a>
-									<a href="https://t.me/+37455600655" class="gv2-social-pill" target="_blank">Telegram</a>
-								</div>
+								<?php $icons_uri = defined( 'GV2_URI' ) ? GV2_URI . '/assets/images/email' : ''; ?>
+								<table border="0" cellpadding="0" cellspacing="0" align="center" class="gv2-social-table" role="presentation">
+									<tr>
+										<td class="gv2-social-cell">
+											<a href="https://www.instagram.com/gayanes_kitchen" class="gv2-social-icon-link" target="_blank" aria-label="Instagram" title="Instagram">
+												<img src="<?php echo esc_url( $icons_uri . '/instagram.png' ); ?>" alt="Instagram" width="40" height="40" />
+											</a>
+										</td>
+										<td class="gv2-social-cell">
+											<a href="https://www.facebook.com/gayanes.kitchen" class="gv2-social-icon-link" target="_blank" aria-label="Facebook" title="Facebook">
+												<img src="<?php echo esc_url( $icons_uri . '/facebook.png' ); ?>" alt="Facebook" width="40" height="40" />
+											</a>
+										</td>
+										<td class="gv2-social-cell">
+											<a href="https://wa.me/37455600655" class="gv2-social-icon-link" target="_blank" aria-label="WhatsApp" title="WhatsApp">
+												<img src="<?php echo esc_url( $icons_uri . '/whatsapp.png' ); ?>" alt="WhatsApp" width="40" height="40" />
+											</a>
+										</td>
+										<td class="gv2-social-cell">
+											<a href="https://t.me/+37455600655" class="gv2-social-icon-link" target="_blank" aria-label="Telegram" title="Telegram">
+												<img src="<?php echo esc_url( $icons_uri . '/telegram.png' ); ?>" alt="Telegram" width="40" height="40" />
+											</a>
+										</td>
+									</tr>
+								</table>
+
+								<?php if ( function_exists( 'gv2_email_t' ) ) : ?>
+									<div class="gv2-phone-box">
+										<div class="gv2-phone-label"><?php echo esc_html( gv2_email_t( 'questions_line', $lang ) ); ?></div>
+										<a href="tel:+37455600655" class="gv2-phone-cta">
+											<?php if ( $icons_uri ) : ?>
+												<img src="<?php echo esc_url( $icons_uri . '/phone.png' ); ?>" alt="" width="22" height="22" style="width: 22px; height: 22px; vertical-align: middle; margin-right: 8px; border-radius: 999px;" />
+											<?php endif; ?>
+											<span style="vertical-align: middle;">+374 55 600 655</span>
+										</a>
+									</div>
+								<?php endif; ?>
+
 								<div class="gv2-footer-text">
 									<?php if ( function_exists( 'gv2_email_t' ) ) : ?>
-										<?php echo esc_html( gv2_email_t( 'questions_line', $lang ) ); ?>
-										<a href="tel:+37455600655">+374 55 600 655</a><br />
 										&copy; <?php echo esc_html( gmdate( 'Y' ) ); ?> <?php echo esc_html( $store_name ); ?> (gayanes.am). <?php echo esc_html( gv2_email_t( 'all_rights', $lang ) ); ?>
 									<?php else : ?>
 										&copy; <?php echo esc_html( gmdate( 'Y' ) ); ?> <?php echo esc_html( $store_name ); ?> (gayanes.am)

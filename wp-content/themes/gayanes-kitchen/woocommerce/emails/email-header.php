@@ -38,32 +38,36 @@ if ( $order instanceof WC_Order && function_exists( 'gv2_email_t' ) ) {
 	<meta name="supported-color-schemes" content="light dark" />
 	<title><?php echo esc_html( $store_name ); ?></title>
 </head>
-<body leftmargin="0" marginwidth="0" topmargin="0" marginheight="0" offset="0">
+<body class="gv2-body" leftmargin="0" marginwidth="0" topmargin="0" marginheight="0" offset="0">
 	<table width="100%" id="outer_wrapper" role="presentation" border="0" cellpadding="0" cellspacing="0">
 		<tr>
 			<td align="center" valign="top">
 				<div id="wrapper" dir="<?php echo is_rtl() ? 'rtl' : 'ltr'; ?>">
 					<table border="0" cellpadding="0" cellspacing="0" width="100%" id="template_container" role="presentation">
-						<!-- Option 3 Hero Header -->
+						<!-- Option 3 Hero Header (stays #304B39 in both Light & Dark mode) -->
 						<tr>
-							<td align="center" valign="top" class="gv2-hero">
+							<td align="center" valign="top" class="gv2-hero" bgcolor="#304B39" style="background-color: #304B39; background-image: linear-gradient(#304B39, #304B39);">
 								<div class="gv2-hero-logo">
 									<a href="<?php echo esc_url( $home_link ); ?>" class="gv2-hero-wordmark" target="_blank">
 										<?php if ( $logo_url ) : ?>
-											<img src="<?php echo esc_url( $logo_url ); ?>" alt="<?php echo esc_attr( $store_name ); ?>" />
+											<img src="<?php echo esc_url( $logo_url ); ?>" alt="<?php echo esc_attr( $store_name ); ?>" width="128" height="128" style="width: 128px; max-width: 128px; height: auto; display: inline-block;" />
 										<?php else : ?>
 											GAYANE'S
 										<?php endif; ?>
 									</a>
 								</div>
 
-								<div class="gv2-hero-badge" aria-hidden="true">&#10003;</div>
+								<div class="gv2-blend-screen">
+									<div class="gv2-blend-difference">
+										<div class="gv2-hero-badge" aria-hidden="true">&#10003;</div>
 
-								<h1><?php echo esc_html( $email_heading ); ?></h1>
+										<h1><?php echo esc_html( $email_heading ); ?></h1>
 
-								<?php if ( '' !== $subtitle ) : ?>
-									<p class="gv2-hero-subtitle"><?php echo esc_html( $subtitle ); ?></p>
-								<?php endif; ?>
+										<?php if ( '' !== $subtitle ) : ?>
+											<p class="gv2-hero-subtitle"><?php echo esc_html( $subtitle ); ?></p>
+										<?php endif; ?>
+									</div>
+								</div>
 							</td>
 						</tr>
 
