@@ -27,5 +27,6 @@ require_once GV2_DIR . '/inc/template-tags.php';
 
 if ( class_exists( 'WooCommerce' ) ) {
 	require_once GV2_DIR . '/inc/woocommerce.php';
+	require_once GV2_DIR . '/inc/emails.php';
 }
 
