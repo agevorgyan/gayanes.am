@@ -80,13 +80,13 @@ table {
 .gv2-hero {
 	background-color: <?php echo esc_attr( $hero_bg ); ?>;
 	background-image: linear-gradient(<?php echo esc_attr( $hero_bg ); ?>, <?php echo esc_attr( $hero_bg ); ?>);
-	padding: 32px 28px 28px;
+	padding: 22px 28px 26px;
 	text-align: center;
 }
 
 .gv2-hero-logo img {
-	width: 128px;
-	max-width: 128px;
+	width: 184px;
+	max-width: 184px;
 	height: auto;
 	display: inline-block;
 }
@@ -592,6 +592,11 @@ u + .gv2-body .gv2-blend-screen {
 u + .gv2-body .gv2-blend-difference {
 	background: #000000;
 	mix-blend-mode: difference;
+	color: #FFFFFF !important;
+}
+u + .gv2-body .gv2-hero h1,
+u + .gv2-body .gv2-hero-subtitle,
+u + .gv2-body .gv2-hero-badge {
 	color: #FFFFFF !important;
 }
 

@@ -96,7 +96,15 @@ if ( $delivery_date || $delivery_time ) :
 					</div>
 					<div class="gv2-delivery-value">
 						<?php if ( $delivery_date ) : ?>
-							<span class="gv2-delivery-date"><?php echo esc_html( $delivery_date ); ?></span>
+							<span class="gv2-delivery-date">
+								<?php
+								echo esc_html(
+									function_exists( 'gv2_format_email_delivery_date' )
+										? gv2_format_email_delivery_date( (string) $delivery_date, $lang )
+										: $delivery_date
+								);
+								?>
+							</span>
 						<?php endif; ?>
 						<?php if ( $delivery_time ) : ?>
 							<span class="gv2-delivery-slot"><?php echo esc_html( $delivery_time ); ?></span>

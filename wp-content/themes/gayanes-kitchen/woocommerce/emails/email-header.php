@@ -50,7 +50,7 @@ if ( $order instanceof WC_Order && function_exists( 'gv2_email_t' ) ) {
 								<div class="gv2-hero-logo">
 									<a href="<?php echo esc_url( $home_link ); ?>" class="gv2-hero-wordmark" target="_blank">
 										<?php if ( $logo_url ) : ?>
-											<img src="<?php echo esc_url( $logo_url ); ?>" alt="<?php echo esc_attr( $store_name ); ?>" width="128" height="128" style="width: 128px; max-width: 128px; height: auto; display: inline-block;" />
+											<img src="<?php echo esc_url( $logo_url ); ?>" alt="<?php echo esc_attr( $store_name ); ?>" width="184" height="184" style="width: 184px; max-width: 184px; height: auto; display: inline-block;" />
 										<?php else : ?>
 											GAYANE'S
 										<?php endif; ?>
@@ -59,12 +59,12 @@ if ( $order instanceof WC_Order && function_exists( 'gv2_email_t' ) ) {
 
 								<div class="gv2-blend-screen">
 									<div class="gv2-blend-difference">
-										<div class="gv2-hero-badge" aria-hidden="true">&#10003;</div>
+										<div class="gv2-hero-badge" style="color: #FFFFFF !important;" aria-hidden="true">&#10003;</div>
 
-										<h1><?php echo esc_html( $email_heading ); ?></h1>
+										<h1 style="color: #FFFFFF !important;"><?php echo esc_html( $email_heading ); ?></h1>
 
 										<?php if ( '' !== $subtitle ) : ?>
-											<p class="gv2-hero-subtitle"><?php echo esc_html( $subtitle ); ?></p>
+											<p class="gv2-hero-subtitle" style="color: #F7F6F1 !important;"><?php echo esc_html( $subtitle ); ?></p>
 										<?php endif; ?>
 									</div>
 								</div>

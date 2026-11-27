@@ -560,14 +560,61 @@ add_action(
 );
 
 /**
+ * Format a YYYY-MM-DD delivery date into a human-friendly localized string.
+ */
+function gv2_format_email_delivery_date( string $raw_date, string $lang ): string {
+	$ts = strtotime( $raw_date );
+	if ( false === $ts ) {
+		return $raw_date;
+	}
+
+	$day   = (int) gmdate( 'j', $ts );
+	$month = (int) gmdate( 'n', $ts );
+	$year  = gmdate( 'Y', $ts );
+
+	$hy_months = array(
+		1  => 'հունվարի',
+		2  => 'փետրվարի',
+		3  => 'մարտի',
+		4  => 'ապրիլի',
+		5  => 'մայիսի',
+		6  => 'հունիսի',
+		7  => 'հուլիսի',
+		8  => 'օգոստոսի',
+		9  => 'սեպտեմբերի',
+		10 => 'հոկտեմբերի',
+		11 => 'նոյեմբերի',
+		12 => 'դեկտեմբերի',
+	);
+
+	$ru_months = array(
+		1  => 'января',
+		2  => 'февраля',
+		3  => 'марта',
+		4  => 'апреля',
+		5  => 'мая',
+		6  => 'июня',
+		7  => 'июля',
+		8  => 'августа',
+		9  => 'сентября',
+		10 => 'октября',
+		11 => 'ноября',
+		12 => 'декабря',
+	);
+
+	return match ( $lang ) {
+		'hy'    => sprintf( '%d %s, %s', $day, $hy_months[ $month ] ?? '', $year ),
+		'ru'    => sprintf( '%d %s %s', $day, $ru_months[ $month ] ?? '', $year ),
+		default => gmdate( 'M j, Y', $ts ),
+	};
+}
+
+/**
  * Ensure order totals labels (Subtotal, Shipping, Payment method, Total) match the order's language.
  */
 add_filter(
 	'woocommerce_get_order_item_totals',
 	static function ( array $total_rows, $order ): array {
-		if ( empty( $GLOBALS['gv2_active_email_lang'] ) ) {
-			return $total_rows;
-		}
 		$lang = gv2_get_email_lang( $order );
 		$map  = array(
 			'cart_subtotal'  => 'totals_subtotal',
