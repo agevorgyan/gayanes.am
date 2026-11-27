@@ -19,7 +19,7 @@ function gv2_output_resource_hints(): void {
 		// Preload primary self-hosted Armenian/Latin font weights to break CSS->font waterfall.
 		$font_base = GV2_URI . '/assets/fonts/';
 		echo '<link rel="preload" as="font" type="font/otf" href="' . esc_url( $font_base . 'GAA_Gayane_Reg.otf' ) . '" crossorigin />' . "\n";
-		echo '<link rel="preload" as="font" type="font/otf" href="' . esc_url( $font_base . 'GAAGayane-SemiBold.otf' ) . '" crossorigin />' . "\n";
+		echo '<link rel="preload" as="font" type="font/otf" href="' . esc_url( $font_base . 'GAAGayane-Bold.otf' ) . '" crossorigin />' . "\n";
 	}
 
 	if ( is_front_page() && function_exists( 'wc_get_product' ) ) {
@@ -255,10 +255,19 @@ function gv2_defer_scripts( string $tag, string $handle ): string {
 
 	$defer_handles = array(
 		'gv2-app',
+	);
+
+	// Delay heavy analytics scripts until first user interaction or idle after load.
+	$delay_handles = array(
 		'google_gtagjs',
 		'googlesitekit-events-provider-content-events',
 		'googlesitekit-events-provider-woocommerce',
 	);
+	if ( in_array( $handle, $delay_handles, true ) && preg_match( "/\ssrc=(['\"])([^'\"]+)\\1/", $tag, $m ) ) {
+		$src = $m[2];
+		$tag = str_replace( $m[0], ' data-gv2-delay-src="' . esc_url( $src ) . '"', $tag );
+		return str_replace( ' defer', '', $tag );
+	}
 
 	$is_commerce_flow = ( function_exists( 'is_cart' ) && is_cart() )
 		|| ( function_exists( 'is_checkout' ) && is_checkout() )
@@ -299,3 +308,35 @@ function gv2_output_favicons(): void {
 	echo '<meta name="theme-color" content="#304B39" />' . "\n";
 }
 add_action( 'wp_head', 'gv2_output_favicons', 2 );
+
+/**
+ * Load delayed analytics scripts on first user interaction or 4s after window load.
+ */
+function gv2_output_delayed_scripts_loader(): void {
+	if ( is_admin() ) {
+		return;
+	}
+	?>
+	<script>
+	(function(){
+		var loaded = false;
+		function loadDelayed(){
+			if(loaded) return;
+			loaded = true;
+			var nodes = document.querySelectorAll('script[data-gv2-delay-src]');
+			for(var i=0;i<nodes.length;i++){
+				var s = document.createElement('script');
+				s.src = nodes[i].getAttribute('data-gv2-delay-src');
+				s.async = true;
+				document.head.appendChild(s);
+			}
+		}
+		['pointerdown','keydown','scroll','touchstart'].forEach(function(ev){
+			window.addEventListener(ev, loadDelayed, {once:true, passive:true});
+		});
+		window.addEventListener('load', function(){ setTimeout(loadDelayed, 4000); }, {once:true});
+	})();
+	</script>
+	<?php
+}
+add_action( 'wp_footer', 'gv2_output_delayed_scripts_loader', 99 );
