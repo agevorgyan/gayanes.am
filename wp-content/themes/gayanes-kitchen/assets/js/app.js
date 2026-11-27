@@ -710,8 +710,6 @@
 		const updateTabbarVisibility = () => {
 			const currentY = Math.max(0, window.scrollY || window.pageYOffset || 0);
 			const delta = currentY - lastY;
-			const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-			const atBottom = maxScroll > 0 && currentY >= maxScroll - 4;
 
 			if (currentY <= 20) {
 				tabbar.classList.remove('is-hidden');
@@ -719,8 +717,12 @@
 			} else if (Math.abs(delta) >= 8) {
 				if (delta > 0 && currentY > 60) {
 					tabbar.classList.add('is-hidden');
-				} else if (delta < 0 && !atBottom) {
-					tabbar.classList.remove('is-hidden');
+				} else if (delta < 0) {
+					const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+					const atBottom = maxScroll > 0 && currentY >= maxScroll - 4;
+					if (!atBottom) {
+						tabbar.classList.remove('is-hidden');
+					}
 				}
 				lastY = currentY;
 			}

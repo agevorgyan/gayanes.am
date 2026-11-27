@@ -7893,3 +7893,26 @@ form.woocommerce-checkout {
 		padding: 32px 34px;
 	}
 }
+
+/* Performance: skip offscreen layout/paint & reduce mobile backdrop-filter layer cost */
+.gv2-story-band,
+.gv2-partners-band,
+.gv2-blog-band,
+.gv2-footer {
+	content-visibility: auto;
+	contain-intrinsic-size: auto 560px;
+}
+
+@media (max-width: 899px) {
+	.gv2-glass-card,
+	.gv2-card,
+	.gv2-pillar,
+	.gv2-partner-logo,
+	.gv2-faq-item,
+	.gv2-btn--glass,
+	.gv2-glass-btn {
+		backdrop-filter: none;
+		-webkit-backdrop-filter: none;
+		background: rgba(255, 255, 255, 0.9);
+	}
+}

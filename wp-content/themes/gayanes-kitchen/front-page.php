@@ -41,6 +41,7 @@ $shop_url = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 
 								'loading'       => 'eager',
 								'fetchpriority' => 'high',
 								'decoding'      => 'async',
+								'sizes'         => '(max-width: 767px) 340px, 440px',
 							)
 						);
 					} elseif ( has_post_thumbnail() ) {
