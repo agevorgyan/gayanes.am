@@ -244,6 +244,26 @@ function gv2_email_translations_map(): array {
 			'ru' => 'Спасибо, что выбрали Gayane’s Kitchen.',
 			'en' => 'Thank you for choosing Gayane’s Kitchen.',
 		),
+		'completed_body_1'          => array(
+			'hy' => 'Ձեր պատվերը հաջողությամբ առաքվել է։ Բարի ախորժակ։',
+			'ru' => 'Ваш заказ успешно доставлен. Приятного аппетита!',
+			'en' => 'Your order has been delivered. Enjoy your meal!',
+		),
+		'completed_body_2'          => array(
+			'hy' => 'Կրկին սիրով սպասում ենք ձեզ Gayane’s Kitchen-ում։',
+			'ru' => 'Будем рады видеть вас снова в Gayane’s Kitchen.',
+			'en' => 'We look forward to serving you again at Gayane’s Kitchen.',
+		),
+		'on_hold_body_1'            => array(
+			'hy' => 'Ձեր պատվերը ընդունված է և այժմ սպասում է վճարման հաստատմանը։ Հաստատումից անմիջապես հետո մենք կսկսենք պատրաստումը։',
+			'ru' => 'Ваш заказ принят и ожидает подтверждения оплаты. Сразу после подтверждения мы начнём приготовление.',
+			'en' => 'Your order has been received and is awaiting payment confirmation. As soon as it’s confirmed, we’ll start preparing it.',
+		),
+		'note_body_1'               => array(
+			'hy' => 'Ձեր պատվերի վերաբերյալ ավելացվել է նոր հաղորդագրություն մեր թիմից․',
+			'ru' => 'К вашему заказу добавлено новое сообщение от нашей команды:',
+			'en' => 'A new note from our team has been added to your order:',
+		),
 
 		// Personalized Hero Subtitle.
 		'hero_subtitle_named'       => array(
@@ -392,6 +412,35 @@ function gv2_email_translations_map(): array {
 			'en' => 'All rights reserved.',
 		),
 	);
+}
+
+/**
+ * Render the standardized warm greeting block for customer order emails.
+ *
+ * @param WC_Order|mixed $order      Order object.
+ * @param string         $body_key   Translation key for main body paragraph.
+ * @param string         $thanks_key Translation key for closing line (empty to omit).
+ */
+function gv2_render_email_greeting( $order, string $body_key, string $thanks_key = 'processing_body_2' ): void {
+	$lang       = gv2_get_email_lang( $order );
+	$first_name = $order instanceof WC_Order ? trim( (string) $order->get_billing_first_name() ) : '';
+	?>
+	<div class="gv2-greeting">
+		<p class="gv2-greeting-name">
+			<?php
+			if ( '' !== $first_name ) {
+				echo esc_html( sprintf( gv2_email_t( 'greeting_named', $lang ), $first_name ) );
+			} else {
+				echo esc_html( gv2_email_t( 'greeting_generic', $lang ) );
+			}
+			?>
+		</p>
+		<p class="gv2-greeting-body"><?php echo esc_html( gv2_email_t( $body_key, $lang ) ); ?></p>
+		<?php if ( '' !== $thanks_key ) : ?>
+			<p class="gv2-greeting-thanks"><?php echo esc_html( gv2_email_t( $thanks_key, $lang ) ); ?></p>
+		<?php endif; ?>
+	</div>
+	<?php
 }
 
 /**

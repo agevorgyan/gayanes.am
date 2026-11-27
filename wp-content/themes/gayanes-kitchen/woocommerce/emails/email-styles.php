@@ -206,6 +206,22 @@ table {
 	color: <?php echo esc_attr( $hero_bg ); ?> !important;
 }
 
+.gv2-note-box {
+	margin: 0 0 22px;
+	padding: 16px 18px;
+	background-color: <?php echo esc_attr( $bg_outer ); ?>;
+	border: 1px solid <?php echo esc_attr( $border_subtle ); ?>;
+	border-left: 4px solid <?php echo esc_attr( $cta_bg ); ?>;
+	border-radius: 14px;
+	font-size: 15px;
+	line-height: 1.6;
+	color: <?php echo esc_attr( $text_primary ); ?>;
+}
+
+.gv2-note-box p:last-child {
+	margin-bottom: 0 !important;
+}
+
 .gv2-section-title {
 	margin: 4px 0 14px;
 	font-size: 16px;
@@ -629,6 +645,12 @@ table {
 	.gv2-item-thumb-placeholder {
 		background-color: #151B17 !important;
 		border-color: #2B362E !important;
+	}
+	.gv2-note-box {
+		background-color: #151B17 !important;
+		border-color: #2B362E !important;
+		border-left-color: #C46845 !important;
+		color: #F7F6F1 !important;
 	}
 	.gv2-delivery-card {
 		background-color: #151B17 !important;
