@@ -8084,7 +8084,7 @@ form.woocommerce-checkout {
 
 @media (min-width:960px) {
     .gv2-corp-hero {
-        padding: 36px 0 36px
+        padding: 36px 36px
     }
 
     .gv2-corp-hero__grid {
@@ -8567,7 +8567,7 @@ form.woocommerce-checkout {
     }
 
     .gv2-corp-hero {
-        padding: 10px 0 20px
+        padding: 10px 20px
     }
 
     .gv2-corp-hero__grid {
