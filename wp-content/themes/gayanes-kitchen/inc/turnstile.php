@@ -100,8 +100,9 @@ add_filter( 'script_loader_tag', 'gv2_turnstile_script_attributes', 10, 2 );
  *
  * @param string $action      Optional Turnstile action label (e.g. 'contact', 'login').
  * @param string $extra_class Optional extra CSS class for wrapper.
+ * @param string $theme       Widget theme ('light' or 'dark').
  */
-function gv2_render_turnstile_widget( string $action = '', string $extra_class = '' ): void {
+function gv2_render_turnstile_widget( string $action = '', string $extra_class = '', string $theme = 'light' ): void {
 	if ( ! gv2_is_turnstile_enabled() ) {
 		return;
 	}
@@ -109,18 +110,21 @@ function gv2_render_turnstile_widget( string $action = '', string $extra_class =
 	$site_key = gv2_get_turnstile_site_key();
 	$raw_lang = function_exists( 'gv2_current_lang' ) ? gv2_current_lang() : 'hy';
 	$lang     = in_array( $raw_lang, array( 'en', 'ru' ), true ) ? $raw_lang : 'auto';
+	$theme    = 'dark' === $theme ? 'dark' : 'light';
 	$classes  = trim( 'gv2-turnstile-wrap ' . $extra_class );
 	?>
 	<div class="<?php echo esc_attr( $classes ); ?>">
-		<div
-			class="cf-turnstile"
-			data-sitekey="<?php echo esc_attr( $site_key ); ?>"
-			data-theme="light"
-			data-language="<?php echo esc_attr( $lang ); ?>"
-			<?php if ( '' !== $action ) : ?>
-				data-action="<?php echo esc_attr( sanitize_key( $action ) ); ?>"
-			<?php endif; ?>
-		></div>
+		<div class="gv2-turnstile-frame">
+			<div
+				class="cf-turnstile"
+				data-sitekey="<?php echo esc_attr( $site_key ); ?>"
+				data-theme="<?php echo esc_attr( $theme ); ?>"
+				data-language="<?php echo esc_attr( $lang ); ?>"
+				<?php if ( '' !== $action ) : ?>
+					data-action="<?php echo esc_attr( sanitize_key( $action ) ); ?>"
+				<?php endif; ?>
+			></div>
+		</div>
 	</div>
 	<?php
 }

@@ -3701,6 +3701,8 @@ form.woocommerce-checkout {
 
 	.gv2-newsletter__form {
 		flex-direction: row;
+		flex-wrap: wrap;
+		justify-content: flex-end;
 	}
 
 	.gv2-newsletter__form input {
@@ -7920,20 +7922,57 @@ form.woocommerce-checkout {
 .gv2-turnstile-wrap {
 	margin: 10px 0 4px;
 	max-width: 100%;
-	overflow-x: auto;
+	display: flex;
+	justify-content: flex-start;
+}
+
+.gv2-turnstile-frame {
+	display: inline-flex;
+	border-radius: 16px;
+	overflow: hidden;
+	border: 1px solid rgba(36, 41, 35, 0.10);
+	box-shadow: 0 4px 14px rgba(36, 41, 35, 0.05);
+	background: rgba(255, 255, 255, 0.88);
+	line-height: 0;
+	max-width: 100%;
 }
 
 .gv2-turnstile-wrap--auth {
 	margin: 12px 0 14px;
+	justify-content: center;
 }
 
 .gv2-turnstile-wrap--checkout {
 	margin: 0 0 16px;
-	display: flex;
 	justify-content: center;
 }
 
 .gv2-turnstile-wrap--newsletter {
-	flex-basis: 100%;
-	margin: 4px 0 0;
+	flex: 1 0 100%;
+	justify-content: center;
+	max-height: 0;
+	opacity: 0;
+	overflow: hidden;
+	margin: 0;
+	pointer-events: none;
+	transition: max-height 0.34s var(--gv2-spring), opacity 0.26s ease, margin-top 0.26s ease;
+}
+
+.gv2-turnstile-wrap--newsletter.is-revealed {
+	max-height: 96px;
+	opacity: 1;
+	margin-top: 4px;
+	pointer-events: auto;
+}
+
+.gv2-turnstile-wrap--newsletter .gv2-turnstile-frame {
+	border-color: rgba(255, 255, 255, 0.18);
+	background: rgba(22, 36, 27, 0.9);
+	box-shadow: 0 8px 22px rgba(0, 0, 0, 0.22);
+}
+
+@media (min-width: 900px) {
+	.gv2-turnstile-wrap--newsletter {
+		justify-content: flex-end;
+	}
 }

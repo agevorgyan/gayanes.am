@@ -941,6 +941,31 @@
 		updateDeliveryProgress(parseSubtotalNumber(initialSubEl.textContent || initialSubEl.innerHTML));
 	}
 
+	// Cloudflare Turnstile: newsletter smooth reveal on focus/input
+	const newsletterForm = document.querySelector('.gv2-newsletter__form');
+	if (newsletterForm) {
+		const tsWrap = newsletterForm.querySelector('.gv2-turnstile-wrap--newsletter');
+		const emailInput = newsletterForm.querySelector('input[type="email"]');
+		const revealNewsletterCaptcha = () => {
+			if (!tsWrap) return;
+			tsWrap.classList.add('is-revealed');
+			if (typeof window.gv2InitTurnstile === 'function') {
+				window.gv2InitTurnstile();
+			}
+		};
+		if (emailInput && tsWrap) {
+			emailInput.addEventListener('focus', revealNewsletterCaptcha, { once: true });
+			emailInput.addEventListener('input', revealNewsletterCaptcha, { once: true });
+			newsletterForm.addEventListener('submit', (e) => {
+				const tokenInput = newsletterForm.querySelector('[name="cf-turnstile-response"]');
+				if (tsWrap && (!tokenInput || !tokenInput.value)) {
+					e.preventDefault();
+					revealNewsletterCaptcha();
+				}
+			});
+		}
+	}
+
 	// Cloudflare Turnstile: re-render / reset on WooCommerce AJAX checkout updates & errors
 	if (window.jQuery) {
 		const $ = window.jQuery;

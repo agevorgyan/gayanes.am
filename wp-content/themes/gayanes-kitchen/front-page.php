@@ -496,12 +496,12 @@ $shop_url = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 
 			<form class="gv2-newsletter__form" action="<?php echo esc_url( home_url( '/' ) ); ?>" method="post">
 				<label class="gv2-sr-only" for="gv2-newsletter-email"><?php echo esc_html( gv2_t( 'Email address' ) ); ?></label>
 				<input id="gv2-newsletter-email" type="email" name="email" required placeholder="name@example.com" />
+				<button type="submit" class="gv2-btn gv2-btn--primary"><?php echo esc_html( gv2_t( 'Subscribe' ) ); ?></button>
 				<?php
 				if ( function_exists( 'gv2_render_turnstile_widget' ) ) {
-					gv2_render_turnstile_widget( 'newsletter', 'gv2-turnstile-wrap--newsletter' );
+					gv2_render_turnstile_widget( 'newsletter', 'gv2-turnstile-wrap--newsletter', 'dark' );
 				}
 				?>
-				<button type="submit" class="gv2-btn gv2-btn--primary"><?php echo esc_html( gv2_t( 'Subscribe' ) ); ?></button>
 			</form>
 		</div>
 	</section>
