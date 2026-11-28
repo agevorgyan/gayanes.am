@@ -7928,7 +7928,9 @@ form.woocommerce-checkout {
 }
 
 .gv2-turnstile-wrap--checkout {
-	margin: 12px 0 16px;
+	margin: 0 0 16px;
+	display: flex;
+	justify-content: center;
 }
 
 .gv2-turnstile-wrap--newsletter {

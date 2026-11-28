@@ -945,14 +945,9 @@
 	if (window.jQuery) {
 		const $ = window.jQuery;
 		$(document.body).on('updated_checkout', () => {
-			if (!window.turnstile) return;
-			document.querySelectorAll('.woocommerce-checkout .cf-turnstile').forEach((el) => {
-				if (!el.querySelector('iframe')) {
-					try {
-						window.turnstile.render(el);
-					} catch {}
-				}
-			});
+			if (typeof window.gv2InitTurnstile === 'function') {
+				window.gv2InitTurnstile();
+			}
 		});
 		$(document.body).on('checkout_error', () => {
 			if (!window.turnstile) return;

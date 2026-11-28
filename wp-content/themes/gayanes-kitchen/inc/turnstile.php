@@ -50,7 +50,7 @@ function gv2_enqueue_turnstile_script(): void {
 
 	wp_enqueue_script(
 		'cloudflare-turnstile',
-		'https://challenges.cloudflare.com/turnstile/v0/api.js',
+		'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=gv2InitTurnstile',
 		array(),
 		null,
 		array(
@@ -58,6 +58,22 @@ function gv2_enqueue_turnstile_script(): void {
 			'strategy'  => 'defer',
 		)
 	);
+
+	$inline_init = <<<'JS'
+window.gv2InitTurnstile = function () {
+	if (!window.turnstile || typeof window.turnstile.render !== 'function') return;
+	document.querySelectorAll('.cf-turnstile').forEach(function (el) {
+		if (el.dataset.gv2Rendered === '1' || el.querySelector('iframe')) return;
+		el.dataset.gv2Rendered = '1';
+		try {
+			window.turnstile.render(el);
+		} catch (e) {
+			delete el.dataset.gv2Rendered;
+		}
+	});
+};
+JS;
+	wp_add_inline_script( 'cloudflare-turnstile', $inline_init, 'before' );
 }
 add_action( 'wp_enqueue_scripts', 'gv2_enqueue_turnstile_script' );
 add_action( 'login_enqueue_scripts', 'gv2_enqueue_turnstile_script' );
@@ -240,7 +256,7 @@ add_action(
 );
 
 add_action(
-	'woocommerce_checkout_before_order_review',
+	'woocommerce_review_order_before_submit',
 	static function (): void {
 		gv2_render_turnstile_widget( 'wc_checkout', 'gv2-turnstile-wrap--checkout' );
 	}
