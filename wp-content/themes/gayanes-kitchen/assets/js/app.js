@@ -733,6 +733,18 @@
 			});
 		});
 
+		// Hide mobile sticky CTA when application form is visible in viewport
+		const stickyCta = document.querySelector('.gv2-b2b-sticky-cta');
+		const applySection = document.getElementById('corporate-apply');
+		if (stickyCta && applySection && 'IntersectionObserver' in window) {
+			const io = new IntersectionObserver((entries) => {
+				entries.forEach((entry) => {
+					stickyCta.classList.toggle('is-hidden', entry.isIntersecting);
+				});
+			}, { threshold: 0.12 });
+			io.observe(applySection);
+		}
+
 		corpForm.addEventListener('submit', async (e) => {
 			e.preventDefault();
 			if (submitBtn) submitBtn.disabled = true;

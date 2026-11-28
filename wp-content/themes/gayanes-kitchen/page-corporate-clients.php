@@ -136,6 +136,10 @@ $b2b_icons = array(
 							fetchpriority="high"
 						/>
 					<?php endif; ?>
+					<div class="gv2-corp-hero__badge">
+						<span class="gv2-corp-hero__badge-dot" aria-hidden="true"></span>
+						<span><?php echo esc_html( $c['eyebrow'] ); ?></span>
+					</div>
 				</div>
 			</div>
 		</div>
