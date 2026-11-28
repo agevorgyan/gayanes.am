@@ -20,6 +20,7 @@ require_once GV2_DIR . '/inc/theme-settings.php';
 require_once GV2_DIR . '/inc/assets.php';
 require_once GV2_DIR . '/inc/faq-data.php';
 require_once GV2_DIR . '/inc/turnstile.php';
+require_once GV2_DIR . '/inc/custom-login.php';
 require_once GV2_DIR . '/inc/contact-handler.php';
 require_once GV2_DIR . '/inc/seo.php';
 require_once GV2_DIR . '/inc/redirects.php';
