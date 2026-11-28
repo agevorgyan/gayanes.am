@@ -709,11 +709,29 @@
 		});
 	}
 
-	// Corporate Partnership Page: AJAX Application Form
+	// Corporate Partnership Page: B2B product inquiry prefill + AJAX Application Form
 	const corpForm = document.getElementById('gv2-corporate-form');
 	if (corpForm) {
 		const feedbackEl = document.getElementById('gv2-corporate-feedback');
 		const submitBtn = corpForm.querySelector('.gv2-corp-submit');
+		const productsInput = document.getElementById('gv2-corp-products');
+
+		document.querySelectorAll('.gv2-b2b-inquire-btn').forEach((btn) => {
+			btn.addEventListener('click', () => {
+				const productName = btn.getAttribute('data-b2b-product') || '';
+				if (productsInput && productName) {
+					productsInput.value = productName;
+				}
+				const target = document.getElementById('corporate-apply');
+				if (target) {
+					target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+				}
+				const nameInput = document.getElementById('gv2-corp-name');
+				if (nameInput) {
+					setTimeout(() => nameInput.focus({ preventScroll: true }), 450);
+				}
+			});
+		});
 
 		corpForm.addEventListener('submit', async (e) => {
 			e.preventDefault();
