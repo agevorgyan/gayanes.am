@@ -486,26 +486,6 @@ $shop_url = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 
 		<?php endif; ?>
 	<?php endif; ?>
 
-	<!-- 9. Newsletter -->
-	<section class="gv2-section gv2-container">
-		<div class="gv2-newsletter">
-			<div class="gv2-newsletter__copy">
-				<h2><?php echo esc_html( gv2_t( 'Seasonal Menu & Offers' ) ); ?></h2>
-				<p><?php echo esc_html( gv2_t( 'Receive updates on new homemade dishes and seasonal specials.' ) ); ?></p>
-			</div>
-			<form class="gv2-newsletter__form" action="<?php echo esc_url( home_url( '/' ) ); ?>" method="post">
-				<label class="gv2-sr-only" for="gv2-newsletter-email"><?php echo esc_html( gv2_t( 'Email address' ) ); ?></label>
-				<input id="gv2-newsletter-email" type="email" name="email" required placeholder="name@example.com" />
-				<button type="submit" class="gv2-btn gv2-btn--primary"><?php echo esc_html( gv2_t( 'Subscribe' ) ); ?></button>
-				<?php
-				if ( function_exists( 'gv2_render_turnstile_widget' ) ) {
-					gv2_render_turnstile_widget( 'newsletter', 'gv2-turnstile-wrap--newsletter', 'dark' );
-				}
-				?>
-			</form>
-		</div>
-	</section>
-
 </main>
 
 <?php
