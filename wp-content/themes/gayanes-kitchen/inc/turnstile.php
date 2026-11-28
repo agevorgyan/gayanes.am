@@ -91,7 +91,8 @@ function gv2_render_turnstile_widget( string $action = '', string $extra_class =
 	}
 
 	$site_key = gv2_get_turnstile_site_key();
-	$lang     = function_exists( 'gv2_current_lang' ) ? gv2_current_lang() : 'hy';
+	$raw_lang = function_exists( 'gv2_current_lang' ) ? gv2_current_lang() : 'hy';
+	$lang     = in_array( $raw_lang, array( 'en', 'ru' ), true ) ? $raw_lang : 'auto';
 	$classes  = trim( 'gv2-turnstile-wrap ' . $extra_class );
 	?>
 	<div class="<?php echo esc_attr( $classes ); ?>">
@@ -239,7 +240,7 @@ add_action(
 );
 
 add_action(
-	'woocommerce_review_order_before_submit',
+	'woocommerce_checkout_before_order_review',
 	static function (): void {
 		gv2_render_turnstile_widget( 'wc_checkout', 'gv2-turnstile-wrap--checkout' );
 	}
