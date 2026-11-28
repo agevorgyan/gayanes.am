@@ -709,6 +709,59 @@
 		});
 	}
 
+	// Corporate Partnership Page: AJAX Application Form
+	const corpForm = document.getElementById('gv2-corporate-form');
+	if (corpForm) {
+		const feedbackEl = document.getElementById('gv2-corporate-feedback');
+		const submitBtn = corpForm.querySelector('.gv2-corp-submit');
+
+		corpForm.addEventListener('submit', async (e) => {
+			e.preventDefault();
+			if (submitBtn) submitBtn.disabled = true;
+			if (feedbackEl) {
+				feedbackEl.hidden = true;
+				feedbackEl.classList.remove('is-error', 'is-success');
+			}
+
+			try {
+				const formData = new FormData(corpForm);
+				formData.append('action', 'gv2_submit_corporate');
+				const res = await fetch(cfg.ajaxUrl, {
+					method: 'POST',
+					credentials: 'same-origin',
+					body: formData
+				});
+				const json = await res.json();
+				const msg = (json && json.data && json.data.message) ? json.data.message : '';
+
+				if (feedbackEl && msg) {
+					feedbackEl.textContent = msg;
+					feedbackEl.classList.add(json.success ? 'is-success' : 'is-error');
+					feedbackEl.hidden = false;
+				}
+				if (json && json.success) {
+					corpForm.reset();
+				}
+			} catch {
+				if (feedbackEl) {
+					feedbackEl.textContent = 'Խնդրում ենք կրկին փորձել կամ զանգահարել +374 (55) 600655։';
+					feedbackEl.classList.add('is-error');
+					feedbackEl.hidden = false;
+				}
+			} finally {
+				if (submitBtn) submitBtn.disabled = false;
+				if (window.turnstile) {
+					const ts = corpForm.querySelector('.cf-turnstile');
+					if (ts) {
+						try {
+							window.turnstile.reset(ts);
+						} catch {}
+					}
+				}
+			}
+		});
+	}
+
 	// Mobile Bottom Tab Bar: Hide on scroll down, show on scroll up
 	const tabbar = document.querySelector('.gv2-tabbar');
 	if (tabbar) {

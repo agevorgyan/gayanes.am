@@ -7976,3 +7976,285 @@ form.woocommerce-checkout {
 		justify-content: flex-end;
 	}
 }
+
+/* ==========================================================================
+   Corporate Partnership Page (B2B / HoReCa)
+   ========================================================================== */
+
+.gv2-corp-hero {
+	padding: 18px 0 28px;
+}
+
+.gv2-corp-hero__grid {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 24px;
+	align-items: center;
+}
+
+.gv2-corp-hero__h1 {
+	font-family: var(--gv2-font-serif);
+	font-size: clamp(28px, 6vw, 46px);
+	line-height: 1.1;
+	margin: 0 0 12px;
+	font-weight: 700;
+	color: var(--gv2-text);
+}
+
+.gv2-corp-hero__lead {
+	font-size: clamp(16px, 2.2vw, 19px);
+	font-weight: 600;
+	color: var(--gv2-primary);
+	margin: 0 0 8px;
+}
+
+.gv2-corp-hero__sub {
+	color: var(--gv2-muted);
+	margin: 0 0 20px;
+	max-width: 54ch;
+}
+
+.gv2-corp-hero__cta {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	margin-bottom: 18px;
+}
+
+.gv2-corp-sectors {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+.gv2-corp-hero__arch {
+	max-width: 400px;
+}
+
+.gv2-corp-benefits {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 16px;
+}
+
+.gv2-corp-benefit {
+	padding: 22px 20px;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	transition: transform 0.25s var(--gv2-spring), box-shadow 0.25s ease;
+}
+
+.gv2-corp-benefit:hover {
+	transform: translateY(-3px);
+}
+
+.gv2-corp-benefit.is-featured {
+	background: linear-gradient(155deg, rgba(48, 75, 57, 0.08), rgba(255, 255, 255, 0.88));
+	border-color: rgba(48, 75, 57, 0.22);
+}
+
+.gv2-corp-benefit__top {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 10px;
+}
+
+.gv2-corp-benefit__icon {
+	width: 44px;
+	height: 44px;
+	border-radius: 14px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	background: rgba(48, 75, 57, 0.10);
+	color: var(--gv2-primary);
+}
+
+.gv2-corp-benefit.is-featured .gv2-corp-benefit__icon {
+	background: var(--gv2-primary);
+	color: #FFFFFF;
+}
+
+.gv2-corp-benefit__badge {
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	padding: 5px 10px;
+	border-radius: var(--gv2-radius-pill);
+	background: rgba(163, 80, 48, 0.12);
+	color: var(--gv2-terracotta);
+}
+
+.gv2-corp-benefit h3 {
+	margin: 0;
+	font-size: 18px;
+	font-weight: 700;
+	color: var(--gv2-text);
+}
+
+.gv2-corp-benefit__list {
+	margin: 0;
+	padding-left: 18px;
+	color: var(--gv2-muted);
+	font-size: 14px;
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.gv2-corp-steps {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 16px;
+}
+
+.gv2-corp-step {
+	padding: 22px 20px;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.gv2-corp-step__num {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 38px;
+	height: 38px;
+	border-radius: 50%;
+	background: var(--gv2-primary);
+	color: #FFFFFF;
+	font-size: 13px;
+	font-weight: 700;
+}
+
+.gv2-corp-step h3 {
+	margin: 4px 0 0;
+	font-size: 17px;
+	font-weight: 700;
+}
+
+.gv2-corp-step p {
+	margin: 0;
+	color: var(--gv2-muted);
+	font-size: 14px;
+}
+
+.gv2-corp-apply-grid {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 20px;
+	align-items: start;
+}
+
+.gv2-corp-form-intro {
+	margin: -8px 0 18px;
+	font-size: 14.5px;
+}
+
+.gv2-corp-aside-list {
+	margin: 10px 0 0;
+	padding-left: 18px;
+	color: var(--gv2-muted);
+	font-size: 14px;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.gv2-corp-cta-banner {
+	background: linear-gradient(155deg, #304B39 0%, #203427 100%);
+	color: #FFFFFF;
+	border: 1px solid rgba(255, 255, 255, 0.14);
+	border-radius: var(--gv2-radius-lg);
+	padding: 28px 22px;
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+	box-shadow: 0 14px 36px rgba(32, 52, 39, 0.18);
+}
+
+.gv2-corp-cta-banner h2 {
+	color: #FFFFFF;
+	font-family: var(--gv2-font-serif);
+	font-size: clamp(24px, 4vw, 34px);
+	margin: 0 0 8px;
+}
+
+.gv2-corp-cta-banner p {
+	color: rgba(255, 255, 255, 0.86);
+	margin: 0;
+	max-width: 58ch;
+}
+
+.gv2-corp-cta-banner__actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+}
+
+.gv2-corp-cta-banner .gv2-btn--primary {
+	background: #FFFFFF;
+	color: var(--gv2-primary);
+}
+
+.gv2-corp-cta-banner .gv2-btn--primary:hover {
+	background: var(--gv2-bg);
+}
+
+.gv2-corp-cta-banner .gv2-btn--glass {
+	background: rgba(255, 255, 255, 0.14);
+	border-color: rgba(255, 255, 255, 0.28);
+	color: #FFFFFF;
+}
+
+.gv2-corp-cta-banner .gv2-btn--glass:hover {
+	background: rgba(255, 255, 255, 0.24);
+}
+
+@media (min-width: 640px) {
+	.gv2-corp-benefits {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+
+	.gv2-corp-steps {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
+@media (min-width: 960px) {
+	.gv2-corp-hero {
+		padding: 36px 0 36px;
+	}
+
+	.gv2-corp-hero__grid {
+		grid-template-columns: 1.15fr 0.85fr;
+		gap: 44px;
+	}
+
+	.gv2-corp-benefits {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+
+	.gv2-corp-steps {
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+	}
+
+	.gv2-corp-apply-grid {
+		grid-template-columns: 1.25fr 0.75fr;
+		gap: 24px;
+	}
+
+	.gv2-corp-cta-banner {
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		padding: 38px 42px;
+	}
+}
