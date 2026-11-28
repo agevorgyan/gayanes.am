@@ -8728,6 +8728,28 @@ form.woocommerce-checkout {
 }
 
 @media (max-width: 899px) {
+	.gv2-b2b-page {
+		overflow-x: clip;
+	}
+
+	.gv2-corp-hero__grid > *,
+	.gv2-corp-apply-grid > *,
+	.gv2-b2b-custom > *,
+	.gv2-b2b-terms > *,
+	.gv2-b2b-grid-3 > *,
+	.gv2-b2b-products-grid > *,
+	.gv2-corp-steps > * {
+		min-width: 0;
+	}
+
+	.gv2-corp-hero__h1,
+	.gv2-b2b-custom h2,
+	.gv2-b2b-terms h2,
+	.gv2-corp-cta-banner h2,
+	.gv2-b2b-page .gv2-section__title {
+		overflow-wrap: anywhere;
+	}
+
 	.gv2-b2b-subnav__inner {
 		background: transparent;
 		border: 0;
@@ -8806,6 +8828,7 @@ form.woocommerce-checkout {
 
 	.gv2-corp-hero__cta .gv2-btn--glass {
 		width: 100%;
+		height: 100%;
 		padding: 11px 10px;
 		font-size: 13px;
 		white-space: normal;
@@ -8920,7 +8943,21 @@ form.woocommerce-checkout {
 	}
 
 	.gv2-b2b-product__title {
-		font-size: 14px;
+		font-size: 13.5px;
+		overflow-wrap: anywhere;
+	}
+
+	.gv2-b2b-product__meta .gv2-corp-benefit__badge {
+		max-width: 100%;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		font-size: 10.5px;
+		padding: 4px 8px;
+	}
+
+	.gv2-turnstile-wrap--contact {
+		justify-content: center;
 	}
 
 	.gv2-b2b-product__desc {
@@ -8947,6 +8984,13 @@ form.woocommerce-checkout {
 	#b2b-benefits .gv2-corp-benefit {
 		padding: 14px;
 		gap: 6px;
+	}
+}
+
+@media (max-width: 400px) {
+	.gv2-turnstile-frame {
+		transform: scale(0.88);
+		transform-origin: center;
 	}
 }
 
