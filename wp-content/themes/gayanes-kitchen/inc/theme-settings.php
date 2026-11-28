@@ -46,13 +46,18 @@ function gv2_render_site_settings_page(): void {
 		set_theme_mod( 'gv2_home_hero_image_id', absint( $_POST['gv2_home_hero_image_id'] ?? 0 ) );
 		set_theme_mod( 'gv2_about_hero_image_id', absint( $_POST['gv2_about_hero_image_id'] ?? 0 ) );
 		set_theme_mod( 'gv2_about_story_image_id', absint( $_POST['gv2_about_story_image_id'] ?? 0 ) );
+		set_theme_mod( 'gv2_turnstile_site_key', trim( sanitize_text_field( (string) wp_unslash( $_POST['gv2_turnstile_site_key'] ?? '' ) ) ) );
+		set_theme_mod( 'gv2_turnstile_secret_key', trim( sanitize_text_field( (string) wp_unslash( $_POST['gv2_turnstile_secret_key'] ?? '' ) ) ) );
 		$saved = true;
 	}
 
-	$current_deal  = absint( get_theme_mod( 'gv2_daily_deal_product_id', 0 ) );
-	$home_hero_id  = absint( get_theme_mod( 'gv2_home_hero_image_id', 0 ) );
-	$about_hero_id = absint( get_theme_mod( 'gv2_about_hero_image_id', 0 ) );
-	$about_story_id = absint( get_theme_mod( 'gv2_about_story_image_id', 0 ) );
+	$current_deal       = absint( get_theme_mod( 'gv2_daily_deal_product_id', 0 ) );
+	$home_hero_id       = absint( get_theme_mod( 'gv2_home_hero_image_id', 0 ) );
+	$about_hero_id      = absint( get_theme_mod( 'gv2_about_hero_image_id', 0 ) );
+	$about_story_id     = absint( get_theme_mod( 'gv2_about_story_image_id', 0 ) );
+	$turnstile_site_key = (string) get_theme_mod( 'gv2_turnstile_site_key', '' );
+	$turnstile_secret   = (string) get_theme_mod( 'gv2_turnstile_secret_key', '' );
+	$turnstile_active   = function_exists( 'gv2_is_turnstile_enabled' ) && gv2_is_turnstile_enabled();
 
 	$products = function_exists( 'wc_get_products' )
 		? wc_get_products( array( 'status' => 'publish', 'limit' => 150, 'orderby' => 'title', 'order' => 'ASC' ) )
@@ -105,6 +110,36 @@ function gv2_render_site_settings_page(): void {
 						</td>
 					</tr>
 				<?php endforeach; ?>
+
+				<tr>
+					<th scope="row">Cloudflare Turnstile (CAPTCHA)</th>
+					<td>
+						<p>
+							<strong>Կարգավիճակ․</strong>
+							<?php if ( $turnstile_active ) : ?>
+								<span style="color:#0a7d32;font-weight:600;">Ակտիվ է</span>
+							<?php else : ?>
+								<span style="color:#b33a3a;font-weight:600;">Անջատված է (լրացրեք երկու բանալիները)</span>
+							<?php endif; ?>
+						</p>
+						<p class="description">
+							Ստացեք անվճար Site Key և Secret Key <a href="https://dash.cloudflare.com/?to=/:account/turnstile" target="_blank" rel="noopener noreferrer">Cloudflare Turnstile</a>-ից։
+							Կարող եք նաև սահմանել <code>GV2_TURNSTILE_SITE_KEY</code> և <code>GV2_TURNSTILE_SECRET_KEY</code> հաստատունները <code>wp-config.php</code>-ում։
+						</p>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="gv2_turnstile_site_key">Turnstile Site Key</label></th>
+					<td>
+						<input type="text" name="gv2_turnstile_site_key" id="gv2_turnstile_site_key" class="regular-text" value="<?php echo esc_attr( $turnstile_site_key ); ?>" placeholder="0x4AAAAAAA..." autocomplete="off" />
+					</td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="gv2_turnstile_secret_key">Turnstile Secret Key</label></th>
+					<td>
+						<input type="password" name="gv2_turnstile_secret_key" id="gv2_turnstile_secret_key" class="regular-text" value="<?php echo esc_attr( $turnstile_secret ); ?>" placeholder="0x4AAAAAAA..." autocomplete="new-password" />
+					</td>
+				</tr>
 			</table>
 
 			<?php submit_button( 'Պահպանել կարգավորումները' ); ?>

@@ -7916,3 +7916,22 @@ form.woocommerce-checkout {
 		background: rgba(255, 255, 255, 0.9);
 	}
 }
+
+.gv2-turnstile-wrap {
+	margin: 10px 0 4px;
+	max-width: 100%;
+	overflow-x: auto;
+}
+
+.gv2-turnstile-wrap--auth {
+	margin: 12px 0 14px;
+}
+
+.gv2-turnstile-wrap--checkout {
+	margin: 12px 0 16px;
+}
+
+.gv2-turnstile-wrap--newsletter {
+	flex-basis: 100%;
+	margin: 4px 0 0;
+}

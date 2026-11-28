@@ -697,6 +697,14 @@
 				}
 			} finally {
 				if (submitBtn) submitBtn.disabled = false;
+				if (window.turnstile) {
+					const ts = contactForm.querySelector('.cf-turnstile');
+					if (ts) {
+						try {
+							window.turnstile.reset(ts);
+						} catch {}
+					}
+				}
 			}
 		});
 	}
@@ -931,5 +939,28 @@
 	const initialSubEl = document.getElementById('gv2-mini-cart-subtotal');
 	if (initialSubEl) {
 		updateDeliveryProgress(parseSubtotalNumber(initialSubEl.textContent || initialSubEl.innerHTML));
+	}
+
+	// Cloudflare Turnstile: re-render / reset on WooCommerce AJAX checkout updates & errors
+	if (window.jQuery) {
+		const $ = window.jQuery;
+		$(document.body).on('updated_checkout', () => {
+			if (!window.turnstile) return;
+			document.querySelectorAll('.woocommerce-checkout .cf-turnstile').forEach((el) => {
+				if (!el.querySelector('iframe')) {
+					try {
+						window.turnstile.render(el);
+					} catch {}
+				}
+			});
+		});
+		$(document.body).on('checkout_error', () => {
+			if (!window.turnstile) return;
+			document.querySelectorAll('.woocommerce-checkout .cf-turnstile').forEach((el) => {
+				try {
+					window.turnstile.reset(el);
+				} catch {}
+			});
+		});
 	}
 })();

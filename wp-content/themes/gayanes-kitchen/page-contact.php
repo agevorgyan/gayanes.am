@@ -94,6 +94,12 @@ get_header();
 
 					<div id="gv2-contact-feedback" class="gv2-contact-feedback" role="status" aria-live="polite" hidden></div>
 
+					<?php
+					if ( function_exists( 'gv2_render_turnstile_widget' ) ) {
+						gv2_render_turnstile_widget( 'contact', 'gv2-turnstile-wrap--contact' );
+					}
+					?>
+
 					<button type="submit" class="gv2-btn gv2-btn--primary gv2-btn--lg gv2-contact-submit">
 						<?php echo esc_html( gv2_t( 'Send Message' ) ); ?> &rarr;
 					</button>

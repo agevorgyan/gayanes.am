@@ -38,6 +38,16 @@ function gv2_handle_contact_submission(): void {
 		);
 	}
 
+	if ( function_exists( 'gv2_verify_turnstile_token' ) ) {
+		$turnstile_check = gv2_verify_turnstile_token();
+		if ( is_wp_error( $turnstile_check ) ) {
+			wp_send_json_error(
+				array( 'message' => $turnstile_check->get_error_message() ),
+				403
+			);
+		}
+	}
+
 	// phpcs:ignore WordPress.Security.NonceVerification.Missing
 	$name    = isset( $_POST['name'] ) ? trim( sanitize_text_field( (string) wp_unslash( $_POST['name'] ) ) ) : '';
 	// phpcs:ignore WordPress.Security.NonceVerification.Missing
