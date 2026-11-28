@@ -733,16 +733,25 @@
 			});
 		});
 
-		// Hide mobile sticky CTA when application form is visible in viewport
+		// Show mobile sticky CTA only when bottom tabbar is hidden and form is not in view
 		const stickyCta = document.querySelector('.gv2-b2b-sticky-cta');
 		const applySection = document.getElementById('corporate-apply');
-		if (stickyCta && applySection && 'IntersectionObserver' in window) {
-			const io = new IntersectionObserver((entries) => {
-				entries.forEach((entry) => {
-					stickyCta.classList.toggle('is-hidden', entry.isIntersecting);
-				});
-			}, { threshold: 0.12 });
-			io.observe(applySection);
+		const mobileTabbar = document.querySelector('.gv2-tabbar');
+		if (stickyCta && applySection) {
+			let formInView = false;
+			const syncStickyCta = () => {
+				const tabbarHidden = !mobileTabbar || mobileTabbar.classList.contains('is-hidden');
+				stickyCta.classList.toggle('is-visible', tabbarHidden && !formInView);
+			};
+			if ('IntersectionObserver' in window) {
+				new IntersectionObserver((entries) => {
+					entries.forEach((entry) => {
+						formInView = entry.isIntersecting;
+						syncStickyCta();
+					});
+				}, { threshold: 0.12 }).observe(applySection);
+			}
+			window.addEventListener('scroll', () => window.requestAnimationFrame(syncStickyCta), { passive: true });
 		}
 
 		corpForm.addEventListener('submit', async (e) => {

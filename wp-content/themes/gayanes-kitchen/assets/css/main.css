@@ -8690,6 +8690,229 @@ form.woocommerce-checkout {
 	}
 }
 
+@media (max-width: 899px) {
+	.gv2-b2b-subnav__inner {
+		background: transparent;
+		border: 0;
+		box-shadow: none;
+		backdrop-filter: none;
+		-webkit-backdrop-filter: none;
+		padding: 2px 0;
+		border-radius: 0;
+	}
+
+	.gv2-b2b-subnav__links a {
+		background: var(--gv2-glass-strong);
+		border: 1px solid var(--gv2-border);
+		padding: 8px 14px;
+		font-size: 13px;
+		box-shadow: 0 2px 8px rgba(36, 41, 35, 0.05);
+	}
+
+	.gv2-corp-hero {
+		padding: 10px 0 20px;
+	}
+
+	.gv2-corp-hero__grid {
+		gap: 18px;
+	}
+
+	.gv2-corp-hero__media {
+		order: -1;
+	}
+
+	.gv2-corp-hero__arch {
+		max-width: 280px;
+		aspect-ratio: 4 / 3.4;
+		border-radius: 140px 140px 24px 24px;
+	}
+
+	.gv2-corp-hero__badge {
+		left: 10px;
+		right: 10px;
+		bottom: 10px;
+		padding: 7px 11px;
+		font-size: 11.5px;
+		border-radius: 12px;
+	}
+
+	.gv2-corp-hero__content {
+		text-align: center;
+	}
+
+	.gv2-corp-hero__h1 {
+		font-size: 28px;
+		margin-bottom: 8px;
+	}
+
+	.gv2-corp-hero__lead {
+		font-size: 15.5px;
+	}
+
+	.gv2-corp-hero__sub {
+		font-size: 14px;
+		margin-inline: auto;
+		margin-bottom: 16px;
+	}
+
+	.gv2-corp-hero__cta {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 8px;
+		margin-bottom: 6px;
+	}
+
+	.gv2-corp-hero__cta .gv2-btn--primary {
+		grid-column: 1 / -1;
+		width: 100%;
+	}
+
+	.gv2-corp-hero__cta .gv2-btn--glass {
+		width: 100%;
+		padding: 11px 10px;
+		font-size: 13px;
+		white-space: normal;
+		text-align: center;
+		line-height: 1.25;
+	}
+
+	.gv2-b2b-page .gv2-section__head {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 12px;
+	}
+
+	.gv2-b2b-page .gv2-section__head .gv2-btn {
+		width: 100%;
+	}
+
+	.gv2-b2b-custom {
+		padding: 20px 16px;
+		gap: 18px;
+	}
+
+	.gv2-b2b-custom__media {
+		order: -1;
+		aspect-ratio: 16 / 10;
+	}
+
+	.gv2-b2b-custom__cta .gv2-btn {
+		width: 100%;
+	}
+
+	.gv2-b2b-terms {
+		padding: 20px 16px;
+		gap: 16px;
+	}
+
+	.gv2-b2b-terms__box {
+		padding: 14px;
+	}
+
+	.gv2-corp-submit {
+		width: 100%;
+	}
+
+	.gv2-corp-cta-banner {
+		padding: 24px 18px;
+		text-align: center;
+	}
+
+	.gv2-corp-cta-banner__actions {
+		flex-direction: column;
+		width: 100%;
+	}
+
+	.gv2-corp-cta-banner__actions .gv2-btn {
+		width: 100%;
+	}
+
+	.gv2-b2b-sticky-cta {
+		bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+		transform: translateY(140%);
+		opacity: 0;
+		pointer-events: none;
+	}
+
+	.gv2-b2b-sticky-cta.is-visible {
+		transform: translateY(0);
+		opacity: 1;
+		pointer-events: auto;
+	}
+
+	body.page-template-page-corporate-clients .gv2-wa-fab {
+		bottom: calc(68px + env(safe-area-inset-bottom, 0px));
+	}
+}
+
+@media (max-width: 639px) {
+	#b2b-partners .gv2-b2b-grid-3 {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 10px;
+	}
+
+	#b2b-partners .gv2-corp-benefit {
+		padding: 14px 12px;
+		gap: 8px;
+	}
+
+	#b2b-partners .gv2-corp-benefit__icon {
+		width: 36px;
+		height: 36px;
+		border-radius: 11px;
+	}
+
+	#b2b-partners .gv2-corp-benefit h3 {
+		font-size: 14.5px;
+		line-height: 1.25;
+	}
+
+	#b2b-partners .gv2-b2b-card-text {
+		font-size: 12.5px;
+		line-height: 1.4;
+	}
+
+	.gv2-b2b-products-grid {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 10px;
+	}
+
+	.gv2-b2b-product__body {
+		padding: 12px 10px;
+		gap: 6px;
+	}
+
+	.gv2-b2b-product__title {
+		font-size: 14px;
+	}
+
+	.gv2-b2b-product__desc {
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+		font-size: 12px;
+		line-height: 1.35;
+	}
+
+	.gv2-b2b-inquire-btn {
+		width: 100%;
+		padding: 8px 10px;
+		font-size: 12px;
+		white-space: normal;
+		text-align: center;
+	}
+
+	#b2b-benefits .gv2-b2b-grid-3 {
+		gap: 10px;
+	}
+
+	#b2b-benefits .gv2-corp-benefit {
+		padding: 14px;
+		gap: 6px;
+	}
+}
+
 @media (min-width: 900px) {
 	.gv2-b2b-sticky-cta {
 		display: none;
